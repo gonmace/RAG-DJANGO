@@ -16,17 +16,19 @@ module.exports = {
         themes: [
           {
             mytheme: {
-              "primary": "#FF4444",
-              "secondary": "#334263",
-              "accent": "#fa0000",
-              "neutral": "#3d4451",
-              "base-100": "#fffff8",
-              "terreno": "#fff5f5",
-              "muro": "#fed7d7",
-              "grava": "#feb2b2",
-              "porton": "#fc8181",
-              "pat": "#f56565",
-              "electrico": "#e53e3e",
+              // http://colormind.io/bootstrap/
+              // https://coolors.co/1a281f-aaaaaa-cf5535-fec601-f6f8ff
+              mytheme: {
+                "primary": "#cf5535",  // Main brand color
+                "secondary": "#fec601", // Light accent
+                "accent": "#aaaaaa", // Dark accent
+                "neutral": "#1a281f", // Dark shades
+                "base-100": "#f6f8ff", // Light shades (background)
+                "info": "#1E429F",
+                "success": "#0E9F6E",
+                "warning": "#C27803",
+                "error": "#E02424"
+              },
             },
           },
           "dark",
