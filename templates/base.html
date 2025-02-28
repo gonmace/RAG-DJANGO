@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="es" data-theme="mytheme">
+<html lang="es" data-theme="business-gmc">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -23,7 +23,7 @@
 
     <body class="{% block body_class %}{% endblock %}">
         <!-- Barra de navegación superior -->
-        <nav class="bg-primary  text-white p-4 flex justify-between items-center fixed w-full z-10">
+        <nav class="bg-primary p-4 flex justify-between items-center fixed w-full z-10">
             <div class="flex items-center">
                 <span class="text-xl font-bold">LOGO</span>
             </div>
@@ -31,7 +31,7 @@
                 <div class="relative">
                     <i class="fas fa-bell text-xl"></i>
                     {% if notifications_count %}
-                    <span class="absolute -top-2 -right-2 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    <span class="absolute -top-2 -right-2 bg-warning text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
                         {{ notifications_count }}
                     </span>
                     {% endif %}

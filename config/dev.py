@@ -9,7 +9,6 @@ INSTALLED_APPS += [
     # "django_extensions",
     # "debug_toolbar",
     'django_browser_reload',
-    'tailwind',
     'theme'
 ]
 
