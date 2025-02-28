@@ -1,0 +1,119 @@
+/*
+* This is where you can configure the folders that Tailwind will scan.
+* 
+* For detailed documents, check the Tailwind docs at:
+*
+* https://tailwindcss.com/docs/detecting-classes-in-source-files#explicitly-registering-sources
+*
+* This default configuration will scan all folder in your root project directory.
+*
+* Here is an example configuration that will only scan your templates/ folder:
+* 
+* @import "tailwindcss" source(none);
+*
+* @source "../../../templates";
+*/
+
+@import "tailwindcss" source("../../../");
+
+
+/*
+* If you would like to customise you theme, you can do that here too.
+*
+* https://tailwindcss.com/docs/theme
+*
+*/
+
+@theme {}
+
+
+/*
+* You can install tailwind plugins like below.
+*
+* https://tailwindcss.com/docs/functions-and-directives#plugin-directive
+*
+*/
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/aspect-ratio";
+@plugin "daisyui";
+@plugin "daisyui/theme" {
+    name: "business-gmc";
+    default: true;
+    prefersdark: false;
+    color-scheme: "dark";
+    --color-base-100: oklch(24.353% 0 0);
+    --color-base-200: oklch(22.648% 0 0);
+    --color-base-300: oklch(20.944% 0 0);
+    --color-base-content: oklch(84.87% 0 0);
+
+    --color-primary: oklch(41.703% 0.099 251.473);
+    --color-primary-content: oklch(88.34% 0.019 251.473);
+    --color-secondary: oklch(64.092% 0.027 229.389);
+    --color-secondary-content: oklch(12.818% 0.005 229.389);
+
+    --color-accent: oklch(67.271% 0.167 35.791);
+    --color-accent-content: oklch(13.454% 0.033 35.791);
+    --color-neutral: oklch(27.441% 0.013 253.041);
+    --color-neutral-content: oklch(85.488% 0.002 253.041);
+
+    --color-info: oklch(62.616% 0.143 240.033);
+    --color-info-content: oklch(12.523% 0.028 240.033);
+    --color-success: oklch(70.226% 0.094 156.596);
+    --color-success-content: oklch(14.045% 0.018 156.596);
+    --color-warning: oklch(77.482% 0.115 81.519);
+    --color-warning-content: oklch(15.496% 0.023 81.519);
+    --color-error: oklch(51.61% 0.146 29.674);
+    --color-error-content: oklch(90.322% 0.029 29.674);
+    --radius-selector: 0rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.25rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
+  }
+  
+
+
+
+/* Base styles */
+@layer base {
+  h1 {
+    @apply text-3xl font-bold; /* Ejemplo de estilos para h1 */
+  }
+
+  h2 {
+    @apply text-2xl font-bold; /* Ejemplo de estilos para h2 */
+  }
+
+  h3 {
+    @apply text-xl; /* Ejemplo de estilos para h2 */
+  }
+
+  p {
+    @apply text-base text-gray-700; /* Ejemplo de estilos para texto párrafo */
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .rangos {
+    @apply range-xs max-w-64;
+  }
+
+  .active {
+    @apply text-green-300;
+  }
+  .nav-item {
+    @apply text-white flex items-center gap-3 transition-all duration-300 py-2 px-4;
+  }
+  .nav-item:hover {
+    @apply bg-primary/10;
+  }
+  .nav-item.active {
+    @apply bg-primary/20;
+  }
+}
