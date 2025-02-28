@@ -1,7 +1,8 @@
 {% load static %}
+{% load nav_tags %}
 
 <!DOCTYPE html>
-<html lang="es" data-theme="business-gmc">
+<html lang="es" data-theme="mytheme">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,7 +48,7 @@
 
         <!-- Navegación lateral -->
         <div class="flex">
-            <nav class="bg-neutral w-64 min-h-screen fixed pt-16">
+            <nav class="bg-neutral text-neutral-content w-64 min-h-screen fixed pt-16">
                 <div class="p-4">
                     <div class="mb-4">
                         <select class="w-full bg-secondary text-white p-2 rounded">
@@ -55,15 +56,55 @@
                         </select>
                     </div>
                     
-                    <div class="space-y-1">
-                        <a href="#" class="nav-item active">
-                            <i class="fas fa-home"></i>
-                            <span>Panel Principal</span>
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-project-diagram"></i>
-                            <span>Proyectos</span>
-                        </a>
+                    <ul class="menu menu-md rounded-box max-w-xs w-full">
+                        <li>
+                            <a href="{% url 'main:panel' %}" class="{% is_active 'panel' %}">
+                                <i class="fas fa-home"></i>
+                                <span>Panel Principal</span>
+                            </a>
+                        </li>
+                        <li>
+                            <details open>
+                                <summary>
+                                    <i class="fas fa-bezier-curve"></i>
+                                    <span>Embeddings</span>
+                                </summary>
+                                <ul>
+                                    <li>
+                                        <a href="{% url 'embeddings:crear' %}" class="{% is_active 'crear' %}">
+                                            <i class="fas fa-plus-circle"></i>
+                                            <span>Crear Embedding</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" >
+                                            <i class="fas fa-list-ul"></i>
+                                            <span>Lista de Embeddings</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="">
+                                            <i class="fas fa-history"></i>
+                                            <span>Historial</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="hidden group-hover:block pl-6 bg-neutral-focus">
+                                <a href="{% url 'embeddings:crear' %}" class="nav-item {% is_active 'crear' %}">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span>Crear Embedding</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-list-ul"></i>
+                                    <span>Lista de Embeddings</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-history"></i>
+                                    <span>Historial</span>
+                                </a>
+                            </div>
+                        </div>
                         <a href="#" class="nav-item">
                             <i class="fas fa-plus"></i>
                             <span>Nuevo Proyecto</span>
@@ -92,12 +133,12 @@
                             <i class="fas fa-user"></i>
                             <span>Mi Cuenta</span>
                         </a>
-                    </div>
+                    </ul>
                 </div>
             </nav>
 
             <!-- Contenido principal -->
-            <main class="flex-1 ml-64 pt-16">
+            <main class="flex-1 ml-64 bg-base-200 mt-9 br">
                 <div class="p-6">
                     {% block content %}
                     {% endblock content %}

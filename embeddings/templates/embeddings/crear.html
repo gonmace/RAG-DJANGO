@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load tailwind_tags widget_tweaks %}
+
+{% block css %}
+    {% tailwind_css %}
+{% endblock css %}
+
+{% block body_class %}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-6 text-center">Crear Nuevo Embedding</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            
+                <label class="input">
+                    {{ form.nombre|add_class:"input" }}
+                </label>
+                
+            
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Archivo</span>
+                </label>
+                {{ form.archivo }}
+            </div>
+
+            <div class="form-control mt-6">
+                <button type="submit" class="btn btn-primary w-full">
+                    Crear Embedding
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

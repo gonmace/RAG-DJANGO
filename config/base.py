@@ -15,8 +15,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'widget_tweaks',
+
     'main',
     'tailwind',
+    'theme',
+    'embeddings',
 ]
 
 MIDDLEWARE = [
@@ -103,3 +107,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+NPM_BIN_PATH = 'npm'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
