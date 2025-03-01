@@ -1,0 +1,39 @@
+<dialog id="modal_crear" class="modal">
+  <div class="modal-box bg-base-200">
+      <h2 class="text-2xl font-bold mb-6 text-center">Embedding - Párrafo</h2>
+      
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-success mb-4">
+                  {{ message }}
+              </div>
+          {% endfor %}
+      {% endif %}
+
+      <form method="POST" class="space-y-4">
+          {% csrf_token %}
+              {{ form.texto }}
+
+              {% if form.texto.errors %}
+                  <div class="text-error text-sm mt-1">
+                      {{ form.texto.errors }}
+                  </div>
+              {% endif %}
+          
+              {{ form.metadatos }}
+
+              {% if form.metadatos.errors %}
+                  <div class="text-error text-sm mt-1">
+                      {{ form.metadatos.errors }}
+                  </div>
+              {% endif %}
+
+              <div class="modal-action">
+                  <button type="submit" class="btn btn-primary">
+                      Crear Embedding
+                  </button>
+                  <button type="button" class="btn" onclick="modal_crear.close()">Cerrar</button>
+              </div>
+      </form>
+  </div>
+</dialog>

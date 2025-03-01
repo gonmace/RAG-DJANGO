@@ -20,25 +20,21 @@
   
 }}
 
+
 .rangos {
     @apply range-xs max-w-64;
 }
 
-.active {
-    @apply text-green-300;
+.menu-active {
+    @apply bg-primary/70 ;
 }
 
-.nav-item {
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #ffffff;
-  transition: all 0.3s;
+button[type="submit"] {
+    @apply btn btn-primary text-white text-base;
 }
-.nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-.nav-item.active {
-  background-color: rgba(255, 255, 255, 0.15);
+
+.shadow-card {
+    @apply shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
+                    hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-300 
+                    cursor-pointer active:scale-95 flex items-center gap-4;
 }

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load tailwind_tags %}
+
+{% block css %}
+    {% tailwind_css %}
+{% endblock css %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Lista de Embeddings</h1>
+        <a href="{% url 'embeddings:crear' %}" class="btn btn-primary">
+            Crear Nuevo
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} mb-4">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid gap-4">
+        {% for doc in documents %}
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-500 mb-2">ID: {{ doc.id }}</p>
+                        <div class="prose max-w-none">
+                            <p>{{ doc.text }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% if doc.metadata %}
+                    <div class="mt-4 pt-4 border-t">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-2">Metadatos:</h4>
+                        <pre class="bg-gray-50 rounded p-2 text-sm">{{ doc.metadata|pprint }}</pre>
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="text-center py-8">
+                <p class="text-gray-500">No hay embeddings almacenados.</p>
+                <a href="{% url 'embeddings:crear' %}" class="btn btn-primary mt-4">
+                    Crear el Primer Embedding
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %} 

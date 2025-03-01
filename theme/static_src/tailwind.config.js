@@ -4,6 +4,9 @@ module.exports = {
       '../../templates/**/*.html', 
       '../../main/src/index-main.js',
       '../../**/templates/*.html',  
+      '../../**/templates/**/*.html',
+      '../../embeddings/templates/**/*.html', 
+      '../../embeddings/forms.py', 
       '!../../**/node_modules',
   ],
   plugins: [

@@ -77,7 +77,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" >
+                                        <a href="{% url 'embeddings:listar' %}" class="{% is_active 'listar' %}">
                                             <i class="fas fa-list-ul"></i>
                                             <span>Lista de Embeddings</span>
                                         </a>
@@ -138,7 +138,7 @@
             </nav>
 
             <!-- Contenido principal -->
-            <main class="flex-1 ml-64 bg-base-200 mt-9 br">
+            <main class="flex-1 ml-64">
                 <div class="p-6">
                     {% block content %}
                     {% endblock content %}

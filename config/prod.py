@@ -18,6 +18,10 @@ DATABASES = {
         'PASSWORD': config('POSTGRES_PASSWORD'),
         'HOST': config('POSTGRES_HOST'),
         'PORT': '5432',
+    },
+    'chromadb': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'chromadb',
     }
 }
 

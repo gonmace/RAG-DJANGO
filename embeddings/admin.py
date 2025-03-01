@@ -1,10 +1,10 @@
-from django.contrib import admin
-from .models import Embedding
+# from django.contrib import admin
+# from .models import Parrafo
 
-@admin.register(Embedding)
-class EmbeddingAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'fecha_creacion', 'procesado')
-    list_filter = ('procesado', 'fecha_creacion')
-    search_fields = ('nombre',)
+# @admin.register(Parrafo)
+# class EmbeddingAdmin(admin.ModelAdmin):
+#     list_display = ('nombre', 'fecha_creacion', 'procesado')
+#     list_filter = ('procesado', 'fecha_creacion')
+#     search_fields = ('nombre',)
 
 

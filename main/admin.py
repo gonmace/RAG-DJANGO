@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from main.models import Project
+from main.models import Proyecto
 
 
-admin.site.register(Project)
+admin.site.register(Proyecto)
