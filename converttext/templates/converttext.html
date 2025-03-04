@@ -28,26 +28,32 @@
             </div>
 
             <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Títulos (h2):</label>
-              <input type="text" name="h2_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: TÍTULO, CAPÍTULO, SECCIÓN (separados por comas)" />
+              <div class="flex gap-4">
+                <div class="flex-grow">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Capítulos (h2):</label>
+                  <input type="text" name="chapter_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: CAPÍTULO, TÍTULO, SECCIÓN (separados por comas)" />
+                </div>
+                <div class="w-24">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Líneas:</label>
+                  <input type="number" name="chapter_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="0" min="0" max="10" />
+                </div>
+              </div>
             </div>
 
             <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Líneas a incluir para h2:</label>
-              <input type="number" name="h2_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="1" min="0" max="10" />
+              <div class="flex gap-4">
+                <div class="flex-grow">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Secciones (h3):</label>
+                  <input type="text" name="section_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: ARTÍCULO, SUBSECCIÓN, PUNTO (separados por comas)" />
+                </div>
+                <div class="w-24">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Líneas:</label>
+                  <input type="number" name="section_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="0" min="0" max="10" />
+                </div>
+              </div>
             </div>
 
-            <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Subtítulos (h3):</label>
-              <input type="text" name="h3_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: ARTÍCULO, SECCIÓN, SUBSECCIÓN (separados por comas)" />
-            </div>
-
-            <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Líneas a incluir para h3:</label>
-              <input type="number" name="h3_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="1" min="0" max="10" />
-            </div>
-
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300">Convertir a HTML</button>
+            <button type="submit" class="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors duration-300">Convertir a HTML</button>
           </form>
         </div>
       </div>

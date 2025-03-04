@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-import fitz  # PyMuPDF
 import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
@@ -10,8 +9,7 @@ import os
 import tempfile
 import logging
 import re
-import zipfile
-import pdfplumber
+import fitz  # PyMuPDF
 
 logger = logging.getLogger(__name__)
 
@@ -58,23 +56,32 @@ def clean_text_for_llm(text):
     
     return text.strip()
 
+def clean_text(text):
+    """Función para limpiar espacios múltiples y normalizar el texto"""
+    # Eliminar espacios múltiples
+    text = ' '.join(text.split())
+    # Eliminar espacios antes de signos de puntuación
+    text = re.sub(r'\s+([.,;:?!])', r'\1', text)
+    return text.strip()
+
 @csrf_exempt
 def convert_pdf(request):
-    logger.info("Iniciando conversión de PDF")
-    if request.method == 'POST':
-        logger.info(f"Método POST recibido. FILES: {request.FILES}")
-        if request.FILES.get('pdf_file'):
-            pdf_file = request.FILES['pdf_file']
-            logger.info(f"Archivo PDF recibido: {pdf_file.name}")
-            
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
-                for chunk in pdf_file.chunks():
-                    temp_pdf.write(chunk)
-                temp_pdf_path = temp_pdf.name
-                logger.info(f"Archivo temporal creado en: {temp_pdf_path}")
+    if request.method == 'POST' and request.FILES.get('pdf_file'):
+        pdf_file = request.FILES['pdf_file']
+        
+        # Obtener los patrones y líneas del formulario
+        chapter_patterns = [p.strip() for p in request.POST.get('chapter_patterns', '').split(',') if p.strip()]
+        section_patterns = [p.strip() for p in request.POST.get('section_patterns', '').split(',') if p.strip()]
+        chapter_lines = int(request.POST.get('chapter_lines', 0))
+        section_lines = int(request.POST.get('section_lines', 0))
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
+            for chunk in pdf_file.chunks():
+                temp_pdf.write(chunk)
+            temp_pdf_path = temp_pdf.name
 
-            try:
-                html_content = """<!DOCTYPE html>
+        try:
+            html_content = """<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -95,71 +102,123 @@ def convert_pdf(request):
             padding-bottom: 10px;
         }
         h2 { 
-            color: darkblue;
-            border-left: 4px solid #3498db;
-            padding-left: 10px;
+            color: #cc7f38;
             margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
         }
         h3 { 
-            color: darkred;
+            color: #345e4e;
             margin-top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
         }
         p { 
             text-align: justify;
             margin: 10px 0;
         }
-        p.empty-line {
-            height: 1em;
-            margin: 0;
-        }
         strong {
+            font-weight: bold;
             color: #2c3e50;
         }
     </style>
 </head>
 <body>"""
 
-                # Extraer el título del nombre del archivo
-                title = os.path.splitext(pdf_file.name)[0]
-                html_content += f"<h1>{title}</h1>\n"
+            # Extraer el título del nombre del archivo
+            title = os.path.splitext(pdf_file.name)[0]
+            html_content += f"<h1>{title}</h1>\n"
 
-                doc = fitz.open(temp_pdf_path)
-                for page in doc:
-                    blocks = page.get_text("dict")["blocks"]
-                    for block in blocks:
-                        if "lines" in block:
-                            for line in block["lines"]:
-                                if "spans" in line:
-                                    text = " ".join(span["text"] for span in line["spans"])
-                                    if not text.strip():
-                                        html_content += "<p class='empty-line'></p>\n"
-                                    elif text.strip().startswith("TÍTULO"):
-                                        html_content += f"<h2>{text.strip()}</h2>\n"
-                                    elif text.strip().startswith("CAPÍTULO"):
-                                        html_content += f"<h3>{text.strip()}</h3>\n"
-                                    elif text.strip().startswith("ARTÍCULO"):
-                                        html_content += f"<p><strong>{text.strip()}</strong></p>\n"
+            doc = fitz.open(temp_pdf_path)
+            
+            # Procesar cada página
+            for page in doc:
+                blocks = page.get_text("dict")["blocks"]
+                i = 0
+                while i < len(blocks):
+                    block = blocks[i]
+                    if "lines" in block:
+                        for line in block["lines"]:
+                            if "spans" in line:
+                                current_line = []
+                                line_text = ""
+                                for span in line["spans"]:
+                                    text = span.get("text", "").strip()
+                                    if not text:
+                                        continue
+                                    line_text += text + " "
+                                    current_line.append(text)
+                                
+                                line_text = line_text.strip()
+                                
+                                # Verificar si la línea coincide con algún patrón de capítulo
+                                is_chapter = any(pattern in line_text.upper() for pattern in chapter_patterns)
+                                # Verificar si la línea coincide con algún patrón de sección
+                                is_section = any(pattern in line_text.upper() for pattern in section_patterns)
+                                
+                                if is_chapter:
+                                    # Procesar líneas adicionales para capítulos
+                                    additional_lines = []
+                                    for _ in range(chapter_lines):
+                                        i += 1
+                                        if i < len(blocks) and "lines" in blocks[i]:
+                                            for add_line in blocks[i]["lines"]:
+                                                if "spans" in add_line:
+                                                    add_text = " ".join(span.get("text", "").strip() for span in add_line["spans"])
+                                                    if add_text:
+                                                        additional_lines.append(add_text)
+                                    
+                                    if additional_lines:
+                                        html_content += f"<h2>{line_text}: {' '.join(additional_lines)}</h2>\n"
                                     else:
-                                        html_content += f"<p>{text.strip()}</p>\n"
-                doc.close()
-
-                html_content += "</body>\n</html>"
-                
-                logger.info("Conversión de PDF completada exitosamente")
-                response = HttpResponse(html_content, content_type='text/html')
-                response['Content-Disposition'] = f'attachment; filename="{os.path.splitext(pdf_file.name)[0]}.html"'
-                return response
-                
-            except Exception as e:
-                logger.error(f"Error durante la conversión del PDF: {str(e)}")
-                return HttpResponse(f"Error durante la conversión: {str(e)}", status=500)
-            finally:
-                os.unlink(temp_pdf_path)
-                logger.info("Archivo temporal eliminado")
-        else:
-            logger.warning("No se encontró el archivo PDF en la solicitud")
-    else:
-        logger.warning(f"Método no permitido: {request.method}")
+                                        html_content += f"<h2>{line_text}</h2>\n"
+                                    current_line = []
+                                
+                                elif is_section:
+                                    # Procesar líneas adicionales para secciones
+                                    additional_lines = []
+                                    for _ in range(section_lines):
+                                        i += 1
+                                        if i < len(blocks) and "lines" in blocks[i]:
+                                            for add_line in blocks[i]["lines"]:
+                                                if "spans" in add_line:
+                                                    add_text = " ".join(span.get("text", "").strip() for span in add_line["spans"])
+                                                    if add_text:
+                                                        additional_lines.append(add_text)
+                                    
+                                    if additional_lines:
+                                        html_content += f"<h3>{line_text}: {' '.join(additional_lines)}</h3>\n"
+                                    else:
+                                        html_content += f"<h3>{line_text}</h3>\n"
+                                    current_line = []
+                                
+                                else:
+                                    # Si no es título, procesar cada span individualmente
+                                    html_content += "<p>"
+                                    for span in line["spans"]:
+                                        text = span.get("text", "").strip()
+                                        if not text:
+                                            continue
+                                        
+                                        font = span.get("font", "").lower()
+                                        # Detectar negrillas
+                                        if any(bold in font for bold in ['bold', 'negrita', 'negrita']):
+                                            text = f"<strong>{text}</strong>"
+                                        html_content += text + " "
+                                    html_content += "</p>\n"
+                    i += 1
+            
+            doc.close()
+            html_content += "</body>\n</html>"
+            
+            response = HttpResponse(html_content, content_type='text/html')
+            response['Content-Disposition'] = f'attachment; filename="{os.path.splitext(pdf_file.name)[0]}.html"'
+            return response
+            
+        except Exception as e:
+            return HttpResponse(f"Error durante la conversión: {str(e)}", status=500)
+        finally:
+            os.unlink(temp_pdf_path)
     
     return HttpResponse("Error: No se proporcionó ningún archivo PDF", status=400)
 
@@ -296,8 +355,14 @@ def convert_html(request):
                         if text and element not in processed_elements:
                             markdown_content.append(text)
                             processed_elements.add(element)
+                        elif not text and element not in processed_elements:
+                            markdown_content.append("")  # Agregar línea vacía
+                            processed_elements.add(element)
                 
-                final_content = "\n\n".join(markdown_content)
+                # Unir el contenido preservando líneas vacías
+                final_content = "\n".join(markdown_content)
+                # Asegurar que no haya más de dos líneas vacías consecutivas
+                # final_content = re.sub(r'\n{3,}', '\n\n', final_content)
                 
                 logger.info("Conversión de HTML completada exitosamente")
                 response = HttpResponse(final_content, content_type='text/markdown')
