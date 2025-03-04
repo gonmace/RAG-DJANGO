@@ -3,152 +3,187 @@
 
 <!DOCTYPE html>
 <html lang="es" data-theme="mytheme">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {% block meta %}
-        {% endblock %}
+    {% block meta %}
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    {% endblock %}
 
-        {% block css %}
-        {% endblock css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-        {% block javascript_top %}
-        {% endblock javascript_top %}
+    {% block css %}
 
-        <title>{% block title %}{% endblock %}</title>
-    </head>
+    {% endblock %}
 
-    <body class="{% block body_class %}{% endblock %}">
-        <!-- Barra de navegación superior -->
-        <nav class="bg-primary p-4 flex justify-between items-center fixed w-full z-10">
-            <div class="flex items-center">
-                <span class="text-xl font-bold">LOGO</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="relative">
-                    <i class="fas fa-bell text-xl"></i>
-                    {% if notifications_count %}
-                    <span class="absolute -top-2 -right-2 bg-warning text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                        {{ notifications_count }}
-                    </span>
-                    {% endif %}
-                </div>
-                <div class="flex items-center gap-2">
-                    {% if user.is_authenticated %}
-                        <img src="{% static 'images/default-avatar.png' %}" alt="Avatar" class="w-8 h-8 rounded-full">
-                        <span>{{ user.get_full_name|default:user.username }}</span>
-                    {% endif %}
-                </div>
-            </div>
-        </nav>
+    {% block javascript_top %}
 
-        <!-- Navegación lateral -->
-        <div class="flex">
-            <nav class="bg-neutral text-neutral-content w-64 min-h-screen fixed pt-16">
-                <div class="p-4">
-                    <div class="mb-4">
-                        <select class="w-full bg-secondary text-white p-2 rounded">
-                            <option>Proyecto Activo</option>
-                        </select>
-                    </div>
-                    
-                    <ul class="menu menu-md rounded-box max-w-xs w-full">
-                        <li>
-                            <a href="{% url 'main:panel' %}" class="{% is_active 'panel' %}">
-                                <i class="fas fa-home"></i>
-                                <span>Panel Principal</span>
-                            </a>
-                        </li>
-                        <li>
-                            <details open>
-                                <summary>
-                                    <i class="fas fa-bezier-curve"></i>
-                                    <span>Embeddings</span>
-                                </summary>
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'embeddings:crear' %}" class="{% is_active 'crear' %}">
-                                            <i class="fas fa-plus-circle"></i>
-                                            <span>Crear Embedding</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'embeddings:listar' %}" class="{% is_active 'listar' %}">
-                                            <i class="fas fa-list-ul"></i>
-                                            <span>Lista de Embeddings</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="">
-                                            <i class="fas fa-history"></i>
-                                            <span>Historial</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="hidden group-hover:block pl-6 bg-neutral-focus">
-                                <a href="{% url 'embeddings:crear' %}" class="nav-item {% is_active 'crear' %}">
-                                    <i class="fas fa-plus-circle"></i>
-                                    <span>Crear Embedding</span>
-                                </a>
-                                <a href="#" class="nav-item">
-                                    <i class="fas fa-list-ul"></i>
-                                    <span>Lista de Embeddings</span>
-                                </a>
-                                <a href="#" class="nav-item">
-                                    <i class="fas fa-history"></i>
-                                    <span>Historial</span>
-                                </a>
-                            </div>
-                        </div>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-plus"></i>
-                            <span>Nuevo Proyecto</span>
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-list"></i>
-                            <span>Lista de Proyectos</span>
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-calculator"></i>
-                            <span>Presupuesto</span>
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-cogs"></i>
-                            <span>Ejecución</span>
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Monitoreo</span>
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-cog"></i>
-                            <span>Administración</span>
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fas fa-user"></i>
-                            <span>Mi Cuenta</span>
-                        </a>
-                    </ul>
-                </div>
-            </nav>
+    {% endblock %}
 
-            <!-- Contenido principal -->
-            <main class="flex-1 ml-64">
-                <div class="p-6">
-                    {% block content %}
-                    {% endblock content %}
-                </div>
-            </main>
+    <title>
+      {% block title %}
+
+      {% endblock %}
+    </title>
+  </head>
+
+  <body class="{% block body_class %}
+
+    {% endblock %}">
+    <!-- Barra de navegación superior -->
+    <nav class="bg-primary p-4 flex justify-between items-center fixed w-full z-10">
+      <div class="flex items-center">
+        <span class="text-xl font-bold">LOGO</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <i class="fas fa-bell text-xl"></i>
+          {% if notifications_count %}
+            <span class="absolute -top-2 -right-2 bg-warning text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">{{ notifications_count }}</span>
+          {% endif %}
         </div>
+        <div class="flex items-center gap-2">
+          {% if user.is_authenticated %}
+            <img src="{% static 'images/default-avatar.png' %}" alt="Avatar" class="w-8 h-8 rounded-full" />
+            <span>{{ user.get_full_name|default:user.username }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
 
-        {% block js %}
-        {% endblock js %}
-    </body>
+    <!-- Navegación lateral -->
+    <div class="flex">
+      <nav class="bg-neutral text-neutral-content w-64 min-h-screen fixed pt-16">
+        <div class="p-4">
+          <div class="mb-4">
+            <select class="w-full bg-secondary text-white p-2 rounded">
+              <option>Proyecto Activo</option>
+            </select>
+          </div>
+
+          <ul class="menu menu-md rounded-box max-w-xs w-full">
+            <li>
+              <a href="{% url 'main:panel' %}" class="{% is_active 'panel' %}">
+                <i class="fas fa-home"></i>
+                <span>Panel Principal</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'converttext:convert_text' %}" class="{% is_active 'convert_text' %}">
+                {% include 'icons/md.html' %}
+                <span>Convertir a Markdown</span>
+              </a>
+            </li>
+            <li>
+              <details open>
+                <summary>
+                  {% include 'icons/split.html' %}
+                  <span>Split Text</span>
+                </summary>
+                <ul>
+                  <li>
+                    <a href="{% url 'embeddings:crear' %}" class="{% is_active 'crear' %}">
+                      <i class="fas fa-list-ul"></i>
+                      <span>Generar Split</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{% url 'embeddings:listar' %}" class="{% is_active 'listar' %}">
+                      <i class="fas fa-list-ul"></i>
+                      <span>Lista de Embeddings</span>
+                    </a>
+                  </li>
+                </ul>
+              </details>
+            </li>
+            <li>
+              <details open>
+                <summary>
+                  <i class="fas fa-bezier-curve"></i>
+                  <span>Embeddings</span>
+                </summary>
+                <ul>
+                  <li>
+                    <a href="{% url 'embeddings:crear' %}" class="{% is_active 'crear' %}">
+                      <i class="fas fa-plus-circle"></i>
+                      <span>Crear Embedding</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{% url 'embeddings:listar' %}" class="{% is_active 'listar' %}">
+                      <i class="fas fa-list-ul"></i>
+                      <span>Lista de Embeddings</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="">
+                      <i class="fas fa-history"></i>
+                      <span>Historial</span>
+                    </a>
+                  </li>
+                </ul>
+              </details>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <i class="fas fa-plus"></i>
+                <span>Nuevo Proyecto</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <i class="fas fa-list"></i>
+                <span>Lista de Proyectos</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <i class="fas fa-calculator"></i>
+                <span>Presupuesto</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <i class="fas fa-cogs"></i>
+                <span>Ejecución</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Monitoreo</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Administración</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Mi Cuenta</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Contenido principal -->
+      <main class="flex-1 ml-64">
+        <div class="p-6">
+          {% block content %}
+
+          {% endblock %}
+        </div>
+      </main>
+    </div>
+
+    {% block js %}
+
+    {% endblock %}
+  </body>
 </html>
-
-

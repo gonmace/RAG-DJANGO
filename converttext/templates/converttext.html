@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load tailwind_tags %}
+
+{% block css %}
+  {% tailwind_css %}
+  <!-- Importación de Font Awesome para iconografía -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- PDF a HTML -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-file-pdf text-red-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">PDF a HTML</h2>
+          </div>
+          <form action="{% url 'converttext:convert_pdf' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-red-500 cursor-pointer hover:bg-red-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="pdf-filename">Seleccionar archivo PDF</span>
+                <input type="file" name="pdf_file" class="hidden" accept=".pdf" required onchange="updateFilename(this, 'pdf-filename')" />
+              </label>
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Títulos (h2):</label>
+              <input type="text" name="h2_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: TÍTULO, CAPÍTULO, SECCIÓN (separados por comas)" />
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Líneas a incluir para h2:</label>
+              <input type="number" name="h2_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="1" min="0" max="10" />
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Subtítulos (h3):</label>
+              <input type="text" name="h3_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: ARTÍCULO, SECCIÓN, SUBSECCIÓN (separados por comas)" />
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Líneas a incluir para h3:</label>
+              <input type="number" name="h3_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="1" min="0" max="10" />
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300">Convertir a HTML</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ePub a Markdown -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-book text-purple-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">ePub a Markdown</h2>
+          </div>
+          <form action="{% url 'converttext:convert_epub' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-purple-500 cursor-pointer hover:bg-purple-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="epub-filename">Seleccionar archivo ePub</span>
+                <input type="file" name="epub_file" class="hidden" accept=".epub" required onchange="updateFilename(this, 'epub-filename')" />
+              </label>
+            </div>
+            <button type="submit" class="w-full bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-600 transition-colors duration-300">Convertir a Markdown</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- HTML a Markdown -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-code text-green-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">HTML a Markdown</h2>
+          </div>
+          <form action="{% url 'converttext:convert_html' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-green-500 cursor-pointer hover:bg-green-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="html-filename">Seleccionar archivo HTML</span>
+                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-filename')" />
+              </label>
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Título:</label>
+              <input type="text" name="title_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ingrese el título del libro" />
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Secciones Especiales (Glosario, Índice, etc.):</label>
+              <input type="text" name="special_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Selector CSS (ej: div.chapter h3)" />
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Capítulos:</label>
+              <input type="text" name="chapter_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Selector CSS (ej: h1[id^='heading_id_'])" />
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Secciones:</label>
+              <input type="text" name="section_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Selector CSS (ej: div.chapter h2)" />
+            </div>
+
+            <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors duration-300">Convertir a Markdown</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateFilename(input, elementId) {
+      const filename = input.files[0]?.name
+      const element = document.getElementById(elementId)
+      if (filename) {
+        element.textContent = filename
+      } else {
+        element.textContent = `Seleccionar archivo ${input.accept.split('.')[1].toUpperCase()}`
+      }
+    }
+  </script>
+{% endblock %}

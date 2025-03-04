@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('embeddings/', include('embeddings.urls')),
+    path('convert/', include('converttext.urls')),
 ]
 
 if settings.DEBUG:

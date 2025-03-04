@@ -9,61 +9,35 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-
-  <!-- https://freesvgicons.com/search?q=patagra -->
-    <!-- Card estilo iOS para abrir el modal -->
-    <div class="flex justify-center mb-6">
+    <!-- Cards container -->
+    <div class="flex flex-wrap justify-center gap-6 mb-6">
+        <!-- Card estilo iOS para abrir el modal -->
         <div onclick="modal_crear.showModal()" 
              class="w-64 bg-white rounded-2xl p-4 shadow-card">
             <div class="bg-primary/10 p-3 rounded-xl">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512"><path fill="currentColor" d="M0 462h256v-64H0v64zm0-106.7h512v-64H0v64zm0-106.6h512v-64H0v64zM0 78v64h512V78H0z"/></svg>
             </div>
             <div>
-                <h3 class="font-semibold"> Embedding</h3>
-                <p class="text-md text-secondary">Para párrafos</p>
+                <h3 class="font-semibold">Párrafos</h3>
+                <p class="text-md text-secondary">Simple texto con metadatos</p>
+            </div>
+        </div>
+
+        <!-- New Card for TikToken -->
+        <div onclick="modal_tiktoken.showModal()" 
+             class="w-64 bg-white rounded-2xl p-4 shadow-card">
+            <div class="bg-primary/10 p-3 rounded-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512"><path fill="currentColor" d="M0 462h256v-64H0v64zm0-106.7h512v-64H0v64zm0-106.6h512v-64H0v64zM0 78v64h512V78H0z"/></svg>
+            </div>
+            <div>
+                <h3 class="font-semibold">TikToken</h3>
+                <p class="text-md text-secondary">Texto con opción de TikToken</p>
             </div>
         </div>
     </div>
 
     <!-- Modal -->
-    <dialog id="modal_crear" class="modal">
-      <div class="modal-box bg-base-200">
-          <h2 class="text-2xl font-bold mb-6 text-center">Embedding - Párrafo</h2>
-          
-          {% if messages %}
-              {% for message in messages %}
-                  <div class="alert alert-success mb-4">
-                      {{ message }}
-                  </div>
-              {% endfor %}
-          {% endif %}
-    
-          <form method="POST" class="space-y-4">
-              {% csrf_token %}
-                  {{ form.texto }}
-    
-                  {% if form.texto.errors %}
-                      <div class="text-error text-sm mt-1">
-                          {{ form.texto.errors }}
-                      </div>
-                  {% endif %}
-              
-                  {{ form.metadatos }}
-    
-                  {% if form.metadatos.errors %}
-                      <div class="text-error text-sm mt-1">
-                          {{ form.metadatos.errors }}
-                      </div>
-                  {% endif %}
-    
-                  <div class="modal-action">
-                      <button type="submit" >
-                          Crear Embedding
-                      </button>
-                      <button type="button" class="btn" onclick="modal_crear.close()">Cerrar</button>
-                  </div>
-          </form>
-      </div>
-    </dialog>
+    {% include "modals/m_parrafo.html" %}
+    {% include "modals/m_tiktoken.html" %}
 </div>
 {% endblock content %}

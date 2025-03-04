@@ -9,8 +9,9 @@ class EmbeddingForm(forms.Form):
         })
     )
     metadatos = forms.CharField(
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'input w-full',
-            'placeholder': 'Metadatos --> {"source": "news"}'
+            'placeholder': 'Metadatos (opcional) --> {"source": "news"}'
         })
     )

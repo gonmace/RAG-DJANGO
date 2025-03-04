@@ -3,17 +3,28 @@
 
 {% block css %}
     {% tailwind_css %}
+    <!-- Importación de Font Awesome para iconografía -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock css %}
 
 {% block content %}
+<!-- Token CSRF requerido para operaciones POST -->
+{% csrf_token %}
 <div class="container mx-auto px-4 py-8">
+    <!-- Header: Título y controles de gestión -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Lista de Embeddings</h1>
-        <a href="{% url 'embeddings:crear' %}" class="btn btn-primary">
-            Crear Nuevo
-        </a>
+        <div class="flex items-center gap-4">
+            <!-- Control de eliminación masiva -->
+            <button id="deleteSelected" class="text-red-500 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i class="fas fa-trash"></i>
+            </button>
+            <!-- Control de selección masiva -->
+            <input type="checkbox" id="selectAll" class="checkbox checkbox-sm border-black" />
+        </div>
     </div>
 
+    <!-- Sistema de notificaciones -->
     {% if messages %}
         {% for message in messages %}
             <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} mb-4">
@@ -22,32 +33,217 @@
         {% endfor %}
     {% endif %}
 
+    <!-- Contenedor principal de la lista de embeddings -->
     <div class="grid gap-4">
         {% for doc in documents %}
-            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <!-- Tarjeta de embedding individual -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow" data-doc-id="{{ doc.id }}">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
-                        <p class="text-sm text-gray-500 mb-2">ID: {{ doc.id }}</p>
-                        <div class="prose max-w-none">
-                            <p>{{ doc.text }}</p>
+                        <!-- Cabecera de la tarjeta con ID y controles -->
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm text-gray-500">ID: {{ doc.id }}</p>
+                                {% if doc.metadata %}
+                                    <p class="text-sm text-gray-500">Metadatos: {{ doc.metadata|pprint }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <!-- Controles de edición y selección -->
+                                <button class="edit-btn text-warning hover:text-warning/50">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <input type="checkbox" class="checkbox-child checkbox checkbox-sm border-black" data-id="{{ doc.id }}" />
+                            </div>
+                        </div>
+                        <!-- Contenedor del contenido principal -->
+                        <div class="max-w-none">
+                            <!-- Modo visualización -->
+                            <div class="view-mode">
+                                <p class="mb-0">{{ doc.text }}</p>
+                            </div>
+                            <!-- Modo edición con formulario -->
+                            <div class="edit-mode hidden">
+                                <!-- Campo de texto principal -->
+                                <textarea class="w-full border rounded-md text-edit">{{ doc.text }}</textarea>
+                                <!-- Campo de metadatos -->
+                                {% if doc.metadata %}
+                                    <input type="text" class="w-full p-2 border rounded-md mb-2 metadata-edit" value="{{ doc.metadata|pprint }}">
+                                {% else %}
+                                    <input type="text" class="w-full p-2 border rounded-md mb-2 metadata-edit" value="{}">
+                                {% endif %}
+                                <!-- Botones de acción -->
+                                <div class="flex justify-end gap-2">
+                                    <button class="save-btn btn btn-success">
+                                        Aplicar cambios
+                                    </button>
+                                    <button class="cancel-btn btn btn-error">
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- Sección de metadatos -->
                 {% if doc.metadata %}
-                    <div class="mt-4 pt-4 border-t">
-                        <h4 class="text-sm font-semibold text-gray-600 mb-2">Metadatos:</h4>
-                        <pre class="bg-gray-50 rounded p-2 text-sm">{{ doc.metadata|pprint }}</pre>
+                    <div class="mt-4 pt-4 border-t view-mode hidden">
+                        <p class="text-sm font-semibold text-gray-600 mb-2">Metadatos: <span class="bg-base-100 rounded p-2 text-sm">{{ doc.metadata|pprint }}</span></p>
                     </div>
                 {% endif %}
             </div>
         {% empty %}
+            <!-- Mensaje cuando no hay datos -->
             <div class="text-center py-8">
                 <p class="text-gray-500">No hay embeddings almacenados.</p>
-                <a href="{% url 'embeddings:crear' %}" class="btn btn-primary mt-4">
-                    Crear el Primer Embedding
-                </a>
             </div>
         {% endfor %}
     </div>
 </div>
-{% endblock content %} 
+
+<script>
+/**
+ * Inicialización y configuración de la funcionalidad interactiva
+ * @event DOMContentLoaded
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Referencias a elementos DOM principales
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const childCheckboxes = document.querySelectorAll('.checkbox-child');
+    const deleteButton = document.getElementById('deleteSelected');
+
+    /**
+     * Actualiza el estado del botón de eliminación basado en las selecciones
+     * @function updateDeleteButtonState
+     * @returns {void}
+     */
+    function updateDeleteButtonState() {
+        const someChecked = Array.from(childCheckboxes).some(cb => cb.checked);
+        deleteButton.disabled = !someChecked;
+    }
+
+    // Event Listeners para el checkbox principal
+    selectAllCheckbox.addEventListener('change', function() {
+        childCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        updateDeleteButtonState();
+    });
+
+    // Event Listeners para checkboxes individuales
+    childCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(childCheckboxes).every(cb => cb.checked);
+            const someChecked = Array.from(childCheckboxes).some(cb => cb.checked);
+            
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+            updateDeleteButtonState();
+        });
+    });
+
+    /**
+     * Maneja la eliminación masiva de embeddings
+     * @event click
+     */
+    deleteButton.addEventListener('click', function() {
+        if (confirm('¿Estás seguro de que deseas eliminar los elementos seleccionados?')) {
+            const selectedIds = Array.from(childCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.dataset.id);
+            
+            // Petición AJAX para eliminación
+            fetch('{% url "embeddings:eliminar" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: 'ids=' + selectedIds.join('&ids=')
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                return response.json();
+            })
+            .then(data => window.location.reload())
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un error al eliminar los elementos seleccionados');
+            });
+        }
+    });
+
+    // Configuración de la funcionalidad de edición
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const container = this.closest('[data-doc-id]');
+            container.querySelector('.view-mode').classList.add('hidden');
+            container.querySelector('.edit-mode').classList.remove('hidden');
+        });
+    });
+
+    // Manejadores para cancelar edición
+    document.querySelectorAll('.cancel-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const container = this.closest('[data-doc-id]');
+            container.querySelector('.edit-mode').classList.add('hidden');
+            container.querySelector('.view-mode').classList.remove('hidden');
+        });
+    });
+
+    /**
+     * Maneja la actualización de embeddings
+     * @event click
+     */
+    document.querySelectorAll('.save-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const container = this.closest('[data-doc-id]')
+            const docId = container.dataset.docId;
+            const newText = container.querySelector('.text-edit').value;
+            const metadata = container.querySelector('.metadata-edit').value;
+
+            // Convertir las comillas simples a dobles para tener un JSON válido
+            const metadataFixed = metadata.replace(/'/g, '"');
+            
+            let newMetadata;
+            // Validación de JSON
+            try {
+                newMetadata = JSON.parse(metadataFixed);
+            } catch (e) {
+                alert('El formato de los metadatos debe ser JSON válido');
+                return;
+            }
+
+            // Petición AJAX para actualización
+            fetch('/embeddings/actualizar/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    id: docId,
+                    text: newText,
+                    metadata: newMetadata
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Error al actualizar el embedding');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un error al actualizar el embedding');
+            });
+        });
+    });
+});
+</script>
+{% endblock content %}

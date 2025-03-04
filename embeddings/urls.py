@@ -3,6 +3,8 @@ from . import views
 
 app_name = 'embeddings'
 urlpatterns = [
-    path('crear/', views.crear_embedding, name='crear'),
+    path('crear/', views.add_document, name='crear'),
     path('listar/', views.listar_embeddings, name='listar'),
+    path('eliminar/', views.eliminar_embeddings, name='eliminar'),
+    path('actualizar/', views.actualizar_embedding, name='actualizar'),
 ]
