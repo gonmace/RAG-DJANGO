@@ -9,7 +9,28 @@
 
 {% block content %}
   <div class="container mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Ebook a HTML -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-book text-orange-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">Ebook a HTML</h2>
+          </div>
+          <form action="{% url 'converttext:convert_epub' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-orange-500 cursor-pointer hover:bg-orange-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="epub-filename">Seleccionar archivo EPUB</span>
+                <input type="file" name="epub_file" class="hidden" accept=".epub" required onchange="updateFilename(this, 'epub-filename')" />
+              </label>
+            </div>
+            <button type="submit" class="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors duration-300">Convertir a HTML</button>
+          </form>
+        </div>
+      </div>
+
       <!-- PDF a HTML -->
       <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
         <div class="p-6">
@@ -26,55 +47,162 @@
                 <input type="file" name="pdf_file" class="hidden" accept=".pdf" required onchange="updateFilename(this, 'pdf-filename')" />
               </label>
             </div>
-
-            <div class="form-group mt-3">
-              <div class="flex gap-4">
-                <div class="flex-grow">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Capítulos (h2):</label>
-                  <input type="text" name="chapter_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: CAPÍTULO, TÍTULO, SECCIÓN (separados por comas)" />
-                </div>
-                <div class="w-24">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Líneas:</label>
-                  <input type="number" name="chapter_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="0" min="0" max="10" />
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group mt-3">
-              <div class="flex gap-4">
-                <div class="flex-grow">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Patrones de Secciones (h3):</label>
-                  <input type="text" name="section_patterns" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: ARTÍCULO, SUBSECCIÓN, PUNTO (separados por comas)" />
-                </div>
-                <div class="w-24">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Líneas:</label>
-                  <input type="number" name="section_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="0" min="0" max="10" />
-                </div>
-              </div>
-            </div>
-
             <button type="submit" class="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors duration-300">Convertir a HTML</button>
           </form>
         </div>
       </div>
 
-      <!-- ePub a Markdown -->
+      <!-- Espacio vacío en la primera fila -->
+      <div class="hidden lg:block"></div>
+
+      <!-- Procesar Títulos -->
       <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
         <div class="p-6">
           <div class="flex items-center mb-4">
-            <i class="fas fa-book text-purple-500 text-3xl mr-3"></i>
-            <h2 class="text-xl font-semibold">ePub a Markdown</h2>
+            <i class="fas fa-heading text-blue-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">Procesar Títulos</h2>
           </div>
-          <form action="{% url 'converttext:convert_epub' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+          <form action="{% url 'converttext:process_titles' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-blue-500 cursor-pointer hover:bg-blue-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="html-title-filename">Seleccionar archivo HTML</span>
+                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-title-filename')" />
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Palabras clave para títulos:</label>
+              <input type="text" name="title_keywords" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: TÍTULO, CAPÍTULO (separados por comas)" required />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Líneas:</label>
+                <input type="number" name="additional_lines" class="w-full px-3 py-2 border rounded-lg text-sm" value="0" min="0" max="5" />
+              </div>
+
+              <div class="form-group">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Etiqueta HTML:</label>
+                <select name="html_tag" class="w-full px-3 py-2 border rounded-lg text-sm">
+                  <option value="h1">h1</option>
+                  <option value="h2" selected>h2</option>
+                  <option value="h3">h3</option>
+                  <option value="h4">h4</option>
+                  <option value="h5">h5</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300">Procesar Títulos</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Cambiar Etiquetas -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-tags text-purple-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">Cambiar Etiquetas</h2>
+          </div>
+          <form action="{% url 'converttext:change_tags' %}" method="post" enctype="multipart/form-data" class="space-y-4">
             {% csrf_token %}
             <div class="flex items-center justify-center w-full">
               <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-purple-500 cursor-pointer hover:bg-purple-500 hover:text-white">
                 <i class="fas fa-cloud-upload-alt text-2xl"></i>
-                <span class="mt-2 text-base" id="epub-filename">Seleccionar archivo ePub</span>
-                <input type="file" name="epub_file" class="hidden" accept=".epub" required onchange="updateFilename(this, 'epub-filename')" />
+                <span class="mt-2 text-base" id="html-tags-filename">Seleccionar archivo HTML</span>
+                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-tags-filename')" />
               </label>
             </div>
-            <button type="submit" class="w-full bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-600 transition-colors duration-300">Convertir a Markdown</button>
+
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Palabra clave:</label>
+              <input type="text" name="keyword" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Palabra clave para buscar" required />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Inicial:</label>
+                <select name="source_tag" class="w-full px-3 py-2 border rounded-lg text-sm">
+                  <option value="h1">h1</option>
+                  <option value="h2" selected>h2</option>
+                  <option value="h3">h3</option>
+                  <option value="h4">h4</option>
+                  <option value="h5">h5</option>
+                  <option value="p">p</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Final:</label>
+                <select name="target_tag" class="w-full px-3 py-2 border rounded-lg text-sm">
+                  <option value="h1">h1</option>
+                  <option value="h2">h2</option>
+                  <option value="h3">h3</option>
+                  <option value="h4">h4</option>
+                  <option value="h5">h5</option>
+                  <option value="p" selected>p</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-600 transition-colors duration-300">Cambiar Etiquetas</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Agregar Saltos de Línea -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-paragraph text-green-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">Agregar Saltos de Línea</h2>
+          </div>
+          <form action="{% url 'converttext:add_line_breaks' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-green-500 cursor-pointer hover:bg-green-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="html-breaks-filename">Seleccionar archivo HTML</span>
+                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-breaks-filename')" />
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Caracteres mínimos:</label>
+              <input type="number" name="min_chars" class="w-full px-3 py-2 border rounded-lg text-sm" value="100" min="1" />
+            </div>
+
+            <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors duration-300">Agregar Saltos</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Agrupar Párrafos -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-object-group text-yellow-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">Agrupar Párrafos</h2>
+          </div>
+          <form action="{% url 'converttext:group_paragraphs' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-yellow-500 cursor-pointer hover:bg-yellow-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="html-group-filename">Seleccionar archivo HTML</span>
+                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-group-filename')" />
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Caracteres máximos:</label>
+              <input type="number" name="max_chars" class="w-full px-3 py-2 border rounded-lg text-sm" value="500" min="1" />
+            </div>
+
+            <button type="submit" class="w-full bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-300">Agrupar Párrafos</button>
           </form>
         </div>
       </div>
@@ -83,40 +211,20 @@
       <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
         <div class="p-6">
           <div class="flex items-center mb-4">
-            <i class="fas fa-code text-green-500 text-3xl mr-3"></i>
+            <i class="fas fa-code text-indigo-500 text-3xl mr-3"></i>
             <h2 class="text-xl font-semibold">HTML a Markdown</h2>
           </div>
           <form action="{% url 'converttext:convert_html' %}" method="post" enctype="multipart/form-data" class="space-y-4">
             {% csrf_token %}
             <div class="flex items-center justify-center w-full">
-              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-green-500 cursor-pointer hover:bg-green-500 hover:text-white">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-indigo-500 cursor-pointer hover:bg-indigo-500 hover:text-white">
                 <i class="fas fa-cloud-upload-alt text-2xl"></i>
-                <span class="mt-2 text-base" id="html-filename">Seleccionar archivo HTML</span>
-                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-filename')" />
+                <span class="mt-2 text-base" id="html-md-filename">Seleccionar archivo HTML</span>
+                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-md-filename')" />
               </label>
             </div>
 
-            <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Título:</label>
-              <input type="text" name="title_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ingrese el título del libro" />
-            </div>
-
-            <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Secciones Especiales (Glosario, Índice, etc.):</label>
-              <input type="text" name="special_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Selector CSS (ej: div.chapter h3)" />
-            </div>
-
-            <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Capítulos:</label>
-              <input type="text" name="chapter_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Selector CSS (ej: h1[id^='heading_id_'])" />
-            </div>
-
-            <div class="form-group mt-3">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Secciones:</label>
-              <input type="text" name="section_selector" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Selector CSS (ej: div.chapter h2)" />
-            </div>
-
-            <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors duration-300">Convertir a Markdown</button>
+            <button type="submit" class="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition-colors duration-300">Convertir a Markdown</button>
           </form>
         </div>
       </div>
