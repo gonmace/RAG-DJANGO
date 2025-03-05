@@ -11,4 +11,6 @@ urlpatterns = [
     path('change_tags/', views.change_tags, name='change_tags'),
     path('add_line_breaks/', views.add_line_breaks, name='add_line_breaks'),
     path('group_paragraphs/', views.group_paragraphs, name='group_paragraphs'),
+    path('eliminar-lineas/', views.eliminar_lineas_view, name='eliminar_lineas'),
+    path('remove-duplicate-lines/', views.remove_duplicate_lines, name='remove_duplicate_lines'),
 ]

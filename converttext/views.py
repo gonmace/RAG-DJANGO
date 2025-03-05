@@ -13,10 +13,13 @@ import fitz  # PyMuPDF
 from .services import (
     pdf_a_html,
     procesar_titulos,
-    procesar_archivo_html,
+    cambiar_etiquetas,
     agregar_saltos_linea,
     agrupar_parrafos,
-    html_a_markdown
+    html_a_markdown,
+    eliminar_lineas,
+    procesar_saltos_linea,
+    eliminar_duplicados
 )
 
 logger = logging.getLogger(__name__)
@@ -211,7 +214,7 @@ def change_tags(request):
         html_file = request.FILES['html_file']
         source_tag = request.POST.get('source_tag')
         target_tag = request.POST.get('target_tag')
-        keyword = request.POST.get('keyword', '')
+        keywords = [keyword.strip() for keyword in request.POST.get('keyword', '').split(',')]
         
         with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as temp_html:
             for chunk in html_file.chunks():
@@ -224,7 +227,7 @@ def change_tags(request):
                 temp_output_path = temp_output.name
             
             # Cambiar etiquetas
-            procesar_archivo_html(temp_html_path, temp_output_path, [keyword], source_tag, target_tag)
+            cambiar_etiquetas(temp_html_path, temp_output_path, keywords, source_tag, target_tag)
             
             # Leer el contenido procesado
             with open(temp_output_path, 'r', encoding='utf-8') as f:
@@ -247,7 +250,7 @@ def change_tags(request):
 def add_line_breaks(request):
     if request.method == 'POST' and request.FILES.get('html_file'):
         html_file = request.FILES['html_file']
-        min_chars = int(request.POST.get('min_chars', 100))
+        keywords = [keyword.strip() for keyword in request.POST.get('keywords', '').split(',')]
         
         with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as temp_html:
             for chunk in html_file.chunks():
@@ -260,7 +263,7 @@ def add_line_breaks(request):
                 temp_output_path = temp_output.name
             
             # Agregar saltos de línea
-            agregar_saltos_linea(temp_html_path, temp_output_path, min_chars)
+            procesar_saltos_linea(temp_html_path, temp_output_path, keywords)
             
             # Leer el contenido procesado
             with open(temp_output_path, 'r', encoding='utf-8') as f:
@@ -283,7 +286,6 @@ def add_line_breaks(request):
 def group_paragraphs(request):
     if request.method == 'POST' and request.FILES.get('html_file'):
         html_file = request.FILES['html_file']
-        max_chars = int(request.POST.get('max_chars', 500))
         
         with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as temp_html:
             for chunk in html_file.chunks():
@@ -296,7 +298,7 @@ def group_paragraphs(request):
                 temp_output_path = temp_output.name
             
             # Agrupar párrafos
-            agrupar_parrafos(temp_html_path, temp_output_path, max_chars)
+            agrupar_parrafos(temp_html_path, temp_output_path)
             
             # Leer el contenido procesado
             with open(temp_output_path, 'r', encoding='utf-8') as f:
@@ -319,6 +321,7 @@ def group_paragraphs(request):
 def convert_html(request):
     if request.method == 'POST' and request.FILES.get('html_file'):
         html_file = request.FILES['html_file']
+        title = request.POST.get('title', '').strip()
         
         with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as temp_html:
             for chunk in html_file.chunks():
@@ -337,8 +340,18 @@ def convert_html(request):
             with open(temp_output_path, 'r', encoding='utf-8') as f:
                 markdown_content = f.read()
             
+            # Agregar el título al inicio si se proporcionó uno
+            if title:
+                markdown_content = f"# {title}\n\n{markdown_content}"
+                # Usar el título como nombre del archivo, limpiando caracteres especiales
+                filename = re.sub(r'[<>:"/\\|?*]', '_', title)
+                filename = re.sub(r'\s+', '_', filename)
+                filename = f"{filename}.md"
+            else:
+                filename = f"{os.path.splitext(html_file.name)[0]}.md"
+            
             response = HttpResponse(markdown_content, content_type='text/markdown')
-            response['Content-Disposition'] = f'attachment; filename="{os.path.splitext(html_file.name)[0]}.md"'
+            response['Content-Disposition'] = f'attachment; filename="{filename}"'
             return response
             
         except Exception as e:
@@ -348,4 +361,76 @@ def convert_html(request):
             if 'temp_output_path' in locals():
                 os.unlink(temp_output_path)
     
-    return HttpResponse("Error: No se proporcionó ningún archivo HTML", status=400) 
+    return HttpResponse("Error: No se proporcionó ningún archivo HTML", status=400)
+
+@csrf_exempt
+def eliminar_lineas_view(request):
+    if request.method == 'POST' and request.FILES.get('html_file'):
+        html_file = request.FILES['html_file']
+        texto_a_eliminar = request.POST.get('texto_a_eliminar', '').strip()
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as temp_html:
+            for chunk in html_file.chunks():
+                temp_html.write(chunk)
+            temp_html_path = temp_html.name
+
+        try:
+            # Crear un archivo temporal para la salida
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as temp_output:
+                temp_output_path = temp_output.name
+            
+            # Eliminar líneas
+            eliminar_lineas(temp_html_path, temp_output_path, texto_a_eliminar)
+            
+            # Leer el contenido procesado
+            with open(temp_output_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            response = HttpResponse(html_content, content_type='text/html')
+            response['Content-Disposition'] = f'attachment; filename="dellines_{html_file.name}"'
+            return response
+            
+        except Exception as e:
+            return HttpResponse(f"Error durante el procesamiento: {str(e)}", status=500)
+        finally:
+            os.unlink(temp_html_path)
+            if 'temp_output_path' in locals():
+                os.unlink(temp_output_path)
+    
+    return HttpResponse("Error: No se proporcionó ningún archivo HTML", status=400)
+
+@csrf_exempt
+def remove_duplicate_lines(request):
+    if request.method == 'POST' and request.FILES.get('md_file'):
+        md_file = request.FILES['md_file']
+        min_chars = int(request.POST.get('min_chars', 100))
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.md') as temp_md:
+            for chunk in md_file.chunks():
+                temp_md.write(chunk)
+            temp_md_path = temp_md.name
+
+        try:
+            # Crear un archivo temporal para la salida
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.md') as temp_output:
+                temp_output_path = temp_output.name
+            
+            # Eliminar líneas duplicadas
+            eliminar_duplicados(temp_md_path, temp_output_path, min_chars)
+            
+            # Leer el contenido procesado
+            with open(temp_output_path, 'r', encoding='utf-8') as f:
+                md_content = f.read()
+            
+            response = HttpResponse(md_content, content_type='text/markdown')
+            response['Content-Disposition'] = f'attachment; filename="{md_file.name}"'
+            return response
+            
+        except Exception as e:
+            return HttpResponse(f"Error durante la eliminación de líneas duplicadas: {str(e)}", status=500)
+        finally:
+            os.unlink(temp_md_path)
+            if 'temp_output_path' in locals():
+                os.unlink(temp_output_path)
+    
+    return HttpResponse("Error: No se proporcionó ningún archivo Markdown", status=400) 

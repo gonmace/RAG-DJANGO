@@ -61,6 +61,33 @@
       <!-- Espacio vacío en la primera fila -->
       <div class="hidden lg:block"></div>
 
+      <!-- Eliminar Líneas -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-trash-alt text-gray-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">Eliminar Líneas</h2>
+          </div>
+          <form action="{% url 'converttext:eliminar_lineas' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-gray-500 cursor-pointer hover:bg-gray-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="html-delete-filename">Seleccionar archivo HTML</span>
+                <input type="file" name="html_file" class="hidden" accept=".html,.htm" required onchange="updateFilename(this, 'html-delete-filename')" />
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Texto a eliminar:</label>
+              <input type="text" name="texto_a_eliminar" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ingrese el texto que desea eliminar" required />
+            </div>
+
+            <button type="submit" class="w-full bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300">Eliminar Líneas</button>
+          </form>
+        </div>
+      </div>
+
       <!-- Procesar Títulos -->
       <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
         <div class="p-6">
@@ -125,7 +152,7 @@
 
             <div class="form-group">
               <label class="block text-gray-700 text-sm font-bold mb-2">Palabra clave:</label>
-              <input type="text" name="keyword" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Palabra clave para buscar" required />
+              <input type="text" name="keyword" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: ARTÍCULO, SECCIÓN (separados por comas)" required />
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -177,8 +204,8 @@
             </div>
 
             <div class="form-group">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Caracteres mínimos:</label>
-              <input type="number" name="min_chars" class="w-full px-3 py-2 border rounded-lg text-sm" value="100" min="1" />
+              <label class="block text-gray-700 text-sm font-bold mb-2">Palabras clave:</label>
+              <input type="text" name="keywords" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ej: ARTÍCULO, SECCIÓN (separados por comas)" required />
             </div>
 
             <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors duration-300">Agregar Saltos</button>
@@ -203,11 +230,6 @@
               </label>
             </div>
 
-            <div class="form-group">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Caracteres máximos:</label>
-              <input type="number" name="max_chars" class="w-full px-3 py-2 border rounded-lg text-sm" value="500" min="1" />
-            </div>
-
             <button type="submit" class="w-full bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-300">Agrupar Párrafos</button>
           </form>
         </div>
@@ -230,7 +252,39 @@
               </label>
             </div>
 
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Título del documento:</label>
+              <input type="text" name="title" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Ingrese el título del documento" />
+            </div>
+
             <button type="submit" class="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition-colors duration-300">Convertir a Markdown</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Eliminar Líneas Duplicadas en Markdown -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <i class="fas fa-copy text-pink-500 text-3xl mr-3"></i>
+            <h2 class="text-xl font-semibold">Eliminar Líneas Duplicadas en Markdown</h2>
+          </div>
+          <form action="{% url 'converttext:remove_duplicate_lines' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex items-center justify-center w-full">
+              <label class="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide border border-pink-500 cursor-pointer hover:bg-pink-500 hover:text-white">
+                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                <span class="mt-2 text-base" id="md-duplicates-filename">Seleccionar archivo Markdown</span>
+                <input type="file" name="md_file" class="hidden" accept=".md" required onchange="updateFilename(this, 'md-duplicates-filename')" />
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Caracteres mínimos:</label>
+              <input type="number" name="min_chars" class="w-full px-3 py-2 border rounded-lg text-sm" value="100" min="1" />
+            </div>
+
+            <button type="submit" class="w-full bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors duration-300">Eliminar Líneas Duplicadas</button>
           </form>
         </div>
       </div>
