@@ -47,6 +47,12 @@
                 <input type="file" name="pdf_file" class="hidden" accept=".pdf" required onchange="updateFilename(this, 'pdf-filename')" />
               </label>
             </div>
+            <div class="form-group">
+              <label class="flex items-center space-x-2">
+                <input type="checkbox" name="eliminar_tablas" class="checkbox checkbox-sm border-red-500" checked />
+                <span class="text-sm text-gray-700">Eliminar tablas y convertir a párrafos</span>
+              </label>
+            </div>
             <button type="submit" class="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors duration-300">Convertir a HTML</button>
           </form>
         </div>

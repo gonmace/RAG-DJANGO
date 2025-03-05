@@ -88,6 +88,7 @@ def clean_pdf_text(text):
 def convert_pdf(request):
     if request.method == 'POST' and request.FILES.get('pdf_file'):
         pdf_file = request.FILES['pdf_file']
+        eliminar_tablas = request.POST.get('eliminar_tablas') == 'on'
         
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
             for chunk in pdf_file.chunks():
@@ -100,7 +101,7 @@ def convert_pdf(request):
                 temp_html_path = temp_html.name
             
             # Convertir PDF a HTML usando el servicio
-            pdf_a_html(temp_pdf_path, temp_html_path)
+            pdf_a_html(temp_pdf_path, temp_html_path, eliminar_tablas)
             
             # Leer el contenido HTML generado
             with open(temp_html_path, 'r', encoding='utf-8') as f:
@@ -170,7 +171,7 @@ def convert_epub(request):
 def process_titles(request):
     if request.method == 'POST' and request.FILES.get('html_file'):
         html_file = request.FILES['html_file']
-        title_keywords = request.POST.get('title_keywords', '').split(',')
+        title_keywords = [keyword.strip() for keyword in request.POST.get('title_keywords', '').split(',')]
         additional_lines = int(request.POST.get('additional_lines', 0))
         html_tag = request.POST.get('html_tag', 'h2')
         

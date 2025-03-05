@@ -1,13 +1,14 @@
 import pdfplumber
 import sys
 
-def pdf_a_html(archivo_pdf, archivo_salida):
+def pdf_a_html(archivo_pdf, archivo_salida, eliminar_tablas=True):
     """
     Convierte un archivo PDF a formato HTML usando pdfplumber.
     
     Args:
         archivo_pdf (str): Ruta del archivo PDF de entrada
         archivo_salida (str): Ruta del archivo HTML de salida
+        eliminar_tablas (bool): Si es True, convierte las tablas en párrafos. Por defecto es True.
     """
     try:
         print(f"Convirtiendo {archivo_pdf} a HTML...")
@@ -28,7 +29,7 @@ def pdf_a_html(archivo_pdf, archivo_salida):
             padding: 20px;
         }
         p {
-            margin-bottom: 1em;
+            margin-bottom: 0.5em;
         }
         h2 {
             font-size: 1.5em;
@@ -76,14 +77,25 @@ def pdf_a_html(archivo_pdf, archivo_salida):
                 tables = page.extract_tables()
                 if tables:
                     for table in tables:
-                        table_html = ["<table>"]
-                        for row in table:
-                            table_html.append("<tr>")
-                            for cell in row:
-                                table_html.append(f"<td>{cell if cell else ''}</td>")
-                            table_html.append("</tr>")
-                        table_html.append("</table>")
-                        html_content.append("\n".join(table_html))
+                        if eliminar_tablas:
+                            # Convertir cada celda en un párrafo
+                            for row in table:
+                                for cell in row:
+                                    if cell and cell.strip():
+                                        # Procesar cada línea de la celda como un párrafo separado
+                                        for line in cell.strip().split('\n'):
+                                            if line.strip():
+                                                html_content.append(f"<p>{line.strip()}</p>")
+                        else:
+                            # Mantener el formato de tabla original
+                            table_html = ["<table>"]
+                            for row in table:
+                                table_html.append("<tr>")
+                                for cell in row:
+                                    table_html.append(f"<td>{cell if cell else ''}</td>")
+                                table_html.append("</tr>")
+                            table_html.append("</table>")
+                            html_content.append("\n".join(table_html))
                 
                 # Procesar el texto línea por línea
                 if text:
@@ -97,7 +109,10 @@ def pdf_a_html(archivo_pdf, archivo_salida):
                             elif line.upper().startswith(('SECCIÓN', 'SECCION', 'ARTÍCULO', 'ARTICULO')):
                                 html_content.append(f"<h3>{line}</h3>")
                             else:
-                                html_content.append(f"<p>{line}</p>")
+                                # Procesar cada línea como un párrafo separado
+                                for subline in line.split('\n'):
+                                    if subline.strip():
+                                        html_content.append(f"<p>{subline.strip()}</p>")
 
         # Concatenar todo el HTML
         final_html = html_header + "\n".join(html_content) + "</body>\n</html>"
@@ -114,4 +129,4 @@ def pdf_a_html(archivo_pdf, archivo_salida):
 if __name__ == "__main__":
     archivo_pdf = "COD.pdf"
     archivo_salida = "salida.html"
-    pdf_a_html(archivo_pdf, archivo_salida)
+    pdf_a_html(archivo_pdf, archivo_salida, eliminar_tablas=True)
