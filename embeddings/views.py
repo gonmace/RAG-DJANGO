@@ -137,13 +137,6 @@ def split_documents_view(request):
                     if request.POST.get(f'usar_titulo{i}'):
                         niveles_seleccionados.append(i)
                 
-                # Inicializar variables
-                libro = ""
-                titulo = ""
-                capitulo = ""
-                ultimo_capitulo = ""
-                ultima_seccion = ""
-                
                 # Almacenar los metadatos
                 chunks_with_metadata = []
                 
