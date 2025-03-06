@@ -5,6 +5,8 @@ from .services import LangChainService
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+import re
+from langchain.text_splitter import MarkdownTextSplitter
 
 
 # Create your views here.
@@ -112,3 +114,78 @@ def actualizar_embedding(request):
             'success': False,
             'message': str(e)
         }, status=500)
+
+
+def split_documents_view(request):
+    if request.method == 'POST':
+        if 'file' in request.FILES:
+            file = request.FILES['file']
+            if file.name.endswith('.md'):
+                text = file.read().decode('utf-8')
+                
+                # Inicializar variables
+                libro = ""
+                titulo = ""
+                capitulo = ""
+                
+                # Almacenar los metadatos
+                chunks_with_metadata = []
+                
+                # Dividir por títulos de 4 almohadillas (capítulos)
+                # Usamos regex para mantener las almohadillas en el split
+                parts = []
+                current_part = ""
+                
+                # Procesar el texto línea por línea
+                lines = text.split('\n')
+                for line in lines:
+                    if line.startswith('####'):
+                        # Verificar si hay una quinta almohadilla en la misma línea
+                        if len(line) > 4 and line[4] == '#':
+                            current_part += '\n' + line
+                        else:
+                            if current_part:
+                                parts.append(current_part)
+                            current_part = line
+                    else:
+                        current_part += '\n' + line if current_part else line
+                
+                # Añadir la última parte
+                if current_part:
+                    parts.append(current_part)
+                
+                # Procesar cada fragmento
+                for part in parts:
+                    if part.strip():
+                        # Buscar el título del capítulo
+                        capitulo_match = re.match(r'####\s*([^#].*?)\n', part)
+                        if capitulo_match:
+                            capitulo = capitulo_match.group(1).strip()
+                            chunk = part.split('\n', 1)[1].strip() if '\n' in part else part.strip()
+                            
+                            # Buscar el libro y título correspondientes
+                            prev_text = text[:text.find(part)]
+                            libro_match = re.search(r'##\s*(.*?)(?:\n|$)', prev_text)
+                            titulo_match = re.search(r'###\s*(.*?)(?:\n|$)', prev_text)
+                            
+                            libro = libro_match.group(1).strip() if libro_match else "Sin libro"
+                            titulo = titulo_match.group(1).strip() if titulo_match else "Sin título"
+                            
+                            chunks_with_metadata.append({
+                                'libro': libro,
+                                'titulo': titulo,
+                                'capitulo': capitulo,
+                                'text': chunk
+                            })
+                
+                return render(request, 'splitters/splitters.html', {
+                    'chunks': chunks_with_metadata
+                })
+            else:
+                messages.error(request, 'Por favor, sube un archivo Markdown (.md)')
+        else:
+            messages.error(request, 'Por favor, sube un archivo')
+            
+    return render(request, 'splitters/splitters.html')
+
+
