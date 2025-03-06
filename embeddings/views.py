@@ -131,6 +131,12 @@ def split_documents_view(request):
                 titulo5_nombre = request.POST.get('titulo5_nombre', 'Sección')
                 titulo6_nombre = request.POST.get('titulo6_nombre', 'Subsección')
                 
+                # Obtener los niveles seleccionados para fragmentar
+                niveles_seleccionados = []
+                for i in range(1, 7):
+                    if request.POST.get(f'usar_titulo{i}'):
+                        niveles_seleccionados.append(i)
+                
                 # Inicializar variables
                 libro = ""
                 titulo = ""
@@ -153,17 +159,21 @@ def split_documents_view(request):
                         current_part += '\n' + line
                         continue
                     
-                    # Detectar si es un título (# a ######)
+                    # Detectar si es un título
                     if line.startswith('#'):
                         # Contar el número de # al inicio
                         nivel = len(re.match(r'^#+', line).group())
                         
-                        # Solo procesar títulos de nivel 1 a 6
-                        if nivel <= 6:
+                        if nivel in niveles_seleccionados:
+                            # Si el nivel está seleccionado, crear un nuevo fragmento
                             if current_part:
                                 parts.append(current_part)
                             current_part = line
-                            continue
+                        else:
+                            # Si el nivel no está seleccionado, mantener el título sin #
+                            titulo_sin_almohadillas = re.sub(r'^#+\s*', '', line)
+                            current_part += '\n' + titulo_sin_almohadillas if current_part else titulo_sin_almohadillas
+                        continue
                     
                     # Para cualquier otra línea, la añadimos al fragmento actual
                     current_part += '\n' + line if current_part else line
@@ -188,9 +198,13 @@ def split_documents_view(request):
                     # Obtener el contenido después del título
                     lines = part.split('\n')
                     chunk_lines = []
-                    for line in lines[1:]:  # Saltamos la primera línea que es el título
-                        if not line.startswith('#'):  # Excluimos las líneas que son títulos
-                            chunk_lines.append(line)
+                    first_line = True
+                    for line in lines:
+                        if first_line:
+                            # La primera línea es el título que inició el fragmento
+                            first_line = False
+                            continue
+                        chunk_lines.append(line)
                     chunk = '\n'.join(chunk_lines).strip()
                     
                     # Si el contenido está vacío después de eliminar espacios, saltamos este fragmento
@@ -218,46 +232,46 @@ def split_documents_view(request):
                     metadata = {}
                     
                     # Determinar el nivel actual y actualizar los metadatos
-                    if titulo1_match:
+                    if titulo1_match and 1 in niveles_seleccionados:
                         metadata['titulo1'] = titulo1_match.group(1).strip()
-                    elif titulo2_match:
-                        if ultimo_titulo1:
+                    elif titulo2_match and 2 in niveles_seleccionados:
+                        if ultimo_titulo1 and 1 in niveles_seleccionados:
                             metadata['titulo1'] = ultimo_titulo1
                         metadata['titulo2'] = titulo2_match.group(1).strip()
-                    elif titulo3_match:
-                        if ultimo_titulo1:
+                    elif titulo3_match and 3 in niveles_seleccionados:
+                        if ultimo_titulo1 and 1 in niveles_seleccionados:
                             metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2:
+                        if ultimo_titulo2 and 2 in niveles_seleccionados:
                             metadata['titulo2'] = ultimo_titulo2
                         metadata['titulo3'] = titulo3_match.group(1).strip()
-                    elif titulo4_match:
-                        if ultimo_titulo1:
+                    elif titulo4_match and 4 in niveles_seleccionados:
+                        if ultimo_titulo1 and 1 in niveles_seleccionados:
                             metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2:
+                        if ultimo_titulo2 and 2 in niveles_seleccionados:
                             metadata['titulo2'] = ultimo_titulo2
-                        if ultimo_titulo3:
+                        if ultimo_titulo3 and 3 in niveles_seleccionados:
                             metadata['titulo3'] = ultimo_titulo3
                         metadata['titulo4'] = titulo4_match.group(1).strip()
-                    elif titulo5_match:
-                        if ultimo_titulo1:
+                    elif titulo5_match and 5 in niveles_seleccionados:
+                        if ultimo_titulo1 and 1 in niveles_seleccionados:
                             metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2:
+                        if ultimo_titulo2 and 2 in niveles_seleccionados:
                             metadata['titulo2'] = ultimo_titulo2
-                        if ultimo_titulo3:
+                        if ultimo_titulo3 and 3 in niveles_seleccionados:
                             metadata['titulo3'] = ultimo_titulo3
-                        if ultimo_titulo4:
+                        if ultimo_titulo4 and 4 in niveles_seleccionados:
                             metadata['titulo4'] = ultimo_titulo4
                         metadata['titulo5'] = titulo5_match.group(1).strip()
-                    elif titulo6_match:
-                        if ultimo_titulo1:
+                    elif titulo6_match and 6 in niveles_seleccionados:
+                        if ultimo_titulo1 and 1 in niveles_seleccionados:
                             metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2:
+                        if ultimo_titulo2 and 2 in niveles_seleccionados:
                             metadata['titulo2'] = ultimo_titulo2
-                        if ultimo_titulo3:
+                        if ultimo_titulo3 and 3 in niveles_seleccionados:
                             metadata['titulo3'] = ultimo_titulo3
-                        if ultimo_titulo4:
+                        if ultimo_titulo4 and 4 in niveles_seleccionados:
                             metadata['titulo4'] = ultimo_titulo4
-                        if ultimo_titulo5:
+                        if ultimo_titulo5 and 5 in niveles_seleccionados:
                             metadata['titulo5'] = ultimo_titulo5
                         metadata['titulo6'] = titulo6_match.group(1).strip()
                     else:
