@@ -127,56 +127,112 @@ def split_documents_view(request):
                 libro = ""
                 titulo = ""
                 capitulo = ""
+                ultimo_capitulo = ""  # Nueva variable para mantener el último capítulo
                 
                 # Almacenar los metadatos
                 chunks_with_metadata = []
                 
-                # Dividir por títulos de 4 almohadillas (capítulos)
-                # Usamos regex para mantener las almohadillas en el split
+                # Inicializar variables para el procesamiento
                 parts = []
                 current_part = ""
                 
                 # Procesar el texto línea por línea
                 lines = text.split('\n')
-                for line in lines:
-                    if line.startswith('####'):
-                        # Verificar si hay una quinta almohadilla en la misma línea
-                        if len(line) > 4 and line[4] == '#':
-                            current_part += '\n' + line
-                        else:
+                for i, line in enumerate(lines):
+                    # Si la línea está vacía, tambien la agregamos al fragmento actual
+                    if not line.strip():
+                        current_part += '\n' + line
+                        continue
+                        
+                    # Si la línea comienza con #### y no con ######, hacemos una nueva división
+                    if line.startswith('####') and not line.startswith('#####'):
+                        # Verificar si la siguiente línea no vacía comienza con #####
+                        next_line = None
+                        for j in range(i + 1, len(lines)):
+                            if lines[j].strip():  # Encontrar la siguiente línea no vacía
+                                next_line = lines[j]
+                                if next_line.startswith('#####') and not next_line.startswith('######'):
+                                    # Si encontramos una línea con #####, no hacemos nada aquí
+                                    # y esperamos a que se procese esa línea
+                                    current_part += '\n'
+                                    break
+                                break
+                        
+                        # Si no encontramos una línea con #####, hacemos la división aquí
+                        if not next_line or not (next_line.startswith('#####') and not next_line.startswith('######')):
                             if current_part:
                                 parts.append(current_part)
                             current_part = line
-                    else:
-                        current_part += '\n' + line if current_part else line
-                
-                # Añadir la última parte
+                        continue
+                    
+                    # Si la línea comienza con ##### y no con ######, hacemos una nueva división
+                    if line.startswith('#####') and not line.startswith('######'):
+                        if current_part:
+                            parts.append(current_part)
+                        current_part = line
+                        continue
+                    
+                    # Para cualquier otra línea, la añadimos al fragmento actual
+                    current_part += '\n' + line if current_part else line
+
+                # Añadir la última parte si existe
                 if current_part:
                     parts.append(current_part)
-                
+
+
+
+                ppp=0
                 # Procesar cada fragmento
                 for part in parts:
-                    if part.strip():
-                        # Buscar el título del capítulo
-                        capitulo_match = re.match(r'####\s*([^#].*?)\n', part)
-                        if capitulo_match:
-                            capitulo = capitulo_match.group(1).strip()
-                            chunk = part.split('\n', 1)[1].strip() if '\n' in part else part.strip()
-                            
-                            # Buscar el libro y título correspondientes
-                            prev_text = text[:text.find(part)]
-                            libro_match = re.search(r'##\s*(.*?)(?:\n|$)', prev_text)
-                            titulo_match = re.search(r'###\s*(.*?)(?:\n|$)', prev_text)
-                            
-                            libro = libro_match.group(1).strip() if libro_match else "Sin libro"
-                            titulo = titulo_match.group(1).strip() if titulo_match else "Sin título"
-                            
-                            chunks_with_metadata.append({
-                                'libro': libro,
-                                'titulo': titulo,
-                                'capitulo': capitulo,
-                                'text': chunk
-                            })
+                    if not part.strip():
+                        continue
+                    # Buscar títulos
+                    capitulo_match = re.search(r'^####\s*([^#].*?)(?:\n|$)', part)
+                    seccion_match = re.search(r'^#####\s*([^#].*?)(?:\n|$)', part)
+                    # Si no hay ningún título válido, saltar
+                    if not capitulo_match and not seccion_match:
+                        continue
+                    
+                    # Obtener el contenido después del primer título
+                    lines = part.split('\n')
+                    chunk_lines = []
+                    for line in lines[1:]:  # Saltamos la primera línea que es el título
+                        if not line.startswith('###') and not line.startswith('##'):  # Excluimos las líneas que son títulos
+                            chunk_lines.append(line)
+                    chunk = '\n'.join(chunk_lines).strip()
+                    
+                    # Asignar capítulo y sección
+                    if capitulo_match and seccion_match:
+                        # Si tenemos ambos títulos, usamos el de 4 almohadillas como capítulo
+                        capitulo = capitulo_match.group(1).strip()
+                        ultimo_capitulo = capitulo  # Actualizamos el último capítulo
+                        seccion = seccion_match.group(1).strip()
+                    elif capitulo_match:
+                        # Si solo tenemos título de 4 almohadillas
+                        capitulo = capitulo_match.group(1).strip()
+                        ultimo_capitulo = capitulo  # Actualizamos el último capítulo
+                        seccion = "_"
+                    elif seccion_match:
+                        # Si solo tenemos título de 5 almohadillas, usamos el último capítulo
+                        capitulo = ultimo_capitulo
+                        seccion = seccion_match.group(1).strip()
+                    
+                    # Buscar el libro y título correspondientes
+                    prev_text = text[:text.find(part)]
+
+                    libro_match = re.findall(r'^##\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
+                    ultimo_libro = libro_match[-1] if libro_match else "Sin libro"
+            
+                    titulo_match = re.findall(r'^###\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
+                    ultimo_titulo = titulo_match[-1] if titulo_match else "Sin título"
+                    
+                    chunks_with_metadata.append({
+                        'libro': ultimo_libro,
+                        'titulo': ultimo_titulo,
+                        'capitulo': capitulo,
+                        'seccion': seccion,
+                        'text': chunk
+                    })
                 
                 return render(request, 'splitters/splitters.html', {
                     'chunks': chunks_with_metadata
