@@ -123,11 +123,20 @@ def split_documents_view(request):
             if file.name.endswith('.md'):
                 text = file.read().decode('utf-8')
                 
+                # Obtener los nombres personalizados de los títulos
+                titulo1_nombre = request.POST.get('titulo1_nombre', 'Documento')
+                titulo2_nombre = request.POST.get('titulo2_nombre', 'Libro')
+                titulo3_nombre = request.POST.get('titulo3_nombre', 'Título')
+                titulo4_nombre = request.POST.get('titulo4_nombre', 'Capítulo')
+                titulo5_nombre = request.POST.get('titulo5_nombre', 'Sección')
+                titulo6_nombre = request.POST.get('titulo6_nombre', 'Subsección')
+                
                 # Inicializar variables
                 libro = ""
                 titulo = ""
                 capitulo = ""
-                ultimo_capitulo = ""  # Nueva variable para mantener el último capítulo
+                ultimo_capitulo = ""
+                ultima_seccion = ""
                 
                 # Almacenar los metadatos
                 chunks_with_metadata = []
@@ -139,38 +148,22 @@ def split_documents_view(request):
                 # Procesar el texto línea por línea
                 lines = text.split('\n')
                 for i, line in enumerate(lines):
-                    # Si la línea está vacía, tambien la agregamos al fragmento actual
+                    # Si la línea está vacía, la agregamos al fragmento actual
                     if not line.strip():
                         current_part += '\n' + line
                         continue
+                    
+                    # Detectar si es un título (# a ######)
+                    if line.startswith('#'):
+                        # Contar el número de # al inicio
+                        nivel = len(re.match(r'^#+', line).group())
                         
-                    # Si la línea comienza con #### y no con ######, hacemos una nueva división
-                    if line.startswith('####') and not line.startswith('#####'):
-                        # Verificar si la siguiente línea no vacía comienza con #####
-                        next_line = None
-                        for j in range(i + 1, len(lines)):
-                            if lines[j].strip():  # Encontrar la siguiente línea no vacía
-                                next_line = lines[j]
-                                if next_line.startswith('#####') and not next_line.startswith('######'):
-                                    # Si encontramos una línea con #####, no hacemos nada aquí
-                                    # y esperamos a que se procese esa línea
-                                    current_part += '\n'
-                                    break
-                                break
-                        
-                        # Si no encontramos una línea con #####, hacemos la división aquí
-                        if not next_line or not (next_line.startswith('#####') and not next_line.startswith('######')):
+                        # Solo procesar títulos de nivel 1 a 6
+                        if nivel <= 6:
                             if current_part:
                                 parts.append(current_part)
                             current_part = line
-                        continue
-                    
-                    # Si la línea comienza con ##### y no con ######, hacemos una nueva división
-                    if line.startswith('#####') and not line.startswith('######'):
-                        if current_part:
-                            parts.append(current_part)
-                        current_part = line
-                        continue
+                            continue
                     
                     # Para cualquier otra línea, la añadimos al fragmento actual
                     current_part += '\n' + line if current_part else line
@@ -179,63 +172,109 @@ def split_documents_view(request):
                 if current_part:
                     parts.append(current_part)
 
-
-
-                ppp=0
                 # Procesar cada fragmento
                 for part in parts:
                     if not part.strip():
                         continue
-                    # Buscar títulos
-                    capitulo_match = re.search(r'^####\s*([^#].*?)(?:\n|$)', part)
-                    seccion_match = re.search(r'^#####\s*([^#].*?)(?:\n|$)', part)
-                    # Si no hay ningún título válido, saltar
-                    if not capitulo_match and not seccion_match:
-                        continue
                     
-                    # Obtener el contenido después del primer título
+                    # Buscar títulos de diferentes niveles
+                    titulo1_match = re.search(r'^#\s*([^#].*?)(?:\n|$)', part)
+                    titulo2_match = re.search(r'^##\s*([^#].*?)(?:\n|$)', part)
+                    titulo3_match = re.search(r'^###\s*([^#].*?)(?:\n|$)', part)
+                    titulo4_match = re.search(r'^####\s*([^#].*?)(?:\n|$)', part)
+                    titulo5_match = re.search(r'^#####\s*([^#].*?)(?:\n|$)', part)
+                    titulo6_match = re.search(r'^######\s*([^#].*?)(?:\n|$)', part)
+                    
+                    # Obtener el contenido después del título
                     lines = part.split('\n')
                     chunk_lines = []
                     for line in lines[1:]:  # Saltamos la primera línea que es el título
-                        if not line.startswith('###') and not line.startswith('##'):  # Excluimos las líneas que son títulos
+                        if not line.startswith('#'):  # Excluimos las líneas que son títulos
                             chunk_lines.append(line)
                     chunk = '\n'.join(chunk_lines).strip()
                     
-                    # Asignar capítulo y sección
-                    if capitulo_match and seccion_match:
-                        # Si tenemos ambos títulos, usamos el de 4 almohadillas como capítulo
-                        capitulo = capitulo_match.group(1).strip()
-                        ultimo_capitulo = capitulo  # Actualizamos el último capítulo
-                        seccion = seccion_match.group(1).strip()
-                    elif capitulo_match:
-                        # Si solo tenemos título de 4 almohadillas
-                        capitulo = capitulo_match.group(1).strip()
-                        ultimo_capitulo = capitulo  # Actualizamos el último capítulo
-                        seccion = "_"
-                    elif seccion_match:
-                        # Si solo tenemos título de 5 almohadillas, usamos el último capítulo
-                        capitulo = ultimo_capitulo
-                        seccion = seccion_match.group(1).strip()
+                    # Si el contenido está vacío después de eliminar espacios, saltamos este fragmento
+                    if not chunk:
+                        continue
                     
-                    # Buscar el libro y título correspondientes
+                    # Buscar el texto previo para mantener la jerarquía
                     prev_text = text[:text.find(part)]
-
-                    libro_match = re.findall(r'^##\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
-                    ultimo_libro = libro_match[-1] if libro_match else "Sin libro"
-            
-                    titulo_match = re.findall(r'^###\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
-                    ultimo_titulo = titulo_match[-1] if titulo_match else "Sin título"
                     
-                    chunks_with_metadata.append({
-                        'libro': ultimo_libro,
-                        'titulo': ultimo_titulo,
-                        'capitulo': capitulo,
-                        'seccion': seccion,
-                        'text': chunk
-                    })
+                    # Encontrar el último título de cada nivel en el texto previo
+                    titulo1_prev = re.findall(r'^#\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
+                    titulo2_prev = re.findall(r'^##\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
+                    titulo3_prev = re.findall(r'^###\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
+                    titulo4_prev = re.findall(r'^####\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
+                    titulo5_prev = re.findall(r'^#####\s*([^#].*?)(?:\n|$)', prev_text, re.MULTILINE)
+                    
+                    # Obtener los últimos títulos encontrados o usar None
+                    ultimo_titulo1 = titulo1_prev[-1] if titulo1_prev else None
+                    ultimo_titulo2 = titulo2_prev[-1] if titulo2_prev else None
+                    ultimo_titulo3 = titulo3_prev[-1] if titulo3_prev else None
+                    ultimo_titulo4 = titulo4_prev[-1] if titulo4_prev else None
+                    ultimo_titulo5 = titulo5_prev[-1] if titulo5_prev else None
+                    
+                    # Inicializar diccionario de metadatos
+                    metadata = {}
+                    
+                    # Determinar el nivel actual y actualizar los metadatos
+                    if titulo1_match:
+                        metadata['titulo1'] = titulo1_match.group(1).strip()
+                    elif titulo2_match:
+                        if ultimo_titulo1:
+                            metadata['titulo1'] = ultimo_titulo1
+                        metadata['titulo2'] = titulo2_match.group(1).strip()
+                    elif titulo3_match:
+                        if ultimo_titulo1:
+                            metadata['titulo1'] = ultimo_titulo1
+                        if ultimo_titulo2:
+                            metadata['titulo2'] = ultimo_titulo2
+                        metadata['titulo3'] = titulo3_match.group(1).strip()
+                    elif titulo4_match:
+                        if ultimo_titulo1:
+                            metadata['titulo1'] = ultimo_titulo1
+                        if ultimo_titulo2:
+                            metadata['titulo2'] = ultimo_titulo2
+                        if ultimo_titulo3:
+                            metadata['titulo3'] = ultimo_titulo3
+                        metadata['titulo4'] = titulo4_match.group(1).strip()
+                    elif titulo5_match:
+                        if ultimo_titulo1:
+                            metadata['titulo1'] = ultimo_titulo1
+                        if ultimo_titulo2:
+                            metadata['titulo2'] = ultimo_titulo2
+                        if ultimo_titulo3:
+                            metadata['titulo3'] = ultimo_titulo3
+                        if ultimo_titulo4:
+                            metadata['titulo4'] = ultimo_titulo4
+                        metadata['titulo5'] = titulo5_match.group(1).strip()
+                    elif titulo6_match:
+                        if ultimo_titulo1:
+                            metadata['titulo1'] = ultimo_titulo1
+                        if ultimo_titulo2:
+                            metadata['titulo2'] = ultimo_titulo2
+                        if ultimo_titulo3:
+                            metadata['titulo3'] = ultimo_titulo3
+                        if ultimo_titulo4:
+                            metadata['titulo4'] = ultimo_titulo4
+                        if ultimo_titulo5:
+                            metadata['titulo5'] = ultimo_titulo5
+                        metadata['titulo6'] = titulo6_match.group(1).strip()
+                    else:
+                        continue
+                    
+                    # Añadir el texto al diccionario de metadatos
+                    metadata['text'] = chunk
+                    chunks_with_metadata.append(metadata)
                 
                 return render(request, 'splitters/splitters.html', {
-                    'chunks': chunks_with_metadata
+                    'chunks': chunks_with_metadata,
+                    'titulo1_nombre': titulo1_nombre,
+                    'titulo2_nombre': titulo2_nombre,
+                    'titulo3_nombre': titulo3_nombre,
+                    'titulo4_nombre': titulo4_nombre,
+                    'titulo5_nombre': titulo5_nombre,
+                    'titulo6_nombre': titulo6_nombre
                 })
             else:
                 messages.error(request, 'Por favor, sube un archivo Markdown (.md)')
