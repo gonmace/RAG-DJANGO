@@ -127,40 +127,79 @@ def create_embeddings(request):
         if not chunks_data:
             return JsonResponse({
                 'success': False,
-                'message': 'No hay fragmentos para procesar'
+                'message': 'No hay fragmentos para procesar. Por favor, primero divide el documento.'
             }, status=400)
         
         service = LangChainService()
+        embeddings_created = 0
         
-        # Procesar cada fragmento
-        for chunk in chunks_data:
-            # Crear el texto completo con títulos y contenido
-            texto_completo = ""
-            for i in range(1, 7):
-                titulo_key = f'titulo{i}'
-                if titulo_key in chunk:
-                    texto_completo += chunk[titulo_key] + "\n"
-            texto_completo += chunk['text']
+        try:
+            # Obtener los nombres personalizados de los títulos de la sesión
+            titulo1_nombre = request.session.get('titulo1_nombre', 'Documento')
+            titulo2_nombre = request.session.get('titulo2_nombre', 'Libro')
+            titulo3_nombre = request.session.get('titulo3_nombre', 'Título')
+            titulo4_nombre = request.session.get('titulo4_nombre', 'Capítulo')
+            titulo5_nombre = request.session.get('titulo5_nombre', 'Sección')
+            titulo6_nombre = request.session.get('titulo6_nombre', 'Subsección')
             
-            # Crear metadatos
-            metadatos = {k: v for k, v in chunk.items() if k.startswith('titulo')}
-            metadatos['token_count'] = chunk['token_count']
+            # Mapeo de títulos a nombres personalizados
+            titulo_mapping = {
+                'titulo1': titulo1_nombre,
+                'titulo2': titulo2_nombre,
+                'titulo3': titulo3_nombre,
+                'titulo4': titulo4_nombre,
+                'titulo5': titulo5_nombre,
+                'titulo6': titulo6_nombre
+            }
             
-            # Añadir el documento
-            service.add_document(texto_completo, metadatos)
-        
-        # Limpiar los chunks de la sesión
-        del request.session['chunks_with_metadata']
-        request.session.modified = True
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Embeddings creados exitosamente'
-        })
+            # Procesar cada fragmento
+            for chunk in chunks_data:
+                # Crear el texto completo con títulos y contenido
+                texto_completo = []
+                for i in range(1, 7):
+                    titulo_key = f'titulo{i}'
+                    if titulo_key in chunk:
+                        texto_completo.append(chunk[titulo_key])
+                
+                # Agregar el contenido después de los títulos
+                texto_completo.append(chunk['text'])
+                
+                # Unir todo el texto con dobles saltos de línea
+                texto_final = '\n\n'.join(texto_completo)
+                
+                # Crear metadatos con nombres personalizados
+                metadatos = {}
+                
+                # Encontrar el último título y los títulos previos
+                for i in range(1, 7):
+                    titulo_key = f'titulo{i}'
+                    if titulo_key in chunk:
+                        nombre_personalizado = titulo_mapping[titulo_key]
+                        metadatos[nombre_personalizado] = chunk[titulo_key]
+                
+                # Añadir el documento
+                service.add_document(texto_final, metadatos)
+                embeddings_created += 1
+            
+            # Limpiar los chunks de la sesión solo si todo fue exitoso
+            del request.session['chunks_with_metadata']
+            request.session.modified = True
+            
+            return JsonResponse({
+                'success': True,
+                'message': f'Se crearon {embeddings_created} embeddings exitosamente'
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al crear embeddings: {str(e)}'
+            }, status=500)
+            
     except Exception as e:
         return JsonResponse({
             'success': False,
-            'message': str(e)
+            'message': f'Error inesperado: {str(e)}'
         }, status=500)
 
 
@@ -181,6 +220,15 @@ def split_documents_view(request):
                 titulo4_nombre = request.POST.get('titulo4_nombre', 'Capítulo')
                 titulo5_nombre = request.POST.get('titulo5_nombre', 'Sección')
                 titulo6_nombre = request.POST.get('titulo6_nombre', 'Subsección')
+                
+                # Guardar los nombres personalizados en la sesión
+                request.session['titulo1_nombre'] = titulo1_nombre
+                request.session['titulo2_nombre'] = titulo2_nombre
+                request.session['titulo3_nombre'] = titulo3_nombre
+                request.session['titulo4_nombre'] = titulo4_nombre
+                request.session['titulo5_nombre'] = titulo5_nombre
+                request.session['titulo6_nombre'] = titulo6_nombre
+                request.session.modified = True
                 
                 # Obtener los niveles seleccionados para fragmentar
                 niveles_seleccionados = []
@@ -347,8 +395,22 @@ def split_documents_view(request):
                 # Calcular precio en USD (0.02 USD por millón de tokens)
                 price_usd = (total_tokens / 1_000_000) * 0.02
                 
+                # Convertir los chunks a un formato serializable
+                serializable_chunks = []
+                for chunk in chunks_with_metadata:
+                    serializable_chunk = {
+                        'text': chunk['text'],
+                        'token_count': chunk['token_count']
+                    }
+                    # Añadir títulos si existen
+                    for i in range(1, 7):
+                        titulo_key = f'titulo{i}'
+                        if titulo_key in chunk:
+                            serializable_chunk[titulo_key] = chunk[titulo_key]
+                    serializable_chunks.append(serializable_chunk)
+                
                 # Guardar los chunks en la sesión
-                request.session['chunks_with_metadata'] = chunks_with_metadata
+                request.session['chunks_with_metadata'] = serializable_chunks
                 request.session.modified = True
                 
                 return render(request, 'splitters/splitters.html', {

@@ -5,6 +5,8 @@
     {% tailwind_css %}
     <!-- Importación de Font Awesome para iconografía -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Importación de fuente de máquina de escribir -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 {% endblock css %}
 
 {% block content %}
@@ -56,11 +58,12 @@
                                 <input type="checkbox" class="checkbox-child checkbox checkbox-sm border-black" data-id="{{ doc.id }}" />
                             </div>
                         </div>
+                        <div class="divider divider-primary">Cuerpo del documento</div>
                         <!-- Contenedor del contenido principal -->
                         <div class="max-w-none">
                             <!-- Modo visualización -->
                             <div class="view-mode">
-                                <p class="mb-0">{{ doc.text }}</p>
+                                <pre class="font-['Courier_Prime'] bg-gray-50 p-6 rounded-lg border border-gray-200 leading-relaxed text-gray-700 text-[0.95rem] tracking-wide whitespace-pre-wrap shadow-sm">{{ doc.text }}</pre>
                             </div>
                             <!-- Modo edición con formulario -->
                             <div class="edit-mode hidden">

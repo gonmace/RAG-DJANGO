@@ -121,7 +121,7 @@
                 </div>
 
                 <div class="flex justify-end space-x-4">
-                  <button id="create-embeddings" type="button" class="btn btn-success text-white opacity-50" disabled>
+                  <button id="create-embeddings" type="button" class="btn btn-success text-white">
                     Crear Embeddings
                   </button>
                   <button type="submit" class="btn btn-primary">
@@ -186,16 +186,6 @@
     function updateFileName(input) {
       const fileName = input.files[0] ? input.files[0].name : 'Ningún archivo seleccionado'
       document.getElementById('file-name').textContent = fileName
-      
-      // Habilitar/deshabilitar el botón de crear embeddings según si hay un archivo MD
-      const createEmbeddingsBtn = document.getElementById('create-embeddings');
-      if (input.files[0] && input.files[0].name.endsWith('.md')) {
-        createEmbeddingsBtn.disabled = false;
-        createEmbeddingsBtn.classList.remove('opacity-50');
-      } else {
-        createEmbeddingsBtn.disabled = true;
-        createEmbeddingsBtn.classList.add('opacity-50');
-      }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
