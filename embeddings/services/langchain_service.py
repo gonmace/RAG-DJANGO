@@ -8,13 +8,14 @@ from uuid import uuid4
 
 c_name = "langchain"
 p_directory = "./chromadb"
+embedding_model = "text-embedding-3-small"
 
 
 class LangChainService:
     def __init__(self):
         self.embeddings = OpenAIEmbeddings(
             openai_api_key=config('OPENAI_API_KEY'),
-            model="text-embedding-ada-002"
+            model=embedding_model
         )
         self.vectorstore = None
         self.initialize_vectorstore()
