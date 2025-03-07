@@ -130,6 +130,9 @@ def create_embeddings(request):
                 content_type='text/event-stream'
             )
         
+        # Obtener la preferencia de incluir títulos
+        incluir_titulos = request.session.get('incluir_titulos', False)
+        
         def generate_progress():
             service = LangChainService()
             embeddings_created = 0
@@ -159,18 +162,22 @@ def create_embeddings(request):
                 
                 # Procesar cada fragmento
                 for i, chunk in enumerate(chunks_data, 1):
-                    # Crear el texto completo con títulos y contenido
-                    texto_completo = []
-                    for j in range(1, 7):
-                        titulo_key = f'titulo{j}'
-                        if titulo_key in chunk:
-                            texto_completo.append(chunk[titulo_key])
-                    
-                    # Agregar el contenido después de los títulos
-                    texto_completo.append(chunk['text'])
-                    
-                    # Unir todo el texto con dobles saltos de línea
-                    texto_final = '\n\n'.join(texto_completo)
+                    if incluir_titulos:
+                        # Crear el texto completo con títulos y contenido
+                        texto_completo = []
+                        for j in range(1, 7):
+                            titulo_key = f'titulo{j}'
+                            if titulo_key in chunk:
+                                texto_completo.append(chunk[titulo_key])
+                        
+                        # Agregar el contenido después de los títulos
+                        texto_completo.append(chunk['text'])
+                        
+                        # Unir todo el texto con dobles saltos de línea
+                        texto_final = '\n\n'.join(texto_completo)
+                    else:
+                        # Usar solo el texto del chunk sin los títulos
+                        texto_final = chunk['text']
                     
                     # Crear metadatos con nombres personalizados
                     metadatos = {}
@@ -230,13 +237,14 @@ def split_documents_view(request):
                 titulo5_nombre = request.POST.get('titulo5_nombre', 'Sección')
                 titulo6_nombre = request.POST.get('titulo6_nombre', 'Subsección')
                 
-                # Guardar los nombres personalizados en la sesión
+                # Guardar los nombres personalizados y la preferencia de incluir títulos en la sesión
                 request.session['titulo1_nombre'] = titulo1_nombre
                 request.session['titulo2_nombre'] = titulo2_nombre
                 request.session['titulo3_nombre'] = titulo3_nombre
                 request.session['titulo4_nombre'] = titulo4_nombre
                 request.session['titulo5_nombre'] = titulo5_nombre
                 request.session['titulo6_nombre'] = titulo6_nombre
+                request.session['incluir_titulos'] = 'incluir_titulos' in request.POST
                 request.session.modified = True
                 
                 # Obtener los niveles seleccionados para fragmentar
@@ -377,22 +385,19 @@ def split_documents_view(request):
                     
                     # Añadir el texto al diccionario de metadatos
                     metadata['text'] = chunk
-                    # Calcular tokens del fragmento completo (incluyendo títulos y contenido)
-                    fragment_text = ""
-                    if 'titulo1' in metadata:
-                        fragment_text += metadata['titulo1'] + "\n"
-                    if 'titulo2' in metadata:
-                        fragment_text += metadata['titulo2'] + "\n"
-                    if 'titulo3' in metadata:
-                        fragment_text += metadata['titulo3'] + "\n"
-                    if 'titulo4' in metadata:
-                        fragment_text += metadata['titulo4'] + "\n"
-                    if 'titulo5' in metadata:
-                        fragment_text += metadata['titulo5'] + "\n"
-                    fragment_text += chunk
-                    
-                    # Calcular tokens y añadirlos a los metadatos
-                    metadata['token_count'] = len(enc.encode(fragment_text))
+                    # Calcular tokens del fragmento
+                    if 'incluir_titulos' in request.POST:
+                        # Si se incluyen títulos, calcular tokens del texto completo
+                        fragment_text = ""
+                        for j in range(1, 7):
+                            titulo_key = f'titulo{j}'
+                            if titulo_key in metadata:
+                                fragment_text += metadata[titulo_key] + "\n"
+                        fragment_text += chunk
+                        metadata['token_count'] = len(enc.encode(fragment_text))
+                    else:
+                        # Si no se incluyen títulos, calcular solo tokens del texto
+                        metadata['token_count'] = len(enc.encode(chunk))
                     chunks_with_metadata.append(metadata)
                 
                 # Calcular máximo y mínimo de tokens
