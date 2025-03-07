@@ -3280,6 +3280,10 @@ p {
   transition-duration: 300ms;
 }
 
+.\[n\:\FFFD\FFFD\1A\FFFD\1FO\] {
+  n: ���O;
+}
+
 .rangos {
   height: 1rem;
 }

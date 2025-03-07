@@ -295,6 +295,7 @@ def split_documents_view(request):
                 token_counts = [chunk['token_count'] for chunk in chunks_with_metadata]
                 max_tokens = max(token_counts) if token_counts else 0
                 min_tokens = min(token_counts) if token_counts else 0
+                total_tokens = sum(token_counts) if token_counts else 0
                 
                 return render(request, 'splitters/splitters.html', {
                     'chunks': chunks_with_metadata,
@@ -305,7 +306,8 @@ def split_documents_view(request):
                     'titulo5_nombre': titulo5_nombre,
                     'titulo6_nombre': titulo6_nombre,
                     'max_tokens': max_tokens,
-                    'min_tokens': min_tokens
+                    'min_tokens': min_tokens,
+                    'total_tokens': total_tokens
                 })
             else:
                 messages.error(request, 'Por favor, sube un archivo Markdown (.md)')
