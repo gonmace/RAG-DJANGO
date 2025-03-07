@@ -732,7 +732,7 @@ ARTÍCULO 294. (FUENTES DE LAS OBLlGACIONES).- Las obligaciones derivan de los d
 
 ##### SECCION I - DEL CUMPLIMIENTO EN GENERAL
 
-SUBSECCION I DE LOS SUJETOS DEL CUMPLIMIENTO
+###### SUBSECCION I DE LOS SUJETOS DEL CUMPLIMIENTO
 
 ARTÍCULO 295. (QUIENES DEBEN EFECTUAR EL CUMPLIMIENTO).- La obligación puede satisfacerse por toda persona, tenga o no interés en el cumplimiento, y a sabiendas del deudor o no.
 
@@ -746,9 +746,13 @@ ARTÍCULO 299. (PAGO AL ACREEDOR INCAPAZ).- El pago al acreedor incapaz de recib
 
 ARTÍCULO 300. (PAGO EFECTUADO POR UN INCAPAZ).- El deudor que paga lo debido no puede impugnar luego el pago alegando su propia incapacidad.
 
-ARTÍCULO 301. (PAGO DESPUÉS DE NOTIFICADO UN EMBARGO U OPOSICIÓN).- El pago hecho por el deudor después de haber sido notificado con un mandamiento de embargo o con una oposición, no libera al deudor quien puede ser obligado a pagar de nuevo por el embargante o el opositor, salvo, solamente en este caso, su recurso contra el acreedor. SUBSECCION II DE LA DILIGENCIA EN EL CUMPLIMIENTO
+ARTÍCULO 301. (PAGO DESPUÉS DE NOTIFICADO UN EMBARGO U OPOSICIÓN).- El pago hecho por el deudor después de haber sido notificado con un mandamiento de embargo o con una oposición, no libera al deudor quien puede ser obligado a pagar de nuevo por el embargante o el opositor, salvo, solamente en este caso, su recurso contra el acreedor. 
 
-ARTÍCULO 302. (DILIGENCIA DEL DEUDOR).- I. En el cumplimiento de la obligación el deudor debe emplear la diligencia de un buen padre de familia. II. Cuando la prestación consista en el ejercicio de una actividad profesional, la diligencia en el cumplimiento debe valorarse con arreglo a la naturaleza de la actividad que, de acuerdo al caso concreto, correspondería ejecutarse. SUBSECCION III DEL OBJETO DEL CUMPLIMIENTO
+###### SUBSECCION II DE LA DILIGENCIA EN EL CUMPLIMIENTO
+
+ARTÍCULO 302. (DILIGENCIA DEL DEUDOR).- I. En el cumplimiento de la obligación el deudor debe emplear la diligencia de un buen padre de familia. II. Cuando la prestación consista en el ejercicio de una actividad profesional, la diligencia en el cumplimiento debe valorarse con arreglo a la naturaleza de la actividad que, de acuerdo al caso concreto, correspondería ejecutarse. 
+
+###### SUBSECCION III DEL OBJETO DEL CUMPLIMIENTO
 
 ARTÍCULO 303. (COSA DETERMINADA OBLIGACIÓN DE CUSTODIA).- La obligación de entregar una cosa determinada comprende también la de custodiarla hasta su entrega.
 
@@ -762,7 +766,9 @@ ARTÍCULO 307. (PRESTACIÓN DIVERSA DE LA DEBIDA).- I. El deudor no se libera of
 
 ARTÍCULO 308. (CESIÓN DE CRÉDITO EN LUGAR DE LA PRESTACIÓN DEBlDA).- Si en lugar de cumplir la prestación debida el acreedor consiente en ceder un crédito, la obligación se extingue cuando se ha cobrado el crédito, salva voluntad diversa de las partes.
 
-ARTÍCULO 309. (CUMPLIMIENTO DIFERENTE O CON PRESTAClÓN DIFERENTE).- El deudor que no puede pagar conforme a lo estipulado o lo dispuesto por la ley, podrá hacerlo de modo distinto o con una prestación diversa de la debida, mediante autorización judicial. SUBSECCION IV DEL LUGAR Y TIEMPO DEL CUMPLIMIENTO
+ARTÍCULO 309. (CUMPLIMIENTO DIFERENTE O CON PRESTAClÓN DIFERENTE).- El deudor que no puede pagar conforme a lo estipulado o lo dispuesto por la ley, podrá hacerlo de modo distinto o con una prestación diversa de la debida, mediante autorización judicial.
+
+###### SUBSECCION IV DEL LUGAR Y TIEMPO DEL CUMPLIMIENTO
 
 ARTÍCULO 310. (LUGAR DEL CUMPLIMIENTO).- I. El lugar del cumplimiento será el designado por el convenio o el que resulte de los usos o se deduzca según la naturaleza de la prestación u otras circunstancias. II. En su defecto, la obligación de entregar una cosa cierta y determinada se cumple en el lugar donde existía cuando nació la obligación. Si consiste en una suma de dinero se hace efectiva en el domicilio que el acreedor tiene en el momento del vencimiento. Empero, el deudor, dando aviso al acreedor, puede cumplir en su propio domicilio si el de este último, al vencerse la obligación, es diverso del que tenía cuando ella nació y esto hace más gravoso el cumplimiento. III. En los otros casos la obligación se cumple donde tiene su domicilio el deudor en el momento del vencimiento.
 
@@ -774,13 +780,17 @@ ARTÍCULO 313. (BENEFICIARIOS DEL TÉRMINO).- El término se presume fijado a fa
 
 ARTÍCULO 314. (TERMINO PENDIENTE).- I. El acreedor no puede exigir el cumplimiento antes de vencerse el término, a menos que éste último se haya establecido exclusivamente a su favor. II. Sin embargo, el deudor no puede repetir lo que ha pagado anticipadamente aunque haya ignorado la existencia del término; peor en este caso podrá repetir, dentro de los limites de la pérdida que ha sufrido, aquello en que el acreedor se haya enriquecido por consecuencia del pago anticipado.
 
-ARTÍCULO 315. (CADUCIDAD DEL TÉRMINO).- El deudor no puede reclamar el beneficio del término cuando se ha vuelto insolvente o ha disminuido, por un hecho propio, las garantías que había dado o no ha proporcionado las que había prometido; en consecuencia el acreedor puede pedir inmediatamente el cumplimiento de la obligación. SUBSECCION V DE LA APLICACION DE LOS PAGOS
+ARTÍCULO 315. (CADUCIDAD DEL TÉRMINO).- El deudor no puede reclamar el beneficio del término cuando se ha vuelto insolvente o ha disminuido, por un hecho propio, las garantías que había dado o no ha proporcionado las que había prometido; en consecuencia el acreedor puede pedir inmediatamente el cumplimiento de la obligación.
+
+###### SUBSECCION V DE LA APLICACION DE LOS PAGOS
 
 ARTÍCULO 316. (MODO DE HACER LA IMPUTACIÓN).- I. El deudor de muchas deudas de la misma especie frente al mismo acreedor, puede declarar cuando paga cuáles quiere satisfacer. II. En su defecto, el pago se imputará a la deuda que esté vencida; si hay varias deudas vencidas, a las que estén menos garantizadas; si están igualmente garantizadas, a la más onerosa para el deudor; y si son todas onerosas, a la más antigua. En caso de ser las deudas en todo iguales o que los criterios expuestos no sirvan para resolver el caso, la imputación se hará proporcionalmente a todas las deudas.
 
 ARTÍCULO 317. (DEUDA CON INTERÉS).- I. El deudor no puede imputar, sin que el acreedor consienta, el pago al capital con preferencia a los intereses y los gastos. II. Pero el pago hecho al capital y a los intereses, sin observación del acreedor, se imputa en un quinto al capital y el saldo a los intereses.
 
-ARTÍCULO 318. (RECIBO CON IMPUTACIÓN).- El deudor de varias deudas que acepta un recibo por el cual el acreedor ha imputado el pago a una de ellas, no puede reclamar una imputación diversa, a no ser que haya habido sorpresa o dolo por parte del acreedor. SUBSECCION VI DE LOS GASTOS Y RECIBO DEL PAGO
+ARTÍCULO 318. (RECIBO CON IMPUTACIÓN).- El deudor de varias deudas que acepta un recibo por el cual el acreedor ha imputado el pago a una de ellas, no puede reclamar una imputación diversa, a no ser que haya habido sorpresa o dolo por parte del acreedor. 
+
+###### SUBSECCION VI DE LOS GASTOS Y RECIBO DEL PAGO
 
 ARTÍCULO 319. (GASTOS DEL PAGO).- Los gastos del pago corren por cuenta del deudor.
 
@@ -798,7 +808,9 @@ ARTÍCULO 323. (LIBERACIÓN DE GARANTÍAS).- El acreedor que ha recibido el pago
 
 ARTÍCULO 324. (SUBROGACIÓN HECHA POR EL ACREEDOR).- El acreedor pagado por un tercero puede subrogar a éste en sus derechos y garantías. La subrogación debe ser expresa y hacerse al mismo tiempo que el pago.
 
-ARTÍCULO 325. (SUBROGACIÓN HECHA POR EL DEUDOR).- I. El deudor que toma en préstamo una suma de dinero u otra cosa fungible para pagar su deuda, puede subrogar al prestador en los derechos y garantías del acreedor, aún sin el consentimiento de éste. II. Para éste efecto deben concurrir los requisitos siguientes: 1. El préstamo y el recibo deben constar en documento público. 2. En el documento de préstamo debe indicarse que la suma prestada se ha destinado al pago. 3. En el recibo debe declararse que el pago se ha hecho con la suma dada en préstamos para ese objeto. El acreedor, a pedido del deudor, no puede excusar la declaración. SUBSECCION II DE LA SUBROGACION LEGAL
+ARTÍCULO 325. (SUBROGACIÓN HECHA POR EL DEUDOR).- I. El deudor que toma en préstamo una suma de dinero u otra cosa fungible para pagar su deuda, puede subrogar al prestador en los derechos y garantías del acreedor, aún sin el consentimiento de éste. II. Para éste efecto deben concurrir los requisitos siguientes: 1. El préstamo y el recibo deben constar en documento público. 2. En el documento de préstamo debe indicarse que la suma prestada se ha destinado al pago. 3. En el recibo debe declararse que el pago se ha hecho con la suma dada en préstamos para ese objeto. El acreedor, a pedido del deudor, no puede excusar la declaración. 
+
+###### SUBSECCION II DE LA SUBROGACION LEGAL
 
 ARTÍCULO 326. (CASOS).- La subrogación se produce de pleno derecho en los casos siguientes: 1. A favor del acreedor, aunque sea quirografario, que paga a otro que le precede por razón de sus privilegios y garantías reales. 2. A favor del adquirente que emplea el importe de la adquisición del bien en el pago de los acreedores a quienes éste se hallaba hipotecado. 3. A favor del que estando obligado con otros o por otros al pago de una deuda, la satisface. 4. A favor del heredero beneficiario que paga con dinero propio las deudas de la herencia. 5. En los otros casos establecidos por la ley.
 
@@ -808,7 +820,9 @@ ARTÍCULO 326. (CASOS).- La subrogación se produce de pleno derecho en los caso
 
 ARTÍCULO 327. (CONDICIONES).- El acreedor se constituye en mora cuando sin que haya motivo legítimo rehúsa recibir el pago que se le ha ofrecido o se abstiene de prestar la colaboración que es necesaria para que el deudor pueda cumplir la obligación.
 
-ARTÍCULO 328. (EFECTOS DE LA MORA CREDITORIA).- Cuando el acreedor está en mora, se producen los efectos siguientes: 1. Pasan a su cargo los riesgos de la cosa debida. 2. No tiene derecho a los intereses ni a los frutos que no hayan sido percibidos por el deudor. 3. Debe resarcir los daños provenientes de la mora. 4. Soporta los gastos de custodia y conservación de la cosa debida. SUBSECCION II DE LAS OFERTAS DE PAGO
+ARTÍCULO 328. (EFECTOS DE LA MORA CREDITORIA).- Cuando el acreedor está en mora, se producen los efectos siguientes: 1. Pasan a su cargo los riesgos de la cosa debida. 2. No tiene derecho a los intereses ni a los frutos que no hayan sido percibidos por el deudor. 3. Debe resarcir los daños provenientes de la mora. 4. Soporta los gastos de custodia y conservación de la cosa debida. 
+
+###### SUBSECCION II DE LAS OFERTAS DE PAGO
 
 ARTÍCULO 329. (REQUISITOS).- I. Para que la oferta de pago sea válida, se precisa que: 1. Se haga al acreedor capaz de recibir, o a quien lo represente o esté autorizado a recibir el pago. 2. Se haga por persona capaz de cumplir válidamente. 3. Comprenda la totalidad de la suma adeudada o de las cosas debidas, y de los frutos o intereses, así como de los gastos líquidos y una suma suficiente para los no líquidos, con protesta del suplemento que pudiera ser necesario. 4. El término esté vencido, si se fijó a favor del acreedor, oque la condición esté cumplida, si la obligación fuese condicional. 5. La oferta se haga en el lugar donde corresponda efectuar el cumplimiento. 6. La oferta se haga por medio de la autoridad judicial competente. II. La oferta puede estar subordinada al consentimiento del acreedor para redimir las garantías reales u otros vínculos sobre los bienes, que limitan su libre disponibilidad.
 
@@ -1056,7 +1070,9 @@ ARTÍCULO 430. (EXCEPCIONES A LA DIVISIBILIDAD ENTRE LOS COHEREDEROS).- El benef
 
 ARTÍCULO 431. (OBLIGACIÓN INDlVISIBLE).- La obligación mancomunada es indivisible cuando no puede cumplirse por fracciones, sea por razón de su naturaleza o sea por voluntad de las partes.
 
-ARTÍCULO 432. (RÉGIMEN DE LAS OBLIGACIONES INDIVISIBLES).- I. Las obligaciones indivisibles se regulan en todo lo que sea pertinente por las normas de las obligaciones solidarias, salvas las disposiciones siguientes: 1. La indivisibilidad subsiste para los herederos del deudor o del acreedor; pero el heredero del acreedor que reclama la totalidad del crédito debe dar caución o fianza en garantía de sus coherederos. 2. La remisión de la deuda o el recibo de otra prestación en lugar de la debida que hace uno de los coacreedores, no libera al deudor frente a los demás acreedores; estos últimos podrán pedir la prestación indivisible reembolsando el valor de la parte y porción del acreedor que remitió o recibió la prestación diversa. II. La misma norma se aplica a la transacción, la novación, la compensación y la confusión. SECCION III DE LAS OBLIGACIONES MANCOMUNADAS SOLIDARIAS
+ARTÍCULO 432. (RÉGIMEN DE LAS OBLIGACIONES INDIVISIBLES).- I. Las obligaciones indivisibles se regulan en todo lo que sea pertinente por las normas de las obligaciones solidarias, salvas las disposiciones siguientes: 1. La indivisibilidad subsiste para los herederos del deudor o del acreedor; pero el heredero del acreedor que reclama la totalidad del crédito debe dar caución o fianza en garantía de sus coherederos. 2. La remisión de la deuda o el recibo de otra prestación en lugar de la debida que hace uno de los coacreedores, no libera al deudor frente a los demás acreedores; estos últimos podrán pedir la prestación indivisible reembolsando el valor de la parte y porción del acreedor que remitió o recibió la prestación diversa. II. La misma norma se aplica a la transacción, la novación, la compensación y la confusión. 
+
+##### SECCION III DE LAS OBLIGACIONES MANCOMUNADAS SOLIDARIAS
 
 ARTÍCULO 433. (MANCOMUNIDAD SOLIDARIA).- Hay mancomunidad solidaria cuando varios deudores están obligados a la misma prestación, de modo que cada uno puede ser constreñido al cumplimiento de ella por entero y el cumplimiento que haga cualquiera de ellos libera a los demás; o bien cuando entre varios acreedores cada uno tiene derecho a pedir la prestación entera y el cumplimiento obtenido por uno cualquiera de ellos libera al deudor frente a los otros acreedores.
 

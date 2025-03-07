@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import re
 from langchain.text_splitter import MarkdownTextSplitter
+import tiktoken
 
 
 # Create your views here.
@@ -123,6 +124,9 @@ def split_documents_view(request):
             if file.name.endswith('.md'):
                 text = file.read().decode('utf-8')
                 
+                # Inicializar el codificador de tiktoken
+                enc = tiktoken.get_encoding("cl100k_base")
+                
                 # Obtener los nombres personalizados de los títulos
                 titulo1_nombre = request.POST.get('titulo1_nombre', 'Documento')
                 titulo2_nombre = request.POST.get('titulo2_nombre', 'Libro')
@@ -157,13 +161,14 @@ def split_documents_view(request):
                         # Contar el número de # al inicio
                         nivel = len(re.match(r'^#+', line).group())
                         
-                        if nivel in niveles_seleccionados:
+                        # Asegurarnos de que el nivel esté entre 1 y 6
+                        if 1 <= nivel <= 6 and nivel in niveles_seleccionados:
                             # Si el nivel está seleccionado, crear un nuevo fragmento
                             if current_part:
                                 parts.append(current_part)
                             current_part = line
                         else:
-                            # Si el nivel no está seleccionado, mantener el título sin #
+                            # Si el nivel no está seleccionado o es inválido, mantener el título sin #
                             titulo_sin_almohadillas = re.sub(r'^#+\s*', '', line)
                             current_part += '\n' + titulo_sin_almohadillas if current_part else titulo_sin_almohadillas
                         continue
@@ -225,54 +230,71 @@ def split_documents_view(request):
                     metadata = {}
                     
                     # Determinar el nivel actual y actualizar los metadatos
+                    current_level = None
+                    current_match = None
+                    
+                    # Verificar cada nivel en orden
                     if titulo1_match and 1 in niveles_seleccionados:
-                        metadata['titulo1'] = titulo1_match.group(1).strip()
+                        current_level = 1
+                        current_match = titulo1_match
                     elif titulo2_match and 2 in niveles_seleccionados:
-                        if ultimo_titulo1 and 1 in niveles_seleccionados:
-                            metadata['titulo1'] = ultimo_titulo1
-                        metadata['titulo2'] = titulo2_match.group(1).strip()
+                        current_level = 2
+                        current_match = titulo2_match
                     elif titulo3_match and 3 in niveles_seleccionados:
-                        if ultimo_titulo1 and 1 in niveles_seleccionados:
-                            metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2 and 2 in niveles_seleccionados:
-                            metadata['titulo2'] = ultimo_titulo2
-                        metadata['titulo3'] = titulo3_match.group(1).strip()
+                        current_level = 3
+                        current_match = titulo3_match
                     elif titulo4_match and 4 in niveles_seleccionados:
-                        if ultimo_titulo1 and 1 in niveles_seleccionados:
-                            metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2 and 2 in niveles_seleccionados:
-                            metadata['titulo2'] = ultimo_titulo2
-                        if ultimo_titulo3 and 3 in niveles_seleccionados:
-                            metadata['titulo3'] = ultimo_titulo3
-                        metadata['titulo4'] = titulo4_match.group(1).strip()
+                        current_level = 4
+                        current_match = titulo4_match
                     elif titulo5_match and 5 in niveles_seleccionados:
-                        if ultimo_titulo1 and 1 in niveles_seleccionados:
-                            metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2 and 2 in niveles_seleccionados:
-                            metadata['titulo2'] = ultimo_titulo2
-                        if ultimo_titulo3 and 3 in niveles_seleccionados:
-                            metadata['titulo3'] = ultimo_titulo3
-                        if ultimo_titulo4 and 4 in niveles_seleccionados:
-                            metadata['titulo4'] = ultimo_titulo4
-                        metadata['titulo5'] = titulo5_match.group(1).strip()
+                        current_level = 5
+                        current_match = titulo5_match
                     elif titulo6_match and 6 in niveles_seleccionados:
-                        if ultimo_titulo1 and 1 in niveles_seleccionados:
+                        current_level = 6
+                        current_match = titulo6_match
+                    
+                    if current_level is not None:
+                        # Añadir títulos previos según el nivel actual
+                        if current_level >= 1 and ultimo_titulo1 and 1 in niveles_seleccionados:
                             metadata['titulo1'] = ultimo_titulo1
-                        if ultimo_titulo2 and 2 in niveles_seleccionados:
+                        if current_level >= 2 and ultimo_titulo2 and 2 in niveles_seleccionados:
                             metadata['titulo2'] = ultimo_titulo2
-                        if ultimo_titulo3 and 3 in niveles_seleccionados:
+                        if current_level >= 3 and ultimo_titulo3 and 3 in niveles_seleccionados:
                             metadata['titulo3'] = ultimo_titulo3
-                        if ultimo_titulo4 and 4 in niveles_seleccionados:
+                        if current_level >= 4 and ultimo_titulo4 and 4 in niveles_seleccionados:
                             metadata['titulo4'] = ultimo_titulo4
-                        if ultimo_titulo5 and 5 in niveles_seleccionados:
+                        if current_level >= 5 and ultimo_titulo5 and 5 in niveles_seleccionados:
                             metadata['titulo5'] = ultimo_titulo5
-                        metadata['titulo6'] = titulo6_match.group(1).strip()
+                        
+                        # Añadir el título actual
+                        metadata[f'titulo{current_level}'] = current_match.group(1).strip()
                     else:
                         continue
                     
                     # Añadir el texto al diccionario de metadatos
                     metadata['text'] = chunk
+                    # Calcular tokens del fragmento completo (incluyendo títulos y contenido)
+                    fragment_text = ""
+                    if 'titulo1' in metadata:
+                        fragment_text += metadata['titulo1'] + "\n"
+                    if 'titulo2' in metadata:
+                        fragment_text += metadata['titulo2'] + "\n"
+                    if 'titulo3' in metadata:
+                        fragment_text += metadata['titulo3'] + "\n"
+                    if 'titulo4' in metadata:
+                        fragment_text += metadata['titulo4'] + "\n"
+                    if 'titulo5' in metadata:
+                        fragment_text += metadata['titulo5'] + "\n"
+                    fragment_text += chunk
+                    
+                    # Calcular tokens y añadirlos a los metadatos
+                    metadata['token_count'] = len(enc.encode(fragment_text))
                     chunks_with_metadata.append(metadata)
+                
+                # Calcular máximo y mínimo de tokens
+                token_counts = [chunk['token_count'] for chunk in chunks_with_metadata]
+                max_tokens = max(token_counts) if token_counts else 0
+                min_tokens = min(token_counts) if token_counts else 0
                 
                 return render(request, 'splitters/splitters.html', {
                     'chunks': chunks_with_metadata,
@@ -281,7 +303,9 @@ def split_documents_view(request):
                     'titulo3_nombre': titulo3_nombre,
                     'titulo4_nombre': titulo4_nombre,
                     'titulo5_nombre': titulo5_nombre,
-                    'titulo6_nombre': titulo6_nombre
+                    'titulo6_nombre': titulo6_nombre,
+                    'max_tokens': max_tokens,
+                    'min_tokens': min_tokens
                 })
             else:
                 messages.error(request, 'Por favor, sube un archivo Markdown (.md)')

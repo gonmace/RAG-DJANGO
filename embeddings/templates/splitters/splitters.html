@@ -121,17 +121,26 @@
                 </div>
 
                 <div class="flex justify-end">
-                  <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Dividir Texto</button>
+                  <button type="submit">Dividir Texto</button>
                 </div>
               </form>
 
               {% if chunks %}
                 <div class="mt-8">
-                  <h2 class="text-xl font-semibold mb-4">Resultados</h2>
+                  <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Resultados</h2>
+                    <div class="text-sm text-gray-600">
+                      <span class="mr-4">Mín. Tokens: {{ min_tokens }}</span>
+                      <span>Máx. Tokens: {{ max_tokens }}</span>
+                    </div>
+                  </div>
                   <div class="space-y-4">
                     {% for chunk in chunks %}
                       <div class="bg-gray-50 p-4 rounded-lg">
-                        <h3 class="font-medium text-gray-900 mb-2">Fragmento {{ forloop.counter }}</h3>
+                        <div class="flex justify-between items-center mb-2">
+                          <h3 class="font-medium text-gray-900">Fragmento {{ forloop.counter }}</h3>
+                          <span class="text-sm text-gray-600">Tokens: {{ chunk.token_count }}</span>
+                        </div>
                         <div class="mb-2">
                           {% if chunk.titulo1 %}
                             <p class="text-sm font-medium text-gray-800">{{ titulo1_nombre }}: {{ chunk.titulo1 }}</p>
