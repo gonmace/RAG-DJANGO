@@ -8,6 +8,7 @@ from django.views.decorators.http import require_http_methods
 import re
 from langchain.text_splitter import MarkdownTextSplitter
 import tiktoken
+import uuid
 
 
 # Create your views here.
@@ -109,6 +110,52 @@ def actualizar_embedding(request):
         return JsonResponse({
             'success': True,
             'message': 'Embedding actualizado exitosamente'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=500)
+
+
+@require_http_methods(["POST"])
+def create_embeddings(request):
+    try:
+        # Obtener los chunks de la sesión
+        chunks_data = request.session.get('chunks_with_metadata', [])
+        
+        if not chunks_data:
+            return JsonResponse({
+                'success': False,
+                'message': 'No hay fragmentos para procesar'
+            }, status=400)
+        
+        service = LangChainService()
+        
+        # Procesar cada fragmento
+        for chunk in chunks_data:
+            # Crear el texto completo con títulos y contenido
+            texto_completo = ""
+            for i in range(1, 7):
+                titulo_key = f'titulo{i}'
+                if titulo_key in chunk:
+                    texto_completo += chunk[titulo_key] + "\n"
+            texto_completo += chunk['text']
+            
+            # Crear metadatos
+            metadatos = {k: v for k, v in chunk.items() if k.startswith('titulo')}
+            metadatos['token_count'] = chunk['token_count']
+            
+            # Añadir el documento
+            service.add_document(texto_completo, metadatos)
+        
+        # Limpiar los chunks de la sesión
+        del request.session['chunks_with_metadata']
+        request.session.modified = True
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Embeddings creados exitosamente'
         })
     except Exception as e:
         return JsonResponse({
@@ -297,6 +344,13 @@ def split_documents_view(request):
                 min_tokens = min(token_counts) if token_counts else 0
                 total_tokens = sum(token_counts) if token_counts else 0
                 
+                # Calcular precio en USD (0.02 USD por millón de tokens)
+                price_usd = (total_tokens / 1_000_000) * 0.02
+                
+                # Guardar los chunks en la sesión
+                request.session['chunks_with_metadata'] = chunks_with_metadata
+                request.session.modified = True
+                
                 return render(request, 'splitters/splitters.html', {
                     'chunks': chunks_with_metadata,
                     'titulo1_nombre': titulo1_nombre,
@@ -307,7 +361,8 @@ def split_documents_view(request):
                     'titulo6_nombre': titulo6_nombre,
                     'max_tokens': max_tokens,
                     'min_tokens': min_tokens,
-                    'total_tokens': total_tokens
+                    'total_tokens': total_tokens,
+                    'price_usd': price_usd
                 })
             else:
                 messages.error(request, 'Por favor, sube un archivo Markdown (.md)')

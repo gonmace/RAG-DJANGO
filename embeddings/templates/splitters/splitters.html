@@ -120,8 +120,13 @@
                   </div>
                 </div>
 
-                <div class="flex justify-end">
-                  <button type="submit">Dividir Texto</button>
+                <div class="flex justify-end space-x-4">
+                  <button id="create-embeddings" type="button" class="btn btn-success text-white opacity-50" disabled>
+                    Crear Embeddings
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    Dividir Texto
+                  </button>
                 </div>
               </form>
 
@@ -132,7 +137,8 @@
                     <div class="text-sm text-gray-600">
                       <span class="mr-4">Mín. Tokens: {{ min_tokens }}</span>
                       <span class="mr-4">Máx. Tokens: {{ max_tokens }}</span>
-                      <span>Total Tokens: {{ total_tokens }}</span>
+                      <span class="mr-4">Total Tokens: {{ total_tokens }}</span>
+                      <span>Precio: ${{ price_usd|floatformat:4 }} USD</span>
                     </div>
                   </div>
                   <div class="space-y-4">
@@ -180,6 +186,56 @@
     function updateFileName(input) {
       const fileName = input.files[0] ? input.files[0].name : 'Ningún archivo seleccionado'
       document.getElementById('file-name').textContent = fileName
+      
+      // Habilitar/deshabilitar el botón de crear embeddings según si hay un archivo MD
+      const createEmbeddingsBtn = document.getElementById('create-embeddings');
+      if (input.files[0] && input.files[0].name.endsWith('.md')) {
+        createEmbeddingsBtn.disabled = false;
+        createEmbeddingsBtn.classList.remove('opacity-50');
+      } else {
+        createEmbeddingsBtn.disabled = true;
+        createEmbeddingsBtn.classList.add('opacity-50');
+      }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const createEmbeddingsBtn = document.getElementById('create-embeddings');
+      if (createEmbeddingsBtn) {
+        createEmbeddingsBtn.addEventListener('click', function() {
+          // Deshabilitar el botón mientras se procesa
+          createEmbeddingsBtn.disabled = true;
+          createEmbeddingsBtn.classList.add('opacity-50');
+          createEmbeddingsBtn.textContent = 'Procesando...';
+
+          fetch('/embeddings/create/', {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Embeddings creados exitosamente');
+              window.location.href = '/embeddings/listar/';  // Redirigir a la lista de embeddings
+            } else {
+              alert('Error: ' + data.message);
+              // Restaurar el botón
+              createEmbeddingsBtn.disabled = false;
+              createEmbeddingsBtn.classList.remove('opacity-50');
+              createEmbeddingsBtn.textContent = 'Crear Embeddings';
+            }
+          })
+          .catch(error => {
+            alert('Error al procesar la solicitud');
+            // Restaurar el botón
+            createEmbeddingsBtn.disabled = false;
+            createEmbeddingsBtn.classList.remove('opacity-50');
+            createEmbeddingsBtn.textContent = 'Crear Embeddings';
+          });
+        });
+      }
+    });
   </script>
 {% endblock %}
