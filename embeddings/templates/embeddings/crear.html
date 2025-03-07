@@ -8,7 +8,7 @@
 {% block body_class %}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-12">
     <!-- Cards container -->
     <div class="flex flex-wrap justify-center gap-6 mb-6">
         <!-- Card estilo iOS para abrir el modal -->
@@ -23,21 +23,20 @@
             </div>
         </div>
 
-        <!-- New Card for TikToken -->
-        <div onclick="modal_tiktoken.showModal()" 
-             class="w-64 bg-white rounded-2xl p-4 shadow-card">
+        <!-- Card for Markdown -->
+        <a href="{% url 'embeddings:splitters' %}" 
+           class="w-64 bg-white rounded-2xl p-4 shadow-card">
             <div class="bg-primary/10 p-3 rounded-xl">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512"><path fill="currentColor" d="M0 462h256v-64H0v64zm0-106.7h512v-64H0v64zm0-106.6h512v-64H0v64zM0 78v64h512V78H0z"/></svg>
+                {% include 'icons/md.html' %}
             </div>
             <div>
-                <h3 class="font-semibold">TikToken</h3>
-                <p class="text-md text-secondary">Texto con opción de TikToken</p>
+                <h3 class="font-semibold">Markdown</h3>
+                <p class="text-md text-secondary">Dividir texto por títulos</p>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Modal -->
     {% include "modals/m_parrafo.html" %}
-    {% include "modals/m_tiktoken.html" %}
 </div>
 {% endblock content %}

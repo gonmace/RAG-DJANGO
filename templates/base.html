@@ -79,34 +79,12 @@
             <li>
               <details open>
                 <summary>
-                  {% include 'icons/split.html' %}
-                  <span>Split Text</span>
-                </summary>
-                <ul>
-                  <li>
-                    <a href="{% url 'embeddings:splitters' %}" class="{% is_active 'splitters' %}">
-                      <i class="fas fa-list-ul"></i>
-                      <span>Divisores de texto</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="{% is_active 'listar' %}">
-                      <i class="fas fa-list-ul"></i>
-                      <span>Lista de Embeddings</span>
-                    </a>
-                  </li>
-                </ul>
-              </details>
-            </li>
-            <li>
-              <details open>
-                <summary>
                   <i class="fas fa-bezier-curve"></i>
                   <span>Embeddings</span>
                 </summary>
                 <ul>
                   <li>
-                    <a href="{% url 'embeddings:crear' %}" class="{% is_active 'crear' %}">
+                    <a href="{% url 'embeddings:crear' %}" class="{% is_active 'splitters' %} {% is_active 'crear' %}">
                       <i class="fas fa-plus-circle"></i>
                       <span>Crear Embedding</span>
                     </a>
