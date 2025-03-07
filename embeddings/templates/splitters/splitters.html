@@ -121,6 +121,23 @@
                 </div>
 
                 <div class="flex justify-end space-x-4">
+                  <!-- Contenedor para la barra de progreso -->
+                  <div id="progress-container" class="hidden w-full">
+                    <div class="flex items-center gap-4">
+                      <div class="flex-1">
+                        <div class="w-full">
+                          <progress id="progress-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+                        </div>
+                        <div class="flex justify-between text-sm mt-1">
+                          <span id="progress-text">Procesando fragmentos...</span>
+                          <span id="progress-percentage">0%</span>
+                        </div>
+                      </div>
+                      <div id="progress-status" class="text-sm font-medium">
+                        0/0 fragmentos
+                      </div>
+                    </div>
+                  </div>
                   <button id="create-embeddings" type="button" class="btn btn-success text-white">
                     Crear Embeddings
                   </button>
@@ -190,6 +207,12 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       const createEmbeddingsBtn = document.getElementById('create-embeddings');
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+      const progressPercentage = document.getElementById('progress-percentage');
+      const progressStatus = document.getElementById('progress-status');
+
       if (createEmbeddingsBtn) {
         createEmbeddingsBtn.addEventListener('click', function() {
           // Deshabilitar el botón mientras se procesa
@@ -197,33 +220,59 @@
           createEmbeddingsBtn.classList.add('opacity-50');
           createEmbeddingsBtn.textContent = 'Procesando...';
 
-          fetch('/embeddings/create/', {
-            method: 'POST',
-            headers: {
-              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-              'Content-Type': 'application/json'
+          // Mostrar la barra de progreso
+          progressContainer.classList.remove('hidden');
+
+          // Crear un EventSource para recibir actualizaciones del servidor
+          const eventSource = new EventSource('/embeddings/create/');
+
+          eventSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            if (data.progress) {
+              // Actualizar la barra de progreso
+              progressBar.value = data.progress;
+              progressPercentage.textContent = `${Math.round(data.progress)}%`;
+              
+              // Actualizar el estado
+              if (data.current && data.total) {
+                progressStatus.textContent = `${data.current}/${data.total} fragmentos`;
+              }
+              
+              // Actualizar el texto de estado
+              if (data.status) {
+                progressText.textContent = data.status;
+              }
             }
-          })
-          .then(response => response.json())
-          .then(data => {
+
+            // Si el proceso ha terminado
             if (data.success) {
+              eventSource.close();
               alert('Embeddings creados exitosamente');
-              window.location.href = '/embeddings/listar/';  // Redirigir a la lista de embeddings
-            } else {
-              alert('Error: ' + data.message);
+              window.location.href = '/embeddings/listar/';
+            }
+
+            // Si hay un error
+            if (data.error) {
+              eventSource.close();
+              alert('Error: ' + data.error);
               // Restaurar el botón
               createEmbeddingsBtn.disabled = false;
               createEmbeddingsBtn.classList.remove('opacity-50');
               createEmbeddingsBtn.textContent = 'Crear Embeddings';
+              progressContainer.classList.add('hidden');
             }
-          })
-          .catch(error => {
+          };
+
+          eventSource.onerror = function() {
+            eventSource.close();
             alert('Error al procesar la solicitud');
             // Restaurar el botón
             createEmbeddingsBtn.disabled = false;
             createEmbeddingsBtn.classList.remove('opacity-50');
             createEmbeddingsBtn.textContent = 'Crear Embeddings';
-          });
+            progressContainer.classList.add('hidden');
+          };
         });
       }
     });

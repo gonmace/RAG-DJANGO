@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import EmbeddingForm
 from .services import LangChainService
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, StreamingHttpResponse
 from django.views.decorators.http import require_http_methods
 import re
 from langchain.text_splitter import MarkdownTextSplitter
@@ -118,89 +118,98 @@ def actualizar_embedding(request):
         }, status=500)
 
 
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def create_embeddings(request):
     try:
         # Obtener los chunks de la sesión
         chunks_data = request.session.get('chunks_with_metadata', [])
         
         if not chunks_data:
-            return JsonResponse({
-                'success': False,
-                'message': 'No hay fragmentos para procesar. Por favor, primero divide el documento.'
-            }, status=400)
+            return StreamingHttpResponse(
+                f"data: {json.dumps({'error': 'No hay fragmentos para procesar. Por favor, primero divide el documento.'})}\n\n",
+                content_type='text/event-stream'
+            )
         
-        service = LangChainService()
-        embeddings_created = 0
+        def generate_progress():
+            service = LangChainService()
+            embeddings_created = 0
+            total_chunks = len(chunks_data)
+            
+            try:
+                # Obtener los nombres personalizados de los títulos de la sesión
+                titulo1_nombre = request.session.get('titulo1_nombre', 'Documento')
+                titulo2_nombre = request.session.get('titulo2_nombre', 'Libro')
+                titulo3_nombre = request.session.get('titulo3_nombre', 'Título')
+                titulo4_nombre = request.session.get('titulo4_nombre', 'Capítulo')
+                titulo5_nombre = request.session.get('titulo5_nombre', 'Sección')
+                titulo6_nombre = request.session.get('titulo6_nombre', 'Subsección')
+                
+                # Mapeo de títulos a nombres personalizados
+                titulo_mapping = {
+                    'titulo1': titulo1_nombre,
+                    'titulo2': titulo2_nombre,
+                    'titulo3': titulo3_nombre,
+                    'titulo4': titulo4_nombre,
+                    'titulo5': titulo5_nombre,
+                    'titulo6': titulo6_nombre
+                }
+                
+                # Enviar mensaje inicial
+                yield f"data: {json.dumps({'status': 'Iniciando creación de embeddings...', 'progress': 0, 'current': 0, 'total': total_chunks})}\n\n"
+                
+                # Procesar cada fragmento
+                for i, chunk in enumerate(chunks_data, 1):
+                    # Crear el texto completo con títulos y contenido
+                    texto_completo = []
+                    for j in range(1, 7):
+                        titulo_key = f'titulo{j}'
+                        if titulo_key in chunk:
+                            texto_completo.append(chunk[titulo_key])
+                    
+                    # Agregar el contenido después de los títulos
+                    texto_completo.append(chunk['text'])
+                    
+                    # Unir todo el texto con dobles saltos de línea
+                    texto_final = '\n\n'.join(texto_completo)
+                    
+                    # Crear metadatos con nombres personalizados
+                    metadatos = {}
+                    
+                    # Encontrar el último título y los títulos previos
+                    for j in range(1, 7):
+                        titulo_key = f'titulo{j}'
+                        if titulo_key in chunk:
+                            nombre_personalizado = titulo_mapping[titulo_key]
+                            metadatos[nombre_personalizado] = chunk[titulo_key]
+                    
+                    # Enviar actualización de progreso
+                    porcentaje = (i / total_chunks) * 100
+                    yield f"data: {json.dumps({'status': f'Procesando fragmento {i}/{total_chunks}', 'progress': porcentaje, 'current': i, 'total': total_chunks})}\n\n"
+                    
+                    # Añadir el documento
+                    service.add_document(texto_final, metadatos)
+                    embeddings_created += 1
+                
+                # Limpiar los chunks de la sesión solo si todo fue exitoso
+                del request.session['chunks_with_metadata']
+                request.session.modified = True
+                
+                # Enviar mensaje de éxito
+                yield f"data: {json.dumps({'success': True, 'message': f'Se crearon {embeddings_created} embeddings exitosamente'})}\n\n"
+                
+            except Exception as e:
+                yield f"data: {json.dumps({'error': f'Error al crear embeddings: {str(e)}'})}\n\n"
         
-        try:
-            # Obtener los nombres personalizados de los títulos de la sesión
-            titulo1_nombre = request.session.get('titulo1_nombre', 'Documento')
-            titulo2_nombre = request.session.get('titulo2_nombre', 'Libro')
-            titulo3_nombre = request.session.get('titulo3_nombre', 'Título')
-            titulo4_nombre = request.session.get('titulo4_nombre', 'Capítulo')
-            titulo5_nombre = request.session.get('titulo5_nombre', 'Sección')
-            titulo6_nombre = request.session.get('titulo6_nombre', 'Subsección')
-            
-            # Mapeo de títulos a nombres personalizados
-            titulo_mapping = {
-                'titulo1': titulo1_nombre,
-                'titulo2': titulo2_nombre,
-                'titulo3': titulo3_nombre,
-                'titulo4': titulo4_nombre,
-                'titulo5': titulo5_nombre,
-                'titulo6': titulo6_nombre
-            }
-            
-            # Procesar cada fragmento
-            for chunk in chunks_data:
-                # Crear el texto completo con títulos y contenido
-                texto_completo = []
-                for i in range(1, 7):
-                    titulo_key = f'titulo{i}'
-                    if titulo_key in chunk:
-                        texto_completo.append(chunk[titulo_key])
-                
-                # Agregar el contenido después de los títulos
-                texto_completo.append(chunk['text'])
-                
-                # Unir todo el texto con dobles saltos de línea
-                texto_final = '\n\n'.join(texto_completo)
-                
-                # Crear metadatos con nombres personalizados
-                metadatos = {}
-                
-                # Encontrar el último título y los títulos previos
-                for i in range(1, 7):
-                    titulo_key = f'titulo{i}'
-                    if titulo_key in chunk:
-                        nombre_personalizado = titulo_mapping[titulo_key]
-                        metadatos[nombre_personalizado] = chunk[titulo_key]
-                
-                # Añadir el documento
-                service.add_document(texto_final, metadatos)
-                embeddings_created += 1
-            
-            # Limpiar los chunks de la sesión solo si todo fue exitoso
-            del request.session['chunks_with_metadata']
-            request.session.modified = True
-            
-            return JsonResponse({
-                'success': True,
-                'message': f'Se crearon {embeddings_created} embeddings exitosamente'
-            })
-            
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'message': f'Error al crear embeddings: {str(e)}'
-            }, status=500)
+        return StreamingHttpResponse(
+            generate_progress(),
+            content_type='text/event-stream'
+        )
             
     except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'message': f'Error inesperado: {str(e)}'
-        }, status=500)
+        return StreamingHttpResponse(
+            f"data: {json.dumps({'error': f'Error inesperado: {str(e)}'})}\n\n",
+            content_type='text/event-stream'
+        )
 
 
 def split_documents_view(request):
