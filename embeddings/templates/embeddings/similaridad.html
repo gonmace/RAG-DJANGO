@@ -27,35 +27,37 @@
                     required
                 >
             </div>
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="num_resultados">
-                    Número de resultados
-                </label>
-                <input
-                    type="number"
-                    name="num_resultados"
-                    id="num_resultados"
-                    min="1"
-                    max="20"
-                    value="5"
-                    class="input w-full p-2 border rounded-md"
-                >
-            </div>
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="umbral">
-                    Umbral de similitud (0.0 - 1.0)
-                </label>
-                <input
-                    type="number"
-                    name="umbral"
-                    id="umbral"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value="{% if umbral %}{{ umbral }}{% else %}0{% endif %}"
-                    class="input w-full p-2 border rounded-md"
-                >
-                <p class="text-sm text-gray-500 mt-1">Solo se mostrarán resultados con similitud mayor al umbral (dejar vacío o 0 para mostrar todos)</p>
+            <div class="flex gap-4 mb-6">
+                <div class="flex-1">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="num_resultados">
+                        Número de resultados
+                    </label>
+                    <input
+                        type="number"
+                        name="num_resultados"
+                        id="num_resultados"
+                        min="1"
+                        max="20"
+                        value="5"
+                        class="input w-full p-2 border rounded-md"
+                    >
+                </div>
+                <div class="flex-1">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="umbral">
+                        Umbral de similitud (0.0 - 1.0)
+                    </label>
+                    <input
+                        type="number"
+                        name="umbral"
+                        id="umbral"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value="{% if umbral %}{{ umbral }}{% else %}0{% endif %}"
+                        class="input w-full p-2 border rounded-md"
+                    >
+                    <p class="text-sm text-gray-500 mt-1">Solo se mostrarán resultados con similitud mayor al umbral (dejar vacío o 0 para mostrar todos)</p>
+                </div>
             </div>
             <div class="flex justify-end">
                 <button type="submit" class="btn btn-primary">
