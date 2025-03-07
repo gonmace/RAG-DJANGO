@@ -86,7 +86,7 @@ class LangChainService:
         if self.vectorstore is None:
             raise ValueError("Vectorstore no inicializado. Llama a initialize_vectorstore primero.")
         
-        return self.vectorstore.similarity_search(
+        return self.vectorstore.similarity_search_with_relevance_scores(
             query=query,
             k=k
         )

@@ -443,3 +443,36 @@ def split_documents_view(request):
     return render(request, 'splitters/splitters.html')
 
 
+def similaridad_view(request):
+    service = LangChainService()
+    resultado = None
+    texto_consulta = None
+    umbral = None
+    
+    if request.method == 'POST':
+        texto_consulta = request.POST.get('texto_consulta')
+        num_resultados = int(request.POST.get('num_resultados', 5))
+        
+        # Si el campo está vacío o es None, usar 0
+        umbral_raw = request.POST.get('umbral', '')
+        umbral = float(umbral_raw) if umbral_raw.strip() else 0.0
+        
+        try:
+            # Obtenemos más resultados de los solicitados para poder filtrar por umbral
+            resultados_raw = service.similarity_search(texto_consulta, k=num_resultados * 2)
+            # Filtramos los resultados por el umbral y limitamos al número solicitado
+            resultado = [(doc, score) for doc, score in resultados_raw if score >= umbral][:num_resultados]
+            
+            if not resultado:
+                messages.warning(request, 'No se encontraron resultados que superen el umbral de similitud especificado.')
+                
+        except Exception as e:
+            messages.error(request, f'Error al realizar la búsqueda: {str(e)}')
+    
+    return render(request, 'embeddings/similaridad.html', {
+        'resultado': resultado,
+        'texto_consulta': texto_consulta,
+        'umbral': umbral
+    })
+
+

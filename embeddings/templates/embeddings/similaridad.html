@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load tailwind_tags widget_tweaks %}
+
+{% block css %}
+    {% tailwind_css %}
+{% endblock css %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Pruebas de Similaridad</h1>
+
+        <!-- Formulario de búsqueda -->
+        <form method="POST" class="bg-white shadow-md rounded-lg p-6 mb-8">
+            {% csrf_token %}
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="texto_consulta">
+                    Texto de consulta
+                </label>
+                <input
+                    type="text"
+                    name="texto_consulta"
+                    id="texto_consulta"
+                    class="input w-full p-2 border rounded-md"
+                    placeholder="Ingrese el texto para buscar documentos similares..."
+                    value="{% if texto_consulta %}{{ texto_consulta }}{% endif %}"
+                    required
+                >
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="num_resultados">
+                    Número de resultados
+                </label>
+                <input
+                    type="number"
+                    name="num_resultados"
+                    id="num_resultados"
+                    min="1"
+                    max="20"
+                    value="5"
+                    class="input w-full p-2 border rounded-md"
+                >
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="umbral">
+                    Umbral de similitud (0.0 - 1.0)
+                </label>
+                <input
+                    type="number"
+                    name="umbral"
+                    id="umbral"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="{% if umbral %}{{ umbral }}{% else %}0{% endif %}"
+                    class="input w-full p-2 border rounded-md"
+                >
+                <p class="text-sm text-gray-500 mt-1">Solo se mostrarán resultados con similitud mayor al umbral (dejar vacío o 0 para mostrar todos)</p>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="btn btn-primary">
+                    Buscar Similares
+                </button>
+            </div>
+        </form>
+
+        <!-- Resultados -->
+        {% if resultado %}
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4">Texto consultado</h2>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-700">{{ texto_consulta }}</p>
+                    </div>
+                </div>
+
+                <h2 class="text-xl font-semibold mb-4">Resultados de la búsqueda</h2>
+                <div class="space-y-6">
+                    {% for doc, score in resultado %}
+                        <div class="border-b pb-4 last:border-b-0">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm text-gray-500">ID: {{ doc.id }}</span>
+                                <span class="text-sm font-medium text-primary">
+                                    Similitud: {{ score|floatformat:4 }}
+                                </span>
+                            </div>
+                            {% if doc.metadata %}
+                                <div class="bg-gray-50 p-2 rounded-md mb-2">
+                                    <p class="text-sm text-gray-600">
+                                        Metadatos: {{ doc.metadata|pprint }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                            <p class="text-gray-700">{{ doc.page_content }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %} 

@@ -10,4 +10,5 @@ urlpatterns = [
     path('actualizar/', views.actualizar_embedding, name='actualizar'),
     path('splitters/', views.split_documents_view, name='splitters'),
     path('create/', views.create_embeddings, name='create_embeddings'),
+    path('similaridad/', views.similaridad_view, name='similaridad'),
 ]
