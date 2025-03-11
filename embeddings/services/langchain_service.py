@@ -98,7 +98,7 @@ class LangChainService:
         return self.vectorstore.similarity_search_with_relevance_scores(
             query=query,
             k=k,
-            filter=filter
+            filter=filter,
         )
 
     def query_collection(self, query_text: str, n_results: int = 2):

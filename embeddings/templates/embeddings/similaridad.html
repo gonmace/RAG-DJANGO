@@ -55,7 +55,7 @@
             <!-- Filtro de Metadatos -->
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="filtro_metadatos">
-                    Filtro adicional de metadatos (JSON)
+                    Filtro de metadatos (JSON)
                 </label>
                 <input
                     type="text"
@@ -65,7 +65,7 @@
                     placeholder='{"campo": "valor"}'
                     value="{% if filtro_metadatos %}{{ filtro_metadatos }}{% endif %}"
                 >
-                <p class="text-sm text-gray-500 mt-1">Ingrese un objeto JSON para filtrar por metadatos adicionales. Ejemplo: {"Capítulo": "Introducción"}</p>
+                <p class="text-sm text-gray-500 mt-1">Ingrese un objeto JSON para filtrar por metadatos. Ejemplo: {"Capítulo": "Introducción"}</p>
             </div>
             <div class="flex gap-4 mb-6">
                 <div class="flex-1">
@@ -77,7 +77,7 @@
                         name="num_resultados"
                         id="num_resultados"
                         min="1"
-                        max="20"
+                        max="30"
                         value="5"
                         class="input w-full p-2 border rounded-md"
                     >
