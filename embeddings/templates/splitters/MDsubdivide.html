@@ -111,7 +111,16 @@
             </div>
 
             <!-- Botón para crear embeddings -->
-            <div class="mt-6 flex justify-end">
+            <div class="mt-6 flex justify-end items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <label for="rango" class="text-sm font-medium text-gray-700">Rango de fragmentos:</label>
+                    <input type="text" id="rango" name="rango" 
+                           class="input input-bordered input-sm w-32 bg-white" 
+                           placeholder="1-{{ chunks|length }}"
+                           value="1-{{ chunks|length }}"
+                           pattern="\d+-\d+"
+                           title="Formato: inicio-fin (ejemplo: 1-10)">
+                </div>
                 <button type="button" onclick="createEmbeddings()" 
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Crear Embeddings de Subdivisiones
@@ -125,6 +134,14 @@
 <!-- Script para crear embeddings -->
 <script>
 function createEmbeddings() {
+    const rangoInput = document.getElementById('rango');
+    const rangoValue = rangoInput.value.trim() || `1-{{ chunks|length }}`;
+    
+    if (!rangoValue.match(/^\d+-\d+$/)) {
+        alert('Por favor, ingrese un rango válido (ejemplo: 1-10)');
+        return;
+    }
+
     const progressModal = document.createElement('dialog');
     progressModal.className = 'modal modal-open';
     progressModal.innerHTML = `
@@ -142,7 +159,7 @@ function createEmbeddings() {
     document.body.appendChild(progressModal);
     progressModal.showModal();
 
-    const eventSource = new EventSource("{% url 'embeddings:create_embeddings_MDsubdivide' %}");
+    const eventSource = new EventSource(`{% url 'embeddings:create_embeddings_MDsubdivide' %}?rango=${rangoValue}`);
     
     eventSource.onmessage = function(event) {
         const data = JSON.parse(event.data);

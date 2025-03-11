@@ -220,7 +220,81 @@ def create_embeddings_MDtitles(request):
 
 @require_http_methods(["GET"])
 def create_embeddings_MDsubdivide(request):
-    pass
+    try:
+        # Obtener los chunks de la sesión
+        chunks_data = request.session.get('chunks_with_metadata', [])
+        
+        if not chunks_data:
+            return StreamingHttpResponse(
+                f"data: {json.dumps({'error': 'No hay fragmentos para procesar. Por favor, primero divide el documento.'})}\n\n",
+                content_type='text/event-stream'
+            )
+
+        # Obtener el rango de fragmentos
+        rango_fragmentos = request.GET.get('rango', f'1-{len(chunks_data)}')
+        try:
+            inicio, fin = map(int, rango_fragmentos.split('-'))
+            # Ajustar índices a base 0 y validar rangos
+            inicio = max(1, min(inicio, len(chunks_data))) - 1
+            fin = max(1, min(fin, len(chunks_data))) - 1
+            if inicio > fin:
+                inicio, fin = fin, inicio
+            chunks_data = chunks_data[inicio:fin + 1]
+        except ValueError:
+            return StreamingHttpResponse(
+                f"data: {json.dumps({'error': 'Formato de rango inválido. Use el formato: inicio-fin (ejemplo: 1-10)'})}\n\n",
+                content_type='text/event-stream'
+            )
+        
+        def generate_progress():
+            service = LangChainService()
+            embeddings_created = 0
+            total_chunks = len(chunks_data)
+            
+            try:
+                # Enviar mensaje inicial
+                yield f"data: {json.dumps({'status': 'Iniciando creación de embeddings...', 'progress': 0, 'current': 0, 'total': total_chunks})}\n\n"
+                
+                # Procesar cada fragmento
+                for i, chunk in enumerate(chunks_data, 1):
+
+                    # Obtener el texto del chunk
+                    texto = chunk.get('text', '')
+                    
+                    # Crear metadatos con Documento y ID_Original
+                    metadatos = {
+                        'Documento': chunk.get('metadata', {}).get('Documento', ''),
+                        'ID_Original': chunk.get('metadata', {}).get('ID_Original', '') 
+                    }
+                    
+                    # Enviar actualización de progreso
+                    porcentaje = (i / total_chunks) * 100
+                    yield f"data: {json.dumps({'status': f'Procesando fragmento {i}/{total_chunks}', 'progress': porcentaje, 'current': i, 'total': total_chunks})}\n\n"
+                    
+                    # Añadir el documento
+                    service.add_document(texto, metadatos)
+                    embeddings_created += 1
+                
+                # Limpiar los chunks de la sesión solo si todo fue exitoso
+                del request.session['chunks_with_metadata']
+                request.session.modified = True
+                
+                # Enviar mensaje de éxito
+                yield f"data: {json.dumps({'success': True, 'message': f'Se crearon {embeddings_created} embeddings exitosamente'})}\n\n"
+                
+            except Exception as e:
+                yield f"data: {json.dumps({'error': f'Error al crear embeddings: {str(e)}'})}\n\n"
+        
+        return StreamingHttpResponse(
+            generate_progress(),
+            content_type='text/event-stream'
+        )
+            
+    except Exception as e:
+        return StreamingHttpResponse(
+            f"data: {json.dumps({'error': f'Error inesperado: {str(e)}'})}\n\n",
+            content_type='text/event-stream'
+        )
 
 def split_documents_view(request):
     if request.method == 'POST':
