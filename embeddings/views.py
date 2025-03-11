@@ -427,7 +427,7 @@ def split_documents_view(request):
                 request.session['chunks_with_metadata'] = serializable_chunks
                 request.session.modified = True
                 
-                return render(request, 'splitters/MDtitulos.html', {
+                return render(request, 'splitters/MDtitles.html', {
                     'chunks': chunks_with_metadata,
                     'titulo1_nombre': titulo1_nombre,
                     'titulo2_nombre': titulo2_nombre,
@@ -445,7 +445,7 @@ def split_documents_view(request):
         else:
             messages.error(request, 'Por favor, sube un archivo')
             
-    return render(request, 'splitters/splitters.html')
+    return render(request, 'splitters/MDtitles.html')
 
 
 def similaridad_view(request):

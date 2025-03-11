@@ -100,10 +100,9 @@
                         <strong>Metadatos:</strong>
                         <div class="mt-1 bg-gray-50 p-2 rounded">
                             <div><strong>Documento:</strong> {{ chunk.metadata.Documento }}</div>
-                            {% if chunk.metadata.parent_id %}
-                            <div><strong>ID Original:</strong> {{ chunk.metadata.parent_id }}</div>
+                            {% if chunk.metadata.ID_Original %}
+                            <div><strong>ID Original:</strong> {{ chunk.metadata.ID_Original }}</div>
                             {% endif %}
-                            <div><strong>Palabra clave:</strong> {{ chunk.metadata.subdivision_keyword }}</div>
                         </div>
                     </div>
                     {% endif %}

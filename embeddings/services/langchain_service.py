@@ -4,6 +4,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from uuid import uuid4
+from unidecode import unidecode
 
 
 c_name = "langchain"
@@ -199,42 +200,104 @@ class LangChainService:
         Args:
             documento_nombre (str): Nombre del documento a subdividir
             keyword (str): Palabras clave separadas por comas. Pueden incluir patrones como '\n\n'
+                         Las palabras son insensibles a acentos.
         """
         # Obtener el contenido original del documento
         original_content = self.get_document_content(documento_nombre)
         new_chunks = []
         
-        # Convertir la cadena de palabras clave en una lista
-        keywords = [k.strip() for k in keyword.split(',')]
+        # Convertir la cadena de palabras clave en una lista y normalizar (quitar acentos)
+        keywords = [unidecode(k.strip()) for k in keyword.split(',')]
         
         for content in original_content:
             text = content['text']
+            normalized_text = unidecode(text)  # Texto sin acentos para búsqueda
+            chunk_created = False  # Flag para rastrear si se creó algún chunk
+            
             # Aplicar cada patrón de división secuencialmente
             for key in keywords:
                 # Manejar el caso especial de '\n\n'
                 if key == '\\n\\n':
                     key = '\n\n'
+                    # Para '\n\n' usamos el texto original ya que es un patrón especial
+                    current_text = text
+                    current_normalized_text = normalized_text
+                    # Para '\n\n' no mantenemos el separador
+                    keep_separator = False
+                else:
+                    current_text = text
+                    current_normalized_text = normalized_text
+                    # Para palabras clave normales, mantenemos el separador
+                    keep_separator = True
+                
+                # Si la palabra clave está en el texto normalizado
+                if key in current_normalized_text:
+                    chunk_created = True  # Marcar que se creó al menos un chunk
+                    # Encontrar todas las posiciones de la palabra clave en el texto normalizado
+                    start = 0
+                    positions = []
+                    original_keys = []  # Almacenar las palabras clave originales
+                    while True:
+                        pos = current_normalized_text.find(key, start)
+                        if pos == -1:
+                            break
+                        positions.append(pos)
+                        # Guardar la palabra clave original del texto
+                        original_keys.append(current_text[pos:pos + len(key)])
+                        start = pos + len(key)
                     
-                # Si la palabra clave está en el texto, usarla para dividir
-                if key in text:
-                    paragraphs = text.split(key)
+                    # Usar las posiciones para dividir el texto original
+                    last_pos = 0
+                    paragraphs = []
+                    for i, pos in enumerate(positions):
+                        if keep_separator:
+                            # Para el primer fragmento, añadimos la palabra al final
+                            if i == 0:
+                                paragraphs.append(current_text[last_pos:pos] + original_keys[i])
+                            else:
+                                # Para los fragmentos intermedios, añadimos la palabra al inicio y al final
+                                paragraphs.append(original_keys[i-1] + current_text[last_pos:pos] + original_keys[i])
+                        else:
+                            paragraphs.append(current_text[last_pos:pos])
+                        last_pos = pos + len(key)
+                    
+                    # Añadir el último fragmento
+                    if keep_separator and positions:
+                        # Para el último fragmento, añadimos la palabra al inicio
+                        paragraphs.append(original_keys[-1] + current_text[last_pos:])
+                    else:
+                        paragraphs.append(current_text[last_pos:])
+                    
                     # Procesar cada párrafo
                     for i, paragraph in enumerate(paragraphs):
                         if paragraph.strip():  # Solo procesar párrafos no vacíos
                             # Crear metadata para el nuevo chunk
-                            new_metadata = content['metadata'].copy()
-                            new_metadata['parent_id'] = content['id']
-                            new_metadata['subdivision_keyword'] = key
-                            new_metadata['subdivision_index'] = i
-                            # Modificar el nombre del documento para los subfragmentos
-                            new_metadata['Documento'] = f"{documento_nombre} (SUBFRAGMENTOS)"
+                            new_metadata = {
+                                'Documento': f"{documento_nombre} (SUBFRAGMENTOS)",
+                                'ID_Original': content['id']
+                            }
                             
                             # Añadir el nuevo chunk
                             new_chunks.append({
                                 'text': paragraph.strip(),
                                 'metadata': new_metadata
                             })
+                    
                     # Actualizar el texto para la siguiente iteración
                     text = ' '.join(paragraphs)
+                    normalized_text = unidecode(text)
+                elif key == '\n\n' and not chunk_created:
+                    # Si el separador es \n\n y no se encontró en el texto,
+                    # considerar todo el texto como un chunk
+                    new_metadata = {
+                        'Documento': f"{documento_nombre} (SUBFRAGMENTOS)",
+                        'ID_Original': content['id']
+                    }
+                    
+                    new_chunks.append({
+                        'text': current_text.strip(),
+                        'metadata': new_metadata
+                    })
+                    chunk_created = True
 
         return new_chunks

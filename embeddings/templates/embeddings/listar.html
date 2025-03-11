@@ -134,7 +134,36 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Event Listeners para checkboxes individuales
+    let lastChecked = null;  // Variable para almacenar el último checkbox seleccionado
+    
     childCheckboxes.forEach(checkbox => {
+        // Cambiamos de 'change' a 'click' para capturar el evento antes del cambio
+        checkbox.addEventListener('click', function(e) {
+            if (!lastChecked) {
+                lastChecked = this;
+                return;
+            }
+
+            // Si se presiona Shift
+            if (e.shiftKey) {
+                const checkboxes = Array.from(childCheckboxes);
+                const start = checkboxes.indexOf(lastChecked);
+                const end = checkboxes.indexOf(this);
+                
+                // Obtener el rango de checkboxes entre el último seleccionado y el actual
+                const min = Math.min(start, end);
+                const max = Math.max(start, end);
+                
+                // Marcar todos los checkboxes en el rango con el mismo estado que el último seleccionado
+                checkboxes.slice(min, max + 1).forEach(cb => {
+                    cb.checked = lastChecked.checked;
+                });
+            }
+            
+            lastChecked = this;
+        });
+
+        // Mantener la actualización del estado general
         checkbox.addEventListener('change', function() {
             const allChecked = Array.from(childCheckboxes).every(cb => cb.checked);
             const someChecked = Array.from(childCheckboxes).some(cb => cb.checked);
