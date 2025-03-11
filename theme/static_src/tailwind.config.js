@@ -26,7 +26,7 @@ module.exports = {
               "secondary": "#90a8a2", // Light accent
               "accent": "#CA5043", // Dark accent
               "neutral": "#364146", // Dark shades
-              "base-100": "oklch(94% 0 0)", // Light shades (background)
+              "base-100": "oklch(97% 0 0)", // Light shades (background)
               "info": "oklch(74% 0.16 232.661)",
               "success": "oklch(76% 0.177 163.223)",
               "warning": "oklch(90% 0.182 98.111)",

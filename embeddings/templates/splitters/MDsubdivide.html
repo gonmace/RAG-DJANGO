@@ -18,7 +18,6 @@
 
             <!-- Configuración de subdivisión -->
             <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Configuración de Subdivisión</h3>
                 
                 <!-- Selector de Documento -->
                 <div class="mb-4">
@@ -27,7 +26,7 @@
                     </label>
                     <div class="flex gap-4">
                         <select name="documento_seleccionado"
-                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                class="select select-bordered w-full max-w-xs bg-white"
                                 required>
                             <option value="">Selecciona un documento</option>
                             {% for documento in documentos %}
@@ -51,7 +50,7 @@
                         Palabra Clave
                     </label>
                     <input type="text" name="keyword" required
-                           class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                           class="input input-bordered w-full bg-white"
                            placeholder="Ingresa la palabra clave para subdividir">
                     <p class="mt-1 text-sm text-gray-500">Los párrafos que contengan esta palabra serán extraídos como nuevos fragmentos</p>
                 </div>
@@ -60,7 +59,7 @@
                 <div class="mt-4 space-y-2">
                     <div class="flex items-center">
                         <input type="checkbox" name="keep_metadata" id="keep_metadata"
-                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                               class="checkbox checkbox-info" checked>
                         <label for="keep_metadata" class="ml-2 text-sm text-gray-600">
                             Mantener metadatos del documento original
                         </label>

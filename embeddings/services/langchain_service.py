@@ -194,28 +194,47 @@ class LangChainService:
         return document_content
 
     def subdivide_by_keyword(self, documento_nombre: str, keyword: str):
-        """Subdivide un documento existente basándose en una palabra clave."""
+        """Subdivide un documento existente basándose en una o más palabras clave.
+        
+        Args:
+            documento_nombre (str): Nombre del documento a subdividir
+            keyword (str): Palabras clave separadas por comas. Pueden incluir patrones como '\n\n'
+        """
         # Obtener el contenido original del documento
         original_content = self.get_document_content(documento_nombre)
         new_chunks = []
-
+        
+        # Convertir la cadena de palabras clave en una lista
+        keywords = [k.strip() for k in keyword.split(',')]
+        
         for content in original_content:
-            # Dividir el texto en párrafos
-            paragraphs = content['text'].split('\n\n')
-            
-            # Procesar cada párrafo
-            for i, paragraph in enumerate(paragraphs):
-                if keyword.lower() in paragraph.lower():
-                    # Crear metadata para el nuevo chunk
-                    new_metadata = content['metadata'].copy()
-                    new_metadata['parent_id'] = content['id']
-                    new_metadata['subdivision_keyword'] = keyword
-                    new_metadata['subdivision_index'] = i
+            text = content['text']
+            # Aplicar cada patrón de división secuencialmente
+            for key in keywords:
+                # Manejar el caso especial de '\n\n'
+                if key == '\\n\\n':
+                    key = '\n\n'
                     
-                    # Añadir el nuevo chunk
-                    new_chunks.append({
-                        'text': paragraph.strip(),
-                        'metadata': new_metadata
-                    })
+                # Si la palabra clave está en el texto, usarla para dividir
+                if key in text:
+                    paragraphs = text.split(key)
+                    # Procesar cada párrafo
+                    for i, paragraph in enumerate(paragraphs):
+                        if paragraph.strip():  # Solo procesar párrafos no vacíos
+                            # Crear metadata para el nuevo chunk
+                            new_metadata = content['metadata'].copy()
+                            new_metadata['parent_id'] = content['id']
+                            new_metadata['subdivision_keyword'] = key
+                            new_metadata['subdivision_index'] = i
+                            # Modificar el nombre del documento para los subfragmentos
+                            new_metadata['Documento'] = f"{documento_nombre} (SUBFRAGMENTOS)"
+                            
+                            # Añadir el nuevo chunk
+                            new_chunks.append({
+                                'text': paragraph.strip(),
+                                'metadata': new_metadata
+                            })
+                    # Actualizar el texto para la siguiente iteración
+                    text = ' '.join(paragraphs)
 
         return new_chunks
