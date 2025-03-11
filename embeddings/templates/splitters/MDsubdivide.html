@@ -142,7 +142,7 @@ function createEmbeddings() {
     document.body.appendChild(progressModal);
     progressModal.showModal();
 
-    const eventSource = new EventSource("{% url 'embeddings:create_embeddings' %}");
+    const eventSource = new EventSource("{% url 'embeddings:create_embeddings_MDsubdivide' %}");
     
     eventSource.onmessage = function(event) {
         const data = JSON.parse(event.data);

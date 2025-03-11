@@ -10,6 +10,7 @@ urlpatterns = [
     path('actualizar/', views.actualizar_embedding, name='actualizar'),
     path('MDTitles/', views.split_documents_view, name='MDTitles'),
     path('MDSubdivide/', views.subdivide_documents_view, name='MDSubdivide'),
-    path('create/', views.create_embeddings, name='create_embeddings'),
+    path('createMDtitles/', views.create_embeddings_MDtitles, name='create_embeddings_MDtitles'),
+    path('createMDsubdivide/', views.create_embeddings_MDsubdivide, name='create_embeddings_MDsubdivide'),
     path('similaridad/', views.similaridad_view, name='similaridad'),
 ]

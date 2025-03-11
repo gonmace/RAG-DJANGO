@@ -119,7 +119,7 @@ def actualizar_embedding(request):
 
 
 @require_http_methods(["GET"])
-def create_embeddings(request):
+def create_embeddings_MDtitles(request):
     try:
         # Obtener los chunks de la sesión
         chunks_data = request.session.get('chunks_with_metadata', [])
@@ -218,6 +218,9 @@ def create_embeddings(request):
             content_type='text/event-stream'
         )
 
+@require_http_methods(["GET"])
+def create_embeddings_MDsubdivide(request):
+    pass
 
 def split_documents_view(request):
     if request.method == 'POST':

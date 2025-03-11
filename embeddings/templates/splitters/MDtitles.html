@@ -243,7 +243,7 @@
         progressContainer.classList.remove('hidden');
 
         // Crear un EventSource para recibir actualizaciones del servidor
-        const eventSource = new EventSource('/embeddings/create/');
+        const eventSource = new EventSource('/embeddings/createMDtitles/');
 
         eventSource.onmessage = function (event) {
           const data = JSON.parse(event.data);
