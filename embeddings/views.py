@@ -481,3 +481,121 @@ def similaridad_view(request):
     })
 
 
+def subdivide_documents_view(request):
+    if request.method == 'POST':
+        if 'file' in request.FILES:
+            file = request.FILES['file']
+            if file.name.endswith('.md'):
+                text = file.read().decode('utf-8')
+                
+                # Inicializar el codificador de tiktoken
+                enc = tiktoken.get_encoding("cl100k_base")
+                
+                # Obtener parámetros del formulario
+                chunk_size = int(request.POST.get('chunk_size', 500))
+                overlap_size = int(request.POST.get('overlap_size', 50))
+                separators = request.POST.get('separators', '\n\n').encode().decode('unicode_escape')
+                respect_separators = 'respect_separators' in request.POST
+                keep_titles = 'keep_titles' in request.POST
+                
+                # Dividir el texto en chunks
+                chunks_with_metadata = []
+                current_titles = {'h1': None, 'h2': None, 'h3': None, 'h4': None, 'h5': None, 'h6': None}
+                
+                # Función para detectar y actualizar títulos
+                def update_titles(line):
+                    if line.startswith('#'):
+                        level = len(re.match(r'^#+', line).group())
+                        if 1 <= level <= 6:
+                            title = line.lstrip('#').strip()
+                            current_titles[f'h{level}'] = title
+                            # Limpiar títulos de niveles inferiores
+                            for i in range(level + 1, 7):
+                                current_titles[f'h{i}'] = None
+                
+                # Dividir el texto en líneas
+                lines = text.split('\n')
+                current_chunk = ""
+                current_tokens = 0
+                
+                for line in lines:
+                    # Actualizar títulos si la línea es un título
+                    update_titles(line)
+                    
+                    # Calcular tokens de la línea actual
+                    line_tokens = len(enc.encode(line))
+                    
+                    # Si el chunk actual más la nueva línea excede el tamaño máximo
+                    if current_tokens + line_tokens > chunk_size and current_chunk:
+                        # Crear metadata con títulos actuales si está activada la opción
+                        metadata = {}
+                        if keep_titles:
+                            for level, title in current_titles.items():
+                                if title:
+                                    metadata[level] = title
+                        
+                        # Añadir el chunk actual a la lista
+                        chunks_with_metadata.append({
+                            'text': current_chunk.strip(),
+                            'token_count': current_tokens,
+                            'metadata': metadata
+                        })
+                        
+                        # Si hay overlap, mantener parte del texto anterior
+                        if overlap_size > 0 and respect_separators:
+                            # Encontrar el último separador en el texto
+                            last_sep_pos = current_chunk.rfind(separators)
+                            if last_sep_pos != -1:
+                                current_chunk = current_chunk[last_sep_pos + len(separators):]
+                                current_tokens = len(enc.encode(current_chunk))
+                            else:
+                                current_chunk = ""
+                                current_tokens = 0
+                        else:
+                            current_chunk = ""
+                            current_tokens = 0
+                    
+                    # Añadir la línea actual al chunk
+                    current_chunk += (line + '\n')
+                    current_tokens += line_tokens
+                
+                # Añadir el último chunk si existe
+                if current_chunk:
+                    metadata = {}
+                    if keep_titles:
+                        for level, title in current_titles.items():
+                            if title:
+                                metadata[level] = title
+                    
+                    chunks_with_metadata.append({
+                        'text': current_chunk.strip(),
+                        'token_count': current_tokens,
+                        'metadata': metadata
+                    })
+                
+                # Calcular estadísticas
+                token_counts = [chunk['token_count'] for chunk in chunks_with_metadata]
+                max_tokens = max(token_counts) if token_counts else 0
+                min_tokens = min(token_counts) if token_counts else 0
+                total_tokens = sum(token_counts) if token_counts else 0
+                price_usd = (total_tokens / 1_000_000) * 0.02
+                
+                # Guardar los chunks en la sesión
+                request.session['chunks_with_metadata'] = chunks_with_metadata
+                request.session.modified = True
+                
+                return render(request, 'splitters/MDsubdivide.html', {
+                    'chunks': chunks_with_metadata,
+                    'max_tokens': max_tokens,
+                    'min_tokens': min_tokens,
+                    'total_tokens': total_tokens,
+                    'price_usd': price_usd
+                })
+            else:
+                messages.error(request, 'Por favor, sube un archivo Markdown (.md)')
+        else:
+            messages.error(request, 'Por favor, sube un archivo')
+    
+    return render(request, 'splitters/MDsubdivide.html')
+
+

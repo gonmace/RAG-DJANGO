@@ -23,15 +23,27 @@
             </div>
         </div>
 
-        <!-- Card for Markdown -->
+        <!-- Card for Markdown Titles -->
         <a href="{% url 'embeddings:MDTitles' %}" 
            class="w-64 bg-white rounded-2xl p-4 shadow-card">
             <div class="bg-primary/10 p-3 rounded-xl">
                 {% include 'icons/md.html' %}
             </div>
             <div>
-                <h3 class="font-semibold">Markdown</h3>
+                <h3 class="font-semibold">Markdown - Títulos</h3>
                 <p class="text-md text-secondary">Dividir texto por títulos</p>
+            </div>
+        </a>
+
+        <!-- Card for Markdown Subdivide -->
+        <a href="{% url 'embeddings:MDSubdivide' %}" 
+           class="w-64 bg-white rounded-2xl p-4 shadow-card">
+            <div class="bg-primary/10 p-3 rounded-xl">
+                {% include 'icons/md.html' %}
+            </div>
+            <div>
+                <h3 class="font-semibold">Markdown - Subdividir</h3>
+                <p class="text-md text-secondary">Dividir documentos por párrafo / palabras</p>
             </div>
         </a>
     </div>
