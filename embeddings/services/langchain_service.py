@@ -153,3 +153,69 @@ class LangChainService:
         except Exception as e:
             print(f"Error detallado al actualizar documento: {str(e)}")
             raise Exception(f"Error al actualizar el documento: {str(e)}")
+
+    def get_unique_document_values(self):
+        """Obtiene los valores únicos del metadato 'Documento' directamente de Chroma."""
+        if self.vectorstore is None:
+            self.initialize_vectorstore()
+
+        # Obtener la colección directamente
+        collection = self.vectorstore
+        result = collection.get()
+        
+        # Extraer valores únicos del metadato 'Documento'
+        documentos_set = set()
+        if result['metadatas']:
+            for metadata in result['metadatas']:
+                if metadata and 'Documento' in metadata:
+                    documentos_set.add(metadata['Documento'])
+        
+        # Convertir a lista ordenada
+        return sorted(list(documentos_set))
+
+    def get_document_content(self, documento_nombre: str):
+        """Obtiene todo el contenido de un documento específico."""
+        if self.vectorstore is None:
+            self.initialize_vectorstore()
+
+        collection = self.vectorstore
+        result = collection.get()
+        document_content = []
+
+        for i in range(len(result['documents'])):
+            metadata = result['metadatas'][i] if result['metadatas'] else {}
+            if metadata and metadata.get('Documento') == documento_nombre:
+                document_content.append({
+                    'id': result['ids'][i],
+                    'text': result['documents'][i],
+                    'metadata': metadata
+                })
+
+        return document_content
+
+    def subdivide_by_keyword(self, documento_nombre: str, keyword: str):
+        """Subdivide un documento existente basándose en una palabra clave."""
+        # Obtener el contenido original del documento
+        original_content = self.get_document_content(documento_nombre)
+        new_chunks = []
+
+        for content in original_content:
+            # Dividir el texto en párrafos
+            paragraphs = content['text'].split('\n\n')
+            
+            # Procesar cada párrafo
+            for i, paragraph in enumerate(paragraphs):
+                if keyword.lower() in paragraph.lower():
+                    # Crear metadata para el nuevo chunk
+                    new_metadata = content['metadata'].copy()
+                    new_metadata['parent_id'] = content['id']
+                    new_metadata['subdivision_keyword'] = keyword
+                    new_metadata['subdivision_index'] = i
+                    
+                    # Añadir el nuevo chunk
+                    new_chunks.append({
+                        'text': paragraph.strip(),
+                        'metadata': new_metadata
+                    })
+
+        return new_chunks

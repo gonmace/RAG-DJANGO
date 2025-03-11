@@ -202,6 +202,9 @@ ARTÍCULO 78. (COSAS FUNGIBLES).- I. Son fungibles las cosas del mismo género q
 
 ARTÍCULO 79. (COSAS CONSUMIBLES).- Son consumibles las cosas que se destruyen o desaparecen con el primer uso que se hace de ellas. ARTÍCULO 80. (COSAS INDIVISIBLES).- I. Son indivisibles las cosas que no pueden fraccionarse sin alterar su sustancia con relación al todo. II. Se consideran también indivisibles las cosas que no pueden fraccionarse por disposición de la ley o la voluntad humana aunque de hecho sean pasibles de división.
 
+ARTÍCULO 80. (COSAS INDIVISIBLES).- I. Son indivisibles las cosas que no pueden fraccionarse sin alterar su sustancia con relación al todo. II. Se consideran también indivisibles las cosas que no pueden fraccionarse por disposición de la ley o la
+ voluntad humana aunque de hecho sean pasibles de división.
+
 ARTÍCULO 81. (APLICACIÓN DE LA DISCIPLINA DE LOS BIENES A LOS DERECHOS).- Las disposiciones relativas a los bienes inmuebles se aplican a los Derechos Reales sobre inmuebles y a las acciones que les corresponden. Respecto a otros derechos y acciones, así como a acciones o cuotas de participación en las sociedades, se aplican las disposiciones sobre los bienes muebles.
 
 ARTÍCULO 82. (PERTENENCIAS).- I. Constituyen pertenencias los bienes muebles que sin perder su individualidad están permanentemente afectados a un fin económico u ornamental con respecto a otro bien mueble o inmueble. II. La afectación puede hacerla sólo el propietario de la cosa principal o el titular de otro derecho real sobre la misma. III. Los actos respecto a la cosa principal comprenden también las pertenencias. Sin embargo, éstas pueden constituir el objeto de actos o relaciones jurídicas separados, salvo los derechos adquiridos por terceros.
@@ -290,6 +293,8 @@ ARTÍCULO 112. (ACCESO AL FUNDO).- El propietario debe permitir el acceso y el t
 
 ARTÍCULO 113. (DESLINDE Y AMOJONAMIENTO).- El dueño de un fundo puede obligar a su vecino, en cualquier tiempo, al deslinde y amojonamiento. ARTÍCULO 114. (CERRAMIENTO).- El propietario puede cerrar su fundo en cualquier tiempo.
 
+ARTÍCULO 114. (CERRAMIENTO).- El propietario puede cerrar su fundo en cualquier tiempo.
+
 ##### SECCION II - LIMITACIONES DERIVADAS DE LAS RELACIONES DE VECINDAD 
 
 ###### SUBSECCION I DEL USO NOCIVO DE LA PROPIEDAD
@@ -330,9 +335,7 @@ ARTÍCULO 126. (CAÍDAS DE AGUAS PLUVIALES).- El propietario debe construir sus 
 
 ###### SUBSECCION I DE LA ACCESION
 
-ARTÍCULO 127. (OBRAS HECHAS SOBRE O BAJO EL SUELO).- Todas la construcciones, plantaciones u obras hechas sobre o bajo el suelo pertenecen al propietario de éste,
-
-salvas las modificaciones que establecen los artículos siguientes o a menos que resulte otra cosa del título o de una disposición de ley.
+ARTÍCULO 127. (OBRAS HECHAS SOBRE O BAJO EL SUELO).- Todas la construcciones, plantaciones u obras hechas sobre o bajo el suelo pertenecen al propietario de éste, salvas las modificaciones que establecen los artículos siguientes o a menos que resulte otra cosa del título o de una disposición de ley.
 
 ARTÍCULO 128. (OBRAS HECHAS EN SUELO PROPIO CON MATERIAL AJENO).- I. El dueño que en su suelo hace construcciones, plantaciones u otras obras con materiales ajenos, adquiere la propiedad de éstos con el cargo de pagar su valor; y si obró de mala fe resarcirá además los daños causados. El propietario de los materiales puede pedir que sean retirados sólo cuando no se cause menoscabo grave a la obra construida o perezcan las plantaciones. II. El retiro de los materiales no se admite pasados seis meses de que el propietario conoció su empleo
 
@@ -460,6 +463,8 @@ ARTÍCULO 181. (MEDIANERIA DE SETOS VIVOS Y CERCAS).- El seto vivo y la cerca en
 
 ARTÍCULO 182. (GASTOS DE CONSERVACIÓN).- Los gastos de conservación de foso, seto vivo y cerca medianeros están a cargo de los copropietarios. ARTÍCULO 183. (INDIVISIÓN FORZOSA).- Es de indivisión forzosa la medianería de los muros, fosos, setos vivos y cercas que separan fundos contiguos.
 
+ARTÍCULO 183. (INDIVISIÓN FORZOSA).- Es de indivisión forzosa la medianería de los muros, fosos, setos vivos y cercas que separan fundos contiguos.
+
 ##### SECCION III - DE LA PROPIEDAD HORIZONTAL
 
 ARTÍCULO 184. (PISOS Y COMPARTIMIENTOS DE UN EDIFICIO).- Los diversos pisos y compartimientos de un edificio pueden pertenecer a distintos propietarios siempre que la construcción se haya hecho de cemento armado u otro material similar incombustible y se hayan observado las reglas técnicas y demás requisitos establecidos por ley especial.
@@ -543,6 +548,8 @@ ARTÍCULO 215. (LEYES ESPECIALES APLICABLES).- En todo cuanto no esté expresame
 ##### SECCION I - DISPOSICIONES GENERALES
 
 ARTÍCULO 216. (CONSTITUCIÓN DEL USUFRUCTO).- I. El usufructo se constituye por un acto de voluntad. II. Puede adquirirse por usucapión en las condiciones determinadas para la propiedad. ARTÍCULO 217. (DURACIÓN).- I. El usufructo es siempre temporal y no puede durar más que la vida del usufructuario. II. El usufructo constituido en favor de una persona colectiva no puede durar más de treinta años.
+
+ARTÍCULO 217. (DURACIÓN).- I. El usufructo es siempre temporal y no puede durar más que la vida del usufructuario. II. El usufructo constituido en favor de una persona colectiva no puede durar más de treinta años.
 
 ARTÍCULO 218. (OBJETO DEL USUFRUCTO).- El usufructo puede ser establecido sobre toda clase de bienes muebles e inmuebles.
 
@@ -633,6 +640,8 @@ ARTÍCULO 254. (APLICACIÓN DE LAS DISPOSICIONES SOBRE EL USUFRUCTO).- Se aplica
 ARTÍCULO 255. (CONTENIDO).- En virtud de la servidumbre el propietario de un fundo puede, para utilidad o beneficio propios, realizar actos de uso en tundo ajeno o impedir al propietario de éste el ejercicio de algunas de sus facultades.
 
 ARTÍCULO 256. (SUBSISTENCIA PASIVA Y ACTIVA DE LA SERVIDUMBRE).- La servidumbre es accesoria a la propiedad del fundo dominante y constituye gravamen sobre el fundo sirviente, subsistiendo en forma activa sobre aquél y pasiva sobre éste, cualesquiera sean los propietarios. ARTÍCULO 257. (PERPETUIDAD).- Las servidumbres son perpetuas, salva disposición contraria.
+
+ARTÍCULO 257. (PERPETUIDAD).- Las servidumbres son perpetuas, salva disposición contraria.
 
 ARTÍCULO 258. (CLASES).- Las servidumbres son: 1. Continuas cuando se ejercen sin un hecho actual del hombre. 2. Discontinuas cuando para ejercerlas se necesita de un hecho actual del hombre. 3. Aparentes cuando se anuncian por signos exteriores. 4. No aparentes cuando no hay signos visibles que las revelen.
 
@@ -874,9 +883,9 @@ ARTÍCULO 350. (CLÁUSULAS EXHONERATIVAS DE RESPONSABILIDAD).- Los pactos siguie
 
 ### TITULO II - DE LA EXTINCION DE LAS OBLIGACIONES
 
-#### CAPITULO I - DISPOSICION GENERAL ARTÍCULO 351. (MODOS DE EXTINCIÓN
+#### CAPITULO I - DISPOSICION GENERAL 
 
-DE LAS OBLIGACIONES).- Las obligaciones se extinguen por: 1. Su cumplimiento. 2. Novación. 3. Remisión o condonación. 4. Compensación. 5. Confusión. 6. Imposibilidad sobrevenida de cumplir la prestación, no imputable al deudor. 7. Prescripción. 8. Otras causas determinadas por la ley.
+ARTÍCULO 351. (MODOS DE EXTINCIÓN DE LAS OBLIGACIONES).- Las obligaciones se extinguen por: 1. Su cumplimiento. 2. Novación. 3. Remisión o condonación. 4. Compensación. 5. Confusión. 6. Imposibilidad sobrevenida de cumplir la prestación, no imputable al deudor. 7. Prescripción. 8. Otras causas determinadas por la ley.
 
 #### CAPITULO II - DE LA NOVACION
 
@@ -1350,9 +1359,9 @@ ARTÍCULO 547. (EFECTOS DE LA NULIDAD Y LA ANULABILIDAD DECLARADAS).- La nulidad
 
 ARTÍCULO 548. (NULIDAD Y ANULABILIDAD DE LOS CONTRATOS PLURILATERALES).- En los contratos plurilaterales, estando las prestaciones de las partes dirigidas a la consecución de un fin común, la nulidad o la anulación del vínculo que afecta a una de las partes no importa la nulidad o anulación del contrato, a menos que su participación se considere esencial de acuerdo a las circunstancias.
 
-##### SECCION II - DE LA NULIDAD DEL CONTRATO ARTÍCULO 549. (CASOS DE
+##### SECCION II - DE LA NULIDAD DEL CONTRATO 
 
-NULIDAD DEL CONTRATO).- El contrato será nulo: 1. Por faltar en el contrato el objeto o la forma prevista por la ley como requisito de validez. 2. Por faltar en el objeto del contrato los requisitos señalados por la ley. 3. Por ilicitud de la causa y por ilicitud del motivo que impulsó a las partes a celebrar el contrato. 4. Por error esencial sobre la naturaleza o sobre el objeto del contrato. 5. En los demás casos determinados por la ley.
+ARTÍCULO 549. (CASOS DE NULIDAD DEL CONTRATO).- El contrato será nulo: 1. Por faltar en el contrato el objeto o la forma prevista por la ley como requisito de validez. 2. Por faltar en el objeto del contrato los requisitos señalados por la ley. 3. Por ilicitud de la causa y por ilicitud del motivo que impulsó a las partes a celebrar el contrato. 4. Por error esencial sobre la naturaleza o sobre el objeto del contrato. 5. En los demás casos determinados por la ley.
 
 ARTÍCULO 550. (NULIDAD PARCIAL DEL CONTRATO).- La nulidad parcial del contrato o de una o más de sus cláusulas no acarrea la nulidad del contrato, a menos que esas cláusulas expresen el motivo determinante del convenio.
 
@@ -1362,9 +1371,9 @@ ARTÍCULO 552. (IMPRESCRIPTIBILIDAD DE LA ACCIÓN DE NULIDAD).- La acción de nu
 
 ARTÍCULO 553. (INCONFIRMABILIDAD DEL CONTRATO NULO).- Salva disposición contraria de la ley, el contrato nulo no puede ser confirmado.
 
-##### SECCION III - DE LA ANULABILIDAD DEL CONTRATO ARTÍCULO 554. (CASOS DE
+##### SECCION III - DE LA ANULABILIDAD DEL CONTRATO 
 
-ANULABILIDAD DEL CONTRATO).- El contrato será anulable: 1. Por falta de consentimiento para su formación. 2. Por incapacidad de una de las partes contratantes. En este caso la persona capaz no podrá reclamar la incapacidad del prohibido con quien ha contratado. 3. Porque una de las partes, aun sin haber sido declarada interdicta, era incapaz de querer o entender en el momento de celebrarse el contrato, siempre que resulte mala fe en la otra parte, apreciada por el perjuicio que se ocasione a la primera según la naturaleza del acto o por otra circunstancia. 4. Por violencia, dolo o error sustancial sobre la materia o sobre las cualidades de la cosa. 5. Por error sustancial sobre la identidad o las cualidades de la persona cuando ellas hayan sido la razón o motivo principal para la celebración del contrato. 6. En los demás casos determinados por la ley.
+ARTÍCULO 554. (CASOS DE ANULABILIDAD DEL CONTRATO).- El contrato será anulable: 1. Por falta de consentimiento para su formación. 2. Por incapacidad de una de las partes contratantes. En este caso la persona capaz no podrá reclamar la incapacidad del prohibido con quien ha contratado. 3. Porque una de las partes, aun sin haber sido declarada interdicta, era incapaz de querer o entender en el momento de celebrarse el contrato, siempre que resulte mala fe en la otra parte, apreciada por el perjuicio que se ocasione a la primera según la naturaleza del acto o por otra circunstancia. 4. Por violencia, dolo o error sustancial sobre la materia o sobre las cualidades de la cosa. 5. Por error sustancial sobre la identidad o las cualidades de la persona cuando ellas hayan sido la razón o motivo principal para la celebración del contrato. 6. En los demás casos determinados por la ley.
 
 ARTÍCULO 555. (PERSONAS QUE PUEDEN DEMANDAR LA ANULACIÓN).- La anulación del contrato puede ser demandada sólo por las partes en interés o protección de quienes ha sido establecida.
 
@@ -1552,7 +1561,7 @@ ARTÍCULO 626. (EVICCIÓN PARCIAL).- Si el comprador sufre evicción sólo parci
 
 ARTÍCULO 627. (LLAMAMIENTO AL VENDEDOR).- I. El comprador demandado por el tercero debe pedir dentro del término establecido por el Código de Procedimiento Civil para contestar a la demanda, se llame en la causa al vendedor. II. El comprador que omite el llamamiento y es vencido en el juicio por el tercero en virtud de sentencia pasada en autoridad de cosa juzgada no puede responsabilizar por la evicción al vendedor si éste prueba que existían razones para obtener el rechazo de la demanda
 
-ARTICULO 628. (MODIFICACION CONVENCIONAL DE LA RESPONSABILIDAD).- I. Los contratantes pueden gravar, disminuir o excluir la responsabilidad del vendedor. II. Aún cuando se pacte la exclusión de responsabilidad el vendedor ésta siempre sujeto a la responsabilidad por un hecho propio. Es nulo todo pacto contrario.
+ARTÍCULO 628. (MODIFICACION CONVENCIONAL DE LA RESPONSABILIDAD).- I. Los contratantes pueden gravar, disminuir o excluir la responsabilidad del vendedor. II. Aún cuando se pacte la exclusión de responsabilidad el vendedor ésta siempre sujeto a la responsabilidad por un hecho propio. Es nulo todo pacto contrario.
 
 ARTÍCULO 629. (RESPONSABILIDAD POR LOS VICIOS DE LA COSA).- I. El vendedor es responsable ante el comprador por los vicios que hacen la cosa vendida impropia para el uso a que está destinada o que disminuyen su valor. II. Es nulo el pacto que excluye o limita la responsabilidad del vendedor cuando éste oculta de mala fe los vicios al comprador.
 
@@ -2006,9 +2015,9 @@ ARTÍCULO 825. (MANDATO COLECTIVO).- El mandato conferido por dos o más persona
 
 ARTÍCULO 826. (MANDATO SIN REPRESENTACIÓN).- I. Cuando el mandatario en el ejercicio del cargo obra en su propio nombre, se obliga directamente con quien contrató como si fuera asunto personal suyo; no obliga al mandante respecto a terceros. II. Sin embargo, puede el mandante subrogarse en los derechos y acciones resultantes de los actos celebrados por el mandatario y ser en tal caso exigido por éste o por los que le representen para cumplir las obligaciones que de ello deriven.
 
-##### SECCION IV - DE LA EXTINCION DEL MANDATO ARTÍCULO 827. (CAUSAS DE
+##### SECCION IV - DE LA EXTINCION DEL MANDATO 
 
-EXTINCIÓN DEL MANDATO).- El mandato se extingue: 1. Por vencimiento del término o por cumplimiento del mandato. 2. Por revocación del mandante. 3. Por renuncia o desistimiento del mandatario. 4. Por muerte o interdicción del mandante o del mandatario, a menos que lo contrario resulte de la naturaleza del asunto. El mandato otorgado por interés común no se extingue por muerte o incapacidad sobreviniente del mandante.
+ARTÍCULO 827. (CAUSAS DE EXTINCIÓN DEL MANDATO).- El mandato se extingue: 1. Por vencimiento del término o por cumplimiento del mandato. 2. Por revocación del mandante. 3. Por renuncia o desistimiento del mandatario. 4. Por muerte o interdicción del mandante o del mandatario, a menos que lo contrario resulte de la naturaleza del asunto. El mandato otorgado por interés común no se extingue por muerte o incapacidad sobreviniente del mandante.
 
 ARTÍCULO 828. (REVOCABILIDAD DEL MANDATO).- I. El mandante puede revocar el mandato en cualquier momento y obligar al mandatario a la devolución de los documentos que conciernen al encargo. II. En el mandato oneroso resarcirá al mandatario el daño causado, si lo revoca antes del término que se hubiese fijado o antes de la conclusión del negocio para el que se otorgó o siendo de duración indeterminada, si no ha dado un prudencial aviso, excepto, en ambos casos que medie justo motivo.
 
@@ -2090,9 +2099,9 @@ ARTÍCULO 859. (RÉGIMEN Y PRUEBA DEL DEPÓSITO NECESARIO).- I. En el caso 1 del
 
 ARTÍCULO 860. (OBLIGACIÓN DE RECIBIR EL DEPÓSITO NECESARIO).- El depósito necesario ocasionado por accidente u otro acontecimiento imprevisto debe ser admitido por toda persona, a menos que tenga impedimento físico u otra justificación atendible, sin perjuicio de que aún en este caso deba cumplir con los primeros cuidados sobre la cosa depositada o, siendo imposible, consignarla ante un juez.
 
-##### SECCION IV - CESACION DEL DEPOSITO ARTÍCULO 861. (CASOS EN QUE CESA
+##### SECCION IV - CESACION DEL DEPOSITO 
 
-EL DEPOSITO).- El depósito cesa: 1. Por restitución de la cosa depositada. 2. Por pérdida de la cosa, sin culpa del depositario. 3. Por enajenación de la cosa por parte del depositante. 4. Por resultar que la cosa depositada es propia del depositario. 5. Por remoción o muerte del depositario.
+ARTÍCULO 861. (CASOS EN QUE CESA EL DEPOSITO).- El depósito cesa: 1. Por restitución de la cosa depositada. 2. Por pérdida de la cosa, sin culpa del depositario. 3. Por enajenación de la cosa por parte del depositante. 4. Por resultar que la cosa depositada es propia del depositario. 5. Por remoción o muerte del depositario.
 
 ##### SECCION V - OTRAS VARIEDADES DEL DEPOSITO
 
@@ -2526,9 +2535,7 @@ ARTÍCULO 1033. (OPCIÓN CONCEDIDA AL HEREDERO).- El heredero que se encuentre d
 
 ARTÍCULO 1034. (PLAZO PARA EL INVENTARIO PRECEDIDO DE LA DECLARACIÓN DE ACEPTACIÓN).- I. Si el heredero opta por declarar que acepta la herencia con beneficio de inventario, debe comenzar a levantarlo dentro de los dos días siguientes a la última citación hecha a los acreedores de la sucesión y a los legatarios, y terminarlo en el lapso de dos meses. El juez señalará un plazo razonable, no mayor de diez días, para practicar las citaciones. Por justo motivo puede el juez conceder prórrogas prudenciales de estos últimos plazos, que no excederán respectivamente, del tiempo indispensable para practicar las citaciones, ni de otros dos meses para terminar el inventario. II. Si ha transcurrido el plazo sin que el inventario haya terminado, se tendrá al heredero como aceptante puro y simple.
 
-ARTÍCULO 1035. (PLAZO PARA HACER EL INVENTARIO Y DESPUÉS DELIBERAR).- I. En el caso del heredero que ha optado porque previamente se levante el inventario para luego deliberar, se
-
-procederá en forma idéntica a la prevista por el artículo anterior. Transcurrido el plazo sin que el inventario haya terminado, se tendrá al heredero por renunciante. II. Terminado el inventario, el heredero tiene un plazo de veinte días, desde la fecha en que terminó el inventario, para deliberar si acepta o no la herencia. Vencido el término sin que hubiera deliberado se tendrá al heredero por renunciante.
+ARTÍCULO 1035. (PLAZO PARA HACER EL INVENTARIO Y DESPUÉS DELIBERAR).- I. En el caso del heredero que ha optado porque previamente se levante el inventario para luego deliberar, se procederá en forma idéntica a la prevista por el artículo anterior. Transcurrido el plazo sin que el inventario haya terminado, se tendrá al heredero por renunciante. II. Terminado el inventario, el heredero tiene un plazo de veinte días, desde la fecha en que terminó el inventario, para deliberar si acepta o no la herencia. Vencido el término sin que hubiera deliberado se tendrá al heredero por renunciante.
 
 ARTÍCULO 1036. (SUSPENSIÓN DE DEMANDAS).- Durante los plazos señalados en los artículos anteriores, no pueden los acreedores y legatarios demandar al heredero el pago de sus créditos y legados, pero las acciones de dominio contra la sucesión pueden instaurarse durante esos plazos.
 
@@ -2694,7 +2701,9 @@ ARTÍCULO 1104. (CONCURRENCIA DEL CÓNYUGE CON ASCENDIENTES).- Al cónyuge se le
 
 ARTÍCULO 1105. (SUCESIÓN DEL CÓNYUGE SOBREVIVIENTE EN LOS BIENES PROPIOS Y EN LOS COMUNES DEL CAUSANTE).- El derecho sucesorio del cónyuge sobreviviente se hace efectivo, en las proporciones señaladas por este Código, tanto en los bienes propios del causante cuando en la parte que a este correspondían en los bienes comunes.
 
-ARTÍCULO 1106.- SUCESlÓN DEL CÓNYUGE DE BUENA FE EN MATRIMONIO PUTATIVO).- I. Cuando el matrimonio ha sido declarado nulo después que murió uno de los cónyuges, el sobreviviente de buena fe tiene derecho a la sucesión del premuerto conforme a las disposiciones anteriores. II. El cónyuge sobreviviente de buena fe queda, sin embargo, excluido de la sucesión si la persona de cuya herencia se trata estaba ligado por matrimonio válido en el momento de su muerte. ARTÍCULO 1107. (EXCLUSIÓN DEL CÓNYUGE EN LA SUCESIÓN).- La sucesión del cónyuge sobreviviente no tiene lugar cuando: 1. El matrimonio se celebra hallándose enfermo el otro cónyuge y su muerte acaece dentro de los treinta días siguientes como consecuencia de aquella enfermedad. 2. Existe sentencia de separación pasada en autoridad de cosa juzgada, en la cual se reconoce al sobreviviente como culpable de la separación 3. Por propia voluntad y sin causa moral ni legal se había separado de hecho de su cónyuge, y la separación dura más de un año.
+ARTÍCULO 1106.- (SUCESlÓN DEL CÓNYUGE DE BUENA FE EN MATRIMONIO PUTATIVO).- I. Cuando el matrimonio ha sido declarado nulo después que murió uno de los cónyuges, el sobreviviente de buena fe tiene derecho a la sucesión del premuerto conforme a las disposiciones anteriores. II. El cónyuge sobreviviente de buena fe queda, sin embargo, excluido de la sucesión si la persona de cuya herencia se trata estaba ligado por matrimonio válido en el momento de su muerte. 
+
+ARTÍCULO 1107. (EXCLUSIÓN DEL CÓNYUGE EN LA SUCESIÓN).- La sucesión del cónyuge sobreviviente no tiene lugar cuando: 1. El matrimonio se celebra hallándose enfermo el otro cónyuge y su muerte acaece dentro de los treinta días siguientes como consecuencia de aquella enfermedad. 2. Existe sentencia de separación pasada en autoridad de cosa juzgada, en la cual se reconoce al sobreviviente como culpable de la separación 3. Por propia voluntad y sin causa moral ni legal se había separado de hecho de su cónyuge, y la separación dura más de un año.
 
 ARTÍCULO 1108. (SUCESIÓN DEL CONVIVIENTE EN LAS UNIONES CONYUGALES LIBRES).- Las uniones conyugales libres o de hecho reconocidas por la Constitución Política del Estado y el Código de Familia, producen, respecto a los convivientes, efectos sucesorios similares a los del matrimonio.
 
