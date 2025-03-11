@@ -28,6 +28,46 @@
                 >
             </div>
             <div class="flex gap-4 mb-6">
+                <!-- Selector de Documento -->
+                <div class="flex-1">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="documento_seleccionado">
+                        Documento a buscar
+                    </label>
+                    <div class="flex gap-4">
+                        <select name="documento_seleccionado"
+                                id="documento_seleccionado"
+                                class="select select-bordered w-full bg-white">
+                            <option value="">Todos los documentos</option>
+                            {% for documento in documentos %}
+                                <option value="{{ documento }}" {% if documento_seleccionado == documento %}selected{% endif %}>
+                                    {{ documento }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {% if documentos %}
+                            <div class="text-sm text-gray-500 flex items-center">
+                                Total: {{ documentos|length }} documento(s)
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Filtro de Metadatos -->
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="filtro_metadatos">
+                    Filtro adicional de metadatos (JSON)
+                </label>
+                <input
+                    type="text"
+                    name="filtro_metadatos"
+                    id="filtro_metadatos"
+                    class="input w-full p-2 border rounded-md"
+                    placeholder='{"campo": "valor"}'
+                    value="{% if filtro_metadatos %}{{ filtro_metadatos }}{% endif %}"
+                >
+                <p class="text-sm text-gray-500 mt-1">Ingrese un objeto JSON para filtrar por metadatos adicionales. Ejemplo: {"Capítulo": "Introducción"}</p>
+            </div>
+            <div class="flex gap-4 mb-6">
                 <div class="flex-1">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="num_resultados">
                         Número de resultados
@@ -93,7 +133,7 @@
                                     </p>
                                 </div>
                             {% endif %}
-                            <p class="text-gray-700">{{ doc.page_content }}</p>
+                            <pre class="text-gray-700 whitespace-pre-wrap font-sans">{{ doc.page_content }}</pre>
                         </div>
                     {% endfor %}
                 </div>

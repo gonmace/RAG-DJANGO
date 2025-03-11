@@ -82,14 +82,23 @@ class LangChainService:
 
         return documents
 
-    def similarity_search(self, query: str, k: int = 4):
-        """Realiza una búsqueda por similitud."""
+    def similarity_search(self, query: str, k: int = 4, filter: Optional[dict] = None):
+        """Realiza una búsqueda por similitud con filtrado por metadatos y scores de relevancia.
+        
+        Args:
+            query (str): El texto de consulta para la búsqueda
+            k (int): Número de resultados a retornar
+            filter (dict, optional): Diccionario con los filtros de metadatos a aplicar
+            
+        Returns:
+            List[Tuple[Document, float]]: Lista de tuplas con (documento, score de relevancia)
+        """
         if self.vectorstore is None:
             raise ValueError("Vectorstore no inicializado. Llama a initialize_vectorstore primero.")
-        
         return self.vectorstore.similarity_search_with_relevance_scores(
             query=query,
-            k=k
+            k=k,
+            filter=filter
         )
 
     def query_collection(self, query_text: str, n_results: int = 2):

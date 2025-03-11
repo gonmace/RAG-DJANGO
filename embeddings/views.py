@@ -527,34 +527,68 @@ def split_documents_view(request):
 
 def similaridad_view(request):
     service = LangChainService()
+    documentos = service.get_unique_document_values()
     resultado = None
     texto_consulta = None
+    documento_seleccionado = None
     umbral = None
-    
+    filtro_metadatos = None
+
     if request.method == 'POST':
         texto_consulta = request.POST.get('texto_consulta')
+        documento_seleccionado = request.POST.get('documento_seleccionado')
         num_resultados = int(request.POST.get('num_resultados', 5))
+        umbral = float(request.POST.get('umbral', 0))
+        filtro_metadatos_raw = request.POST.get('filtro_metadatos', '')
+
+        # Preparar el filtro
+        filtro = {}
         
-        # Si el campo está vacío o es None, usar 0
-        umbral_raw = request.POST.get('umbral', '')
-        umbral = float(umbral_raw) if umbral_raw.strip() else 0.0
-        
-        try:
-            # Obtenemos más resultados de los solicitados para poder filtrar por umbral
-            resultados_raw = service.similarity_search(texto_consulta, k=num_resultados * 2)
-            # Filtramos los resultados por el umbral y limitamos al número solicitado
-            resultado = [(doc, score) for doc, score in resultados_raw if score >= umbral][:num_resultados]
-            
-            if not resultado:
-                messages.warning(request, 'No se encontraron resultados que superen el umbral de similitud especificado.')
+        # Agregar filtro por documento si se seleccionó uno
+        if documento_seleccionado:
+            filtro['Documento'] = documento_seleccionado
+
+        # Procesar filtro adicional de metadatos si se proporcionó
+        if filtro_metadatos_raw.strip():
+            try:
+                filtro_metadatos_raw_fixed = filtro_metadatos_raw.strip().replace("'", '"')
+                filtro_adicional = json.loads(filtro_metadatos_raw_fixed)
+
                 
+            except json.JSONDecodeError:
+                messages.error(request, 'El formato del filtro de metadatos debe ser JSON válido.')
+                return render(request, 'embeddings/similaridad.html', {
+                    'documentos': documentos,
+                    'texto_consulta': texto_consulta,
+                    'documento_seleccionado': documento_seleccionado,
+                    'umbral': umbral,
+                    'filtro_metadatos': filtro_adicional if filtro_metadatos_raw else ""
+                })
+
+        try:
+            # Realizar la búsqueda con el filtro combinado
+            resultados = service.similarity_search(
+                query=texto_consulta,
+                k=num_resultados,
+                filter=filtro_adicional if filtro_metadatos_raw else filtro
+            )
+
+            # Filtrar por umbral si se especificó
+            if umbral > 0:
+                resultado = [(doc, score) for doc, score in resultados if score >= umbral]
+            else:
+                resultado = resultados
+
         except Exception as e:
             messages.error(request, f'Error al realizar la búsqueda: {str(e)}')
-    
+
     return render(request, 'embeddings/similaridad.html', {
+        'documentos': documentos,
         'resultado': resultado,
         'texto_consulta': texto_consulta,
-        'umbral': umbral
+        'documento_seleccionado': documento_seleccionado,
+        'umbral': umbral,
+        'filtro_metadatos': filtro_adicional if filtro_metadatos_raw else ""
     })
 
 
