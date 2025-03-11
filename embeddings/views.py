@@ -427,7 +427,7 @@ def split_documents_view(request):
                 request.session['chunks_with_metadata'] = serializable_chunks
                 request.session.modified = True
                 
-                return render(request, 'splitters/splitters.html', {
+                return render(request, 'splitters/MDtitulos.html', {
                     'chunks': chunks_with_metadata,
                     'titulo1_nombre': titulo1_nombre,
                     'titulo2_nombre': titulo2_nombre,

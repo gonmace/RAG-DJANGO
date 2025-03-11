@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load tailwind_tags widget_tweaks %}
+
+{% block css %}
+{% tailwind_css %}
+{% endblock %}
+
+{% block body_class %}
+
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+  <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+    <h2 class="text-2xl font-bold mb-8">Dividir Documento Markdown</h2>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Configuración de nombres de títulos -->
+      <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Configuración de Títulos</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="flex items-center space-x-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                # Título 1
+              </label>
+              <input type="text" name="titulo1_nombre"
+                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="Título 1" value="Documento">
+            </div>
+            <div class="flex items-center h-10 mt-6">
+              <input type="checkbox" name="usar_titulo1"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+              <label class="ml-2 text-sm text-gray-600">Usar</label>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                ## Título 2
+              </label>
+              <input type="text" name="titulo2_nombre"
+                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="Título 2" value="Libro">
+            </div>
+            <div class="flex items-center h-10 mt-6">
+              <input type="checkbox" name="usar_titulo2"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+              <label class="ml-2 text-sm text-gray-600">Usar</label>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                ### Título 3
+              </label>
+              <input type="text" name="titulo3_nombre"
+                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="Título 3" value="Título">
+            </div>
+            <div class="flex items-center h-10 mt-6">
+              <input type="checkbox" name="usar_titulo3"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+              <label class="ml-2 text-sm text-gray-600">Usar</label>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                #### Título 4
+              </label>
+              <input type="text" name="titulo4_nombre"
+                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="Título 4" value="Capítulo">
+            </div>
+            <div class="flex items-center h-10 mt-6">
+              <input type="checkbox" name="usar_titulo4"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+              <label class="ml-2 text-sm text-gray-600">Usar</label>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                ##### Título 5
+              </label>
+              <input type="text" name="titulo5_nombre"
+                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="Título 5" value="Sección">
+            </div>
+            <div class="flex items-center h-10 mt-6">
+              <input type="checkbox" name="usar_titulo5"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+              <label class="ml-2 text-sm text-gray-600">Usar</label>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                ###### Título 6
+              </label>
+              <input type="text" name="titulo6_nombre"
+                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="Título 6" value="Subsección">
+            </div>
+            <div class="flex items-center h-10 mt-6">
+              <input type="checkbox" name="usar_titulo6"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+              <label class="ml-2 text-sm text-gray-600">Usar</label>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center">
+          <input type="checkbox" name="incluir_titulos" id="incluir_titulos"
+            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+          <label for="incluir_titulos" class="ml-2 text-sm text-gray-600">
+            Incluir títulos en el contenido del documento
+          </label>
+        </div>
+      </div>
+
+      <!-- Selector de archivo -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">
+          Seleccionar archivo Markdown (.md)
+        </label>
+        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+          <div class="space-y-1 text-center">
+            <div class="flex text-sm text-gray-600">
+              <label for="file-upload"
+                class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                <span>Subir archivo</span>
+                <input id="file-upload" name="file" type="file" class="sr-only" accept=".md"
+                  onchange="updateFileName(this)">
+              </label>
+            </div>
+            <p id="file-name" class="text-xs text-gray-500">
+              Ningún archivo seleccionado
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-4">
+        <!-- Contenedor para la barra de progreso -->
+        <div id="progress-container" class="hidden w-full">
+          <div class="flex items-center gap-4">
+            <div class="flex-1">
+              <div class="w-full">
+                <progress id="progress-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+              </div>
+              <div class="flex justify-between text-sm mt-1">
+                <span id="progress-text">Procesando fragmentos...</span>
+                <span id="progress-percentage">0%</span>
+              </div>
+            </div>
+            <div id="progress-status" class="text-sm font-medium">
+              0/0 fragmentos
+            </div>
+          </div>
+        </div>
+        <button id="create-embeddings" type="button" class="btn btn-success text-white">
+          Crear Embeddings
+        </button>
+        <button type="submit" class="btn btn-primary">
+          Dividir Texto
+        </button>
+      </div>
+    </form>
+
+    {% if chunks %}
+    <div class="mt-8">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Resultados</h2>
+        <div class="text-sm text-gray-600">
+          <span class="mr-4">Mín. Tokens: {{ min_tokens }}</span>
+          <span class="mr-4">Máx. Tokens: {{ max_tokens }}</span>
+          <span class="mr-4">Total Tokens: {{ total_tokens }}</span>
+          <span>Precio: ${{ price_usd|floatformat:4 }} USD</span>
+        </div>
+      </div>
+      <div class="space-y-4">
+        {% for chunk in chunks %}
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="font-medium text-gray-900">Fragmento {{ forloop.counter }}</h3>
+            <span class="text-sm text-gray-600">Tokens: {{ chunk.token_count }}</span>
+          </div>
+          <div class="mb-2">
+            {% if chunk.titulo1 %}
+            <p class="text-sm font-medium text-gray-800">{{ titulo1_nombre }}: {{ chunk.titulo1 }}</p>
+            {% endif %}
+            {% if chunk.titulo2 %}
+            <p class="text-sm font-medium text-gray-800 ml-4">{{ titulo2_nombre }}: {{ chunk.titulo2 }}</p>
+            {% endif %}
+            {% if chunk.titulo3 %}
+            <p class="text-sm font-medium text-gray-800 ml-8">{{ titulo3_nombre }}: {{ chunk.titulo3 }}</p>
+            {% endif %}
+            {% if chunk.titulo4 %}
+            <p class="text-sm font-medium text-gray-800 ml-12">{{ titulo4_nombre }}: {{ chunk.titulo4 }}</p>
+            {% endif %}
+            {% if chunk.titulo5 %}
+            <p class="text-sm font-medium text-gray-800 ml-16">{{ titulo5_nombre }}: {{ chunk.titulo5 }}</p>
+            {% endif %}
+            {% if chunk.titulo6 %}
+            <p class="text-sm font-medium text-gray-800 ml-20">{{ titulo6_nombre }}: {{ chunk.titulo6 }}</p>
+            {% endif %}
+          </div>
+          <div class="divider divider-primary">Contenido</div>
+          <pre class="whitespace-pre-wrap text-sm text-gray-600">{{ chunk.text }}</pre>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function updateFileName(input) {
+    const fileName = input.files[0] ? input.files[0].name : 'Ningún archivo seleccionado'
+    document.getElementById('file-name').textContent = fileName
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const createEmbeddingsBtn = document.getElementById('create-embeddings');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const progressPercentage = document.getElementById('progress-percentage');
+    const progressStatus = document.getElementById('progress-status');
+
+    if (createEmbeddingsBtn) {
+      createEmbeddingsBtn.addEventListener('click', function () {
+        // Deshabilitar el botón mientras se procesa
+        createEmbeddingsBtn.disabled = true;
+        createEmbeddingsBtn.classList.add('opacity-50');
+        createEmbeddingsBtn.textContent = 'Procesando...';
+
+        // Mostrar la barra de progreso
+        progressContainer.classList.remove('hidden');
+
+        // Crear un EventSource para recibir actualizaciones del servidor
+        const eventSource = new EventSource('/embeddings/create/');
+
+        eventSource.onmessage = function (event) {
+          const data = JSON.parse(event.data);
+
+          if (data.progress) {
+            // Actualizar la barra de progreso
+            progressBar.value = data.progress;
+            progressPercentage.textContent = `${Math.round(data.progress)}%`;
+
+            // Actualizar el estado
+            if (data.current && data.total) {
+              progressStatus.textContent = `${data.current}/${data.total} fragmentos`;
+            }
+
+            // Actualizar el texto de estado
+            if (data.status) {
+              progressText.textContent = data.status;
+            }
+          }
+
+          // Si el proceso ha terminado
+          if (data.success) {
+            eventSource.close();
+            alert('Embeddings creados exitosamente');
+            window.location.href = '/embeddings/listar/';
+          }
+
+          // Si hay un error
+          if (data.error) {
+            eventSource.close();
+            alert('Error: ' + data.error);
+            // Restaurar el botón
+            createEmbeddingsBtn.disabled = false;
+            createEmbeddingsBtn.classList.remove('opacity-50');
+            createEmbeddingsBtn.textContent = 'Crear Embeddings';
+            progressContainer.classList.add('hidden');
+          }
+        };
+
+        eventSource.onerror = function () {
+          eventSource.close();
+          alert('Error al procesar la solicitud');
+          // Restaurar el botón
+          createEmbeddingsBtn.disabled = false;
+          createEmbeddingsBtn.classList.remove('opacity-50');
+          createEmbeddingsBtn.textContent = 'Crear Embeddings';
+          progressContainer.classList.add('hidden');
+        };
+      });
+    }
+  });
+</script>
+{% endblock %}
