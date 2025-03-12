@@ -21,7 +21,9 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'embeddings',
-    'converttext'
+    'converttext',
+    'langGraph',
+
 ]
 
 MIDDLEWARE = [

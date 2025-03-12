@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('main.urls')),
     path('embeddings/', include('embeddings.urls')),
     path('convert/', include('converttext.urls')),
+    path('langGraph/', include('langGraph.urls')),
 ]
 
 if settings.DEBUG:

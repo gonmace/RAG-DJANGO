@@ -1,0 +1,14 @@
+{
+    "name": "langGraph",
+    "description": "Chatbot para la empresa",
+    "dependencies": [
+        "langchain-core",
+        "langchain-openai",
+        "langchain-chroma",
+        "langgraph",
+        "tiktoken"
+    ],
+    "graphs": {
+        "workflow": "langGraph.services:workflow"
+    }
+}

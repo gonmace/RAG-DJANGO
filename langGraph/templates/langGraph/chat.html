@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+
+{% block css %}
+{% tailwind_css %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-6">Chat con LangGraph</h2>
+            
+            <!-- Área de mensajes -->
+            <div id="chat-messages" class="h-72 overflow-y-auto mb-4 p-4 border rounded-lg">
+                <!-- Los mensajes se agregarán aquí dinámicamente -->
+            </div>
+            
+            <!-- Formulario de entrada -->
+            <form id="chat-form" class="flex gap-2">
+                <input type="text" 
+                       id="message-input" 
+                       class="input input-bordered w-full" 
+                       placeholder="Escribe tu mensaje aquí...">
+                <button type="submit" 
+                        id="submit-button"
+                        class="btn btn-primary">
+                    Enviar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let conversationId = null;
+
+function addMessage(message, isUser, isError = false) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `mb-4 ${isUser ? 'text-right' : 'text-left'}`;
+    
+    const messageBubble = document.createElement('div');
+    messageBubble.className = `inline-block p-3 rounded-lg ${
+        isError ? 'bg-red-500 text-white' :
+        isUser ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800'
+    }`;
+    messageBubble.textContent = message;
+    
+    messageDiv.appendChild(messageBubble);
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function setLoading(isLoading) {
+    const button = document.getElementById('submit-button');
+    const input = document.getElementById('message-input');
+    
+    button.disabled = isLoading;
+    input.disabled = isLoading;
+    button.innerHTML = isLoading ? 'Enviando...' : 'Enviar';
+}
+
+document.getElementById('chat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const input = document.getElementById('message-input');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Mostrar mensaje del usuario
+    addMessage(message, true);
+    input.value = '';
+    setLoading(true);
+    
+    try {
+        const response = await fetch('/langGraph/process-message/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                conversation_id: conversationId
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Error en la respuesta del servidor');
+        }
+        
+        const data = await response.json();
+        
+        if (!conversationId) {
+            conversationId = data.conversation_id;
+        }
+        
+        // Mostrar respuesta del asistente
+        addMessage(data.response, false);
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage(error.message || 'Lo siento, ha ocurrido un error.', false, true);
+    } finally {
+        setLoading(false);
+    }
+});
+</script>
+{% endblock %} 
