@@ -25,11 +25,18 @@ def process_message(request):
             }, status=400)
             
         if not conversation_id:
-            conversation_id = str(uuid.uuid4())
+            conversation_id = "+59167728817"
+            # conversation_id = str(uuid.uuid4())
+        
+        # Verificar si el usuario está autenticado
+        if not request.user.is_authenticated:
+            return JsonResponse({
+                'error': 'El usuario debe estar autenticado'
+            }, status=401)
         
         # Procesar el mensaje usando el servicio
         service = LangGraphService()
-        assistant_message = service.process_user_message(user_message, conversation_id)
+        assistant_message = service.process_user_message(user_message, conversation_id, request.user)
         
         return JsonResponse({
             'response': assistant_message,
