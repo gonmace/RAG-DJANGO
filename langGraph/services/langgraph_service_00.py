@@ -9,8 +9,8 @@ import os
 import sys
 from pathlib import Path
 
-# Este es un simple grafo de conversación, tiene memoria y guarda estados, tiene un simple contexto.
-# python langGraph/services/langgraph_service.py
+# Este es un simple grafo de conversación, no tiene memoria, no guarda estados y tiene un simple contexto.
+# python langGraph/services/langgraph_service_00.py
 
 # Agregar el directorio raíz al PYTHONPATH
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
