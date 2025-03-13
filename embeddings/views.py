@@ -533,6 +533,8 @@ def similaridad_view(request):
     documento_seleccionado = None
     umbral = None
     filtro_metadatos = None
+    filtro_adicional = None
+    filtro_metadatos_raw = ""  # Inicializar la variable con un valor por defecto
 
     if request.method == 'POST':
         texto_consulta = request.POST.get('texto_consulta')
@@ -553,8 +555,6 @@ def similaridad_view(request):
             try:
                 filtro_metadatos_raw_fixed = filtro_metadatos_raw.strip().replace("'", '"')
                 filtro_adicional = json.loads(filtro_metadatos_raw_fixed)
-
-                
             except json.JSONDecodeError:
                 messages.error(request, 'El formato del filtro de metadatos debe ser JSON válido.')
                 return render(request, 'embeddings/similaridad.html', {
@@ -562,7 +562,7 @@ def similaridad_view(request):
                     'texto_consulta': texto_consulta,
                     'documento_seleccionado': documento_seleccionado,
                     'umbral': umbral,
-                    'filtro_metadatos': filtro_adicional if filtro_metadatos_raw else ""
+                    'filtro_metadatos': filtro_metadatos_raw
                 })
 
         try:
@@ -570,7 +570,7 @@ def similaridad_view(request):
             resultados = service.similarity_search(
                 query=texto_consulta,
                 k=num_resultados,
-                filter=filtro_adicional if filtro_metadatos_raw else filtro
+                filter=filtro_adicional if filtro_adicional else filtro
             )
 
             # Filtrar por umbral si se especificó
@@ -588,7 +588,7 @@ def similaridad_view(request):
         'texto_consulta': texto_consulta,
         'documento_seleccionado': documento_seleccionado,
         'umbral': umbral,
-        'filtro_metadatos': filtro_adicional if filtro_metadatos_raw else ""
+        'filtro_metadatos': filtro_metadatos_raw
     })
 
 

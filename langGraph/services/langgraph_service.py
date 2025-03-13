@@ -33,7 +33,6 @@ token_output_price = 0.6/1000000
 
 class State(MessagesState):
     thread_id: str
-    summary: str
 
 class LangGraphService:
     def __init__(self):
@@ -48,71 +47,19 @@ class LangGraphService:
             
             initial_message = """Eres una enfermera, responde maximo en 10 palabras."""
             
-            # obtener el resumen de la conversación si existe
-            summary = state.get("summary", "")
-            
-            if summary:
-                # Agregar resumen al mensaje del sistema
-                system_message_summary = (
-                    f"Summary of conversation earlier: {summary}"
-                    "Puedes recordar esta información durante la conversación actual."
-                    )
-                messages = [SystemMessage(content=f"{initial_message} {system_message_summary}")] + state["messages"]
-            else:
-                # Agregar mensajes del sistema al estado
-                messages = [SystemMessage(content=initial_message)] + state["messages"]
-
+            # Agregar mensajes del sistema al estado
+            messages = [SystemMessage(content=initial_message)] + state["messages"]
 
             response = self.llm.invoke(messages)
             return {"messages": response}
-        
-        def node_resumir_conversacion(state: State):
-            # First, we get any existing summary
-            summary = state.get("summary", "")
-
-            # Create our summarization prompt 
-            if summary:
-                # A summary already exists
-                summary_message = (
-                    f"This is summary of the conversation to date: {summary}\n\n"
-                    "Extend the summary by taking into account the new messages above:"
-                )
-            else:
-                summary_message = """Extract only the relevant data from the conversation above in a paragraph: names, addresses, whether prices were discussed (yes/no), and any links mentioned. If there is no data, do not extract anything."""
-
-            # Add prompt to our history
-            messages = state["messages"] + [HumanMessage(content=summary_message)]
-            # from pprint import pprint
-            # print("================")
-            # pprint(messages)
-            # print("================")
-            response = self.llm.invoke(messages)
-            
-            # Delete all but the 2 most recent messages
-            delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-2]]
-            return {"summary": response.content, "messages": delete_messages}
-        
-        # Determine whether to end or summarize the conversation
-        def should_continue(state: State):            
-            """Return the next node to execute."""
-            messages = state["messages"]
-            
-            # If there are more than six messages, then we summarize the conversation
-            if len(messages) > 6:
-                return "resumir"
-            
-            # Otherwise we can just end
-            return END
-        
+                
         # Crear el grafo de estado
         workflow = StateGraph(State)
         workflow.add_node("inicial", node_inicial)
-        workflow.add_node("resumir", node_resumir_conversacion)
         
         # Agregar las aristas del grafo
         workflow.add_edge(START, "inicial")
-        workflow.add_conditional_edges("inicial", should_continue)
-        workflow.add_edge("resumir", END)
+        workflow.add_edge("inicial", END)
         
         return workflow.compile()
     
@@ -120,20 +67,16 @@ class LangGraphService:
         """
         Procesa un mensaje del usuario y retorna la respuesta del asistente junto con la información de tokens.
         """
-        # Obtener el estado guardado o inicializarlo
-        stored_state = StateManager.get_or_create_graph_state(thread_id, user)
         
         graph = self.create_chat_graph()
         result = graph.invoke({
-            "messages": stored_state["messages"] + [HumanMessage(content=user_message)],
-            "thread_id": thread_id,
-            "summary": stored_state["summary"]
+            "messages": [HumanMessage(content=user_message)],
+            "thread_id": thread_id
         })
 
         # Obtener y guardar la respuesta del asistente
         assistant_message = result["messages"][-1]
     
-
         token_input = assistant_message.response_metadata["token_usage"].get("prompt_tokens", 0)
         token_output = assistant_message.response_metadata["token_usage"].get("completion_tokens", 0)
         total_tokens = assistant_message.response_metadata["token_usage"].get("total_tokens", 0)
@@ -145,13 +88,6 @@ class LangGraphService:
             "total_tokens": total_tokens,
             "cost": f"${(token_input * token_input_price) + (token_output * token_output_price):.6f}"
         }
-
-        # Guardar el nuevo estado del grafo en la BD
-        new_state = {
-            "messages": result["messages"],
-            "summary": result.get("summary", stored_state.get("summary", ""))
-        }
-        StateManager.update_graph_state(thread_id, user, new_state)
 
         return {
             "response": assistant_message.content,
