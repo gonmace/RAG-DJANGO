@@ -36,11 +36,15 @@ def process_message(request):
         
         # Procesar el mensaje usando el servicio
         service = LangGraphService()
-        assistant_message = service.process_user_message(user_message, conversation_id, request.user)
+        result = service.process_user_message(user_message, conversation_id, request.user)
         
         return JsonResponse({
-            'response': assistant_message,
-            'conversation_id': conversation_id
+            'response': result['response'],
+            'conversation_id': conversation_id,
+            'prompt_tokens': result['token_info']['prompt_tokens'],
+            'completion_tokens': result['token_info']['completion_tokens'],
+            'total_tokens': result['token_info']['total_tokens'],
+            'cost': result['token_info']['cost']
         })
     except json.JSONDecodeError:
         return JsonResponse({

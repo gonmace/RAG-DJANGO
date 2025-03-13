@@ -21,7 +21,8 @@
                 <input type="text" 
                        id="message-input" 
                        class="input input-bordered w-full" 
-                       placeholder="Escribe tu mensaje aquí...">
+                       placeholder="Escribe tu mensaje aquí..."
+                       onkeydown="if(event.key === 'Enter') { event.preventDefault(); document.getElementById('chat-form').dispatchEvent(new Event('submit')); }">
                 <button type="submit" 
                         id="submit-button"
                         class="btn btn-primary">
@@ -35,7 +36,7 @@
 <script>
 let conversationId = null;
 
-function addMessage(message, isUser, isError = false) {
+function addMessage(message, isUser, isError = false, tokenInfo = null) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `mb-4 ${isUser ? 'text-right' : 'text-left'}`;
@@ -48,6 +49,20 @@ function addMessage(message, isUser, isError = false) {
     messageBubble.textContent = message;
     
     messageDiv.appendChild(messageBubble);
+
+    // Agregar información de tokens si está disponible
+    if (tokenInfo && !isUser) {
+        const tokenDiv = document.createElement('div');
+        tokenDiv.className = 'text-xs text-gray-500 mt-1 flex w-full justify-between';
+        tokenDiv.innerHTML = `
+            <div>Tokens de prompt: ${tokenInfo.prompt_tokens}</div>
+            <div>Tokens de respuesta: ${tokenInfo.completion_tokens}</div>
+            <div>Total de tokens: ${tokenInfo.total_tokens}</div>
+            <div>Costo: ${tokenInfo.cost}</div>
+        `;
+        messageDiv.appendChild(tokenDiv);
+    }
+    
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
@@ -98,8 +113,13 @@ document.getElementById('chat-form').addEventListener('submit', async (e) => {
             conversationId = data.conversation_id;
         }
         
-        // Mostrar respuesta del asistente
-        addMessage(data.response, false);
+        // Mostrar respuesta del asistente con información de tokens
+        addMessage(data.response, false, false, {
+            prompt_tokens: data.prompt_tokens || 0,
+            completion_tokens: data.completion_tokens || 0,
+            total_tokens: data.total_tokens || 0,
+            cost: data.cost || '0'
+        });
     } catch (error) {
         console.error('Error:', error);
         addMessage(error.message || 'Lo siento, ha ocurrido un error.', false, true);
