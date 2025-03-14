@@ -19,12 +19,12 @@ class IndexConfiguration:
     retriever provider choice, and search parameters.
     """
 
-    user_id: str = field(metadata={"description": "Unique identifier for the user."})
+    # user_id: str = field(metadata={"description": "Unique identifier for the user."})
 
-    embedding_model: Annotated[str, {"__template_metadata__": {"kind": "embeddings"}},] = field(
-        default="text-embedding-3-small",
-        metadata={"description": "Name of the embedding model to use. Must be a valid embedding model name."},
-        )
+    # embedding_model: Annotated[str, {"__template_metadata__": {"kind": "embeddings"}},] = field(
+    #     default="text-embedding-3-small",
+    #     metadata={"description": "Name of the embedding model to use. Must be a valid embedding model name."},
+    #     )
 
     retriever_provider: Annotated[ Literal["chroma", "pinecone", "mongodb"],
         {"__template_metadata__": {"kind": "retriever"}},

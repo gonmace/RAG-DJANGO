@@ -1,4 +1,5 @@
 from pprint import pprint
+from decouple import config
 from langgraph.graph.message import add_messages
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, RemoveMessage
@@ -8,6 +9,8 @@ from langgraph.graph import StateGraph, END, START
 import os
 import sys
 from pathlib import Path
+
+
 
 # Este es un simple grafo de conversación, tiene memoria y guarda estados, tiene un simple contexto.
 
@@ -30,7 +33,8 @@ import django
 django.setup()
 
 # Importar modelos y servicios de Django después de la configuración
-from .state_manager import StateManager
+from langGraph.services.state_manager import StateManager
+
 
 llm = "gpt-4o-mini"
 temperature = 0
@@ -44,7 +48,11 @@ class State(MessagesState):
 
 class LangGraphService:
     def __init__(self):
-        self.llm = ChatOpenAI(model=llm, temperature=temperature)
+        self.llm = ChatOpenAI(
+            openai_api_key=config('OPENAI_API_KEY'),
+            model=llm,
+            temperature=temperature
+            )
         
     def create_chat_graph(self) -> StateGraph:
         """
