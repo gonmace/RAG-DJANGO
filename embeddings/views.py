@@ -130,6 +130,24 @@ def create_embeddings_MDtitles(request):
                 content_type='text/event-stream'
             )
         
+        # Obtener y validar el rango
+        rango = request.GET.get('rango', '')
+        if rango:
+            try:
+                inicio, fin = map(int, rango.split('-'))
+                if inicio < 1 or fin > len(chunks_data) or inicio > fin:
+                    return StreamingHttpResponse(
+                        f"data: {json.dumps({'error': 'Rango inválido. Por favor verifica los valores.'})}\n\n",
+                        content_type='text/event-stream'
+                    )
+                # Ajustar el rango para índices base-0
+                chunks_data = chunks_data[inicio-1:fin]
+            except ValueError:
+                return StreamingHttpResponse(
+                    f"data: {json.dumps({'error': 'Formato de rango inválido. Use el formato inicio-fin (ejemplo: 1-10)'})}\n\n",
+                    content_type='text/event-stream'
+                )
+        
         # Obtener la preferencia de incluir títulos
         incluir_titulos = request.session.get('incluir_titulos', False)
         

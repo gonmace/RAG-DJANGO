@@ -157,6 +157,15 @@
               </div>
           </div>
         </dialog>
+        <div class="flex items-center gap-2">
+            <label for="rango" class="text-sm font-medium text-gray-700">Rango de fragmentos:</label>
+            <input type="text" id="rango" name="rango" 
+                   class="input input-bordered input-sm w-32 bg-white" 
+                   placeholder="1-{% if chunks %}{{ chunks|length }}{% else %}0{% endif %}"
+                   value="1-{% if chunks %}{{ chunks|length }}{% else %}0{% endif %}"
+                   pattern="\d+-\d+"
+                   title="Formato: inicio-fin (ejemplo: 1-10)">
+        </div>
         <button id="create-embeddings" type="button" class="btn btn-success text-white">
           Crear Embeddings
         </button>
@@ -229,6 +238,14 @@
 
     if (createEmbeddingsBtn) {
       createEmbeddingsBtn.addEventListener('click', function () {
+        const rangoInput = document.getElementById('rango');
+        const rangoValue = rangoInput.value.trim();
+        
+        if (!rangoValue.match(/^\d+-\d+$/)) {
+            alert('Por favor, ingrese un rango válido (ejemplo: 1-10)');
+            return;
+        }
+
         // Deshabilitar el botón mientras se procesa
         createEmbeddingsBtn.disabled = true;
         createEmbeddingsBtn.classList.add('opacity-50');
@@ -238,7 +255,7 @@
         progressModal.showModal();
 
         // Crear un EventSource para recibir actualizaciones del servidor
-        const eventSource = new EventSource('/embeddings/createMDtitles/');
+        const eventSource = new EventSource('/embeddings/createMDtitles/?rango=' + encodeURIComponent(rangoValue));
 
         eventSource.onmessage = function (event) {
           const data = JSON.parse(event.data);

@@ -29,11 +29,11 @@ def main():
             # ("Título", "Título"),
             # ("Capítulo", "Capítulo")
         ],
-        strategy=Eager(k=10, start_k=7, max_depth=1)
+        strategy=Eager(k=18, start_k=14, max_depth=1)
     )
 
     # Ejemplo de consulta con filtro de metadata
-    query = "¿Quienes pueden reclamar una herencia?"
+    query = "En caso que tengo hijkastros y han sido reconocidos por su padre que acaba de fallecer, ellos pueden reclamar en la pmisma proporcion su herenciaq que los hijos naturales?"
     # results = graph_retriever.invoke(query)
     # Definimos el filtro de metadata
     
