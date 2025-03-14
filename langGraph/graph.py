@@ -29,7 +29,7 @@ def main():
             # ("Título", "Título"),
             # ("Capítulo", "Capítulo")
         ],
-        strategy=Eager(k=18, start_k=14, max_depth=1)
+        strategy=Eager(k=12, start_k=8, max_depth=1)
     )
 
     # Ejemplo de consulta con filtro de metadata
