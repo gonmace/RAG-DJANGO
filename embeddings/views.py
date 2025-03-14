@@ -180,7 +180,7 @@ def create_embeddings_MDtitles(request):
                         texto_final = chunk['text']
                     
                     # Crear metadatos con nombres personalizados
-                    metadatos = {}
+                    metadatos = {'id': str(uuid.uuid4())}  # Agregar ID único
                     
                     # Encontrar el último título y los títulos previos
                     for j in range(1, 7):

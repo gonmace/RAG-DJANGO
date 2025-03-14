@@ -3,15 +3,17 @@ Django>=4.2.0
 # psycopg2-binary
 # django-redis>=5.2.0
 # celery>=5.2.7 
-python-decouple>=3.7 
+python-decouple>=3.8
 django-widget-tweaks==1.5.0
 
 tiktoken
 langchain-chroma>=0.1.2
 langchain-core>=0.1.15
 langchain-openai>=0.0.5
+langchain-community>=0.0.13
 langgraph>=0.0.15
 langgraph-cli[inmem]
+langchain-graph-retriever[chroma]
 
 
 django-tailwind>=3.8.0
@@ -23,3 +25,5 @@ html2text>=2020.1.16
 docx2pdf>=0.1.8
 
 unidecode>=1.3.8
+
+chromadb>=0.4.22

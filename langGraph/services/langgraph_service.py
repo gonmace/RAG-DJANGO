@@ -27,7 +27,6 @@ from .state_manager import StateManager
 
 llm = "gpt-4o-mini"
 temperature = 0
-
 token_input_price = 0.15/1000000
 token_output_price = 0.6/1000000
 
@@ -44,11 +43,24 @@ class LangGraphService:
         """
 
         def node_inicial(state: State) -> State:
-            
-            initial_message = """Eres una enfermera, responde maximo en 10 palabras."""
+            # qa_system_prompt = (
+            #     "You are an assistant for question-answering tasks. "
+            #     "Use the provided context to respond. "
+            #     "If you don't know the answer, say you don't know. "
+            #     "Answer only in Spanish with a concise sentence. "
+            #     "Context: {context} "
+            #     )
+            qa_system_prompt = (
+                "You are an assistant specialized in legal question-answering. "
+                "Use the provided context to respond. "
+                "If the context is empty or does not contain relevant information, "
+                "say that you do not have that information. "
+                "Answer only in Spanish with a concise sentence."
+                "Context: {context} "
+                )
             
             # Agregar mensajes del sistema al estado
-            messages = [SystemMessage(content=initial_message)] + state["messages"]
+            messages = [SystemMessage(content=qa_system_prompt)] + state["messages"]
 
             response = self.llm.invoke(messages)
             return {"messages": response}

@@ -11,6 +11,13 @@ from pathlib import Path
 
 # Este es un simple grafo de conversación, tiene memoria y guarda estados, tiene un simple contexto.
 
+# contextualize_q_system_prompt = (
+#     "Given a chat history and the latest user question "
+#     "which might reference context in the chat history, "
+#     "formulate a standalone question which can be understood "
+#     "without the chat history. Do NOT answer the question, just "
+#     "reformulate it if needed and otherwise return it as is."
+# )
 
 # Agregar el directorio raíz al PYTHONPATH
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

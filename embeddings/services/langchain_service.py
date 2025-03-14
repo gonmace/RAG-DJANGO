@@ -53,8 +53,8 @@ class LangChainService:
               metadata=metadata)
             ]
 
-        # Generar IDs únicos para cada documento
-        ids = [str(uuid4()) for _ in text]
+        # Usar el ID proporcionado en los metadatos o generar uno nuevo si no existe
+        ids = [metadata.get('id', str(uuid4()))]
 
         return self.vectorstore.add_documents(
             documents=document,
