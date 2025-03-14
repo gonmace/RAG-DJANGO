@@ -54,12 +54,12 @@ class LangGraphService:
             temperature=temperature
             )
         
-    async def create_chat_graph(self) -> StateGraph:
+    def create_chat_graph(self) -> StateGraph:
         """
         Crea y configura el grafo de conversación.
         """
 
-        async def node_inicial(state: State) -> State:
+        def node_inicial(state: State) -> State:
             
             initial_message = """Eres una enfermera, responde maximo en 10 palabras."""
             
@@ -78,10 +78,10 @@ class LangGraphService:
                 messages = [SystemMessage(content=initial_message)] + state["messages"]
 
 
-            response = await self.llm.ainvoke(messages)
+            response = self.llm.invoke(messages)
             return {"messages": response}
         
-        async def node_resumir_conversacion(state: State):
+        def node_resumir_conversacion(state: State):
             # First, we get any existing summary
             summary = state.get("summary", "")
 
@@ -101,14 +101,14 @@ class LangGraphService:
             # print("================")
             # pprint(messages)
             # print("================")
-            response = await self.llm.ainvoke(messages)
+            response = self.llm.invoke(messages)
             
             # Delete all but the 2 most recent messages
             delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-2]]
             return {"summary": response.content, "messages": delete_messages}
         
         # Determine whether to end or summarize the conversation
-        async def should_continue(state: State):            
+        def should_continue(state: State):            
             """Return the next node to execute."""
             messages = state["messages"]
             
@@ -131,15 +131,15 @@ class LangGraphService:
         
         return workflow.compile()
     
-    async def process_user_message(self, user_message: str, thread_id: str, user) -> dict:
+    def process_user_message(self, user_message: str, thread_id: str, user) -> dict:
         """
         Procesa un mensaje del usuario y retorna la respuesta del asistente junto con la información de tokens.
         """
         # Obtener el estado guardado o inicializarlo
-        stored_state = await StateManager.get_or_create_graph_state(thread_id, user)
+        stored_state = StateManager.get_or_create_graph_state(thread_id, user)
         
-        graph = await self.create_chat_graph()
-        result = await graph.ainvoke({
+        graph = self.create_chat_graph()  # Convertimos el grafo asíncrono a síncrono
+        result = graph.invoke({
             "messages": stored_state["messages"] + [HumanMessage(content=user_message)],
             "thread_id": thread_id,
             "summary": stored_state["summary"]
@@ -165,7 +165,7 @@ class LangGraphService:
             "messages": result["messages"],
             "summary": result.get("summary", stored_state.get("summary", ""))
         }
-        await StateManager.update_graph_state(thread_id, user, new_state)
+        StateManager.update_graph_state(thread_id, user, new_state)
 
         return {
             "response": assistant_message.content,
@@ -177,8 +177,6 @@ if __name__ == "__main__":
     User = get_user_model()
     
     service = LangGraphService()
-    
-    # Ejemplo de uso
     thread_id = "test_conversation"
     user_message = "Como me llamo?"
     

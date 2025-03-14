@@ -1,6 +1,5 @@
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langGraph.models import GraphState
-from asgiref.sync import sync_to_async
 
 class StateManager:
     @staticmethod
@@ -29,12 +28,12 @@ class StateManager:
         return None
         
     @classmethod
-    async def get_or_create_graph_state(cls, thread_id, user):
+    def get_or_create_graph_state(cls, thread_id, user):
         """
         Recupera el estado del grafo desde la base de datos o lo inicializa si no existe.
         """
-        get_or_create = sync_to_async(GraphState.objects.get_or_create)
-        state, created = await get_or_create(
+        get_or_create = GraphState.objects.get_or_create
+        state, created = get_or_create(
             thread_id=thread_id,
             user=user,
             defaults={"state": {"messages": [], "summary": ""}}
@@ -45,7 +44,7 @@ class StateManager:
         return state.state  # Devuelve el estado guardado
 
     @classmethod
-    async def update_graph_state(cls, thread_id, user, new_state):
+    def update_graph_state(cls, thread_id, user, new_state):
         """
         Guarda el estado actualizado del grafo en la base de datos.
         """
@@ -53,5 +52,5 @@ class StateManager:
         if "messages" in new_state:
             new_state["messages"] = [cls._message_to_dict(m) for m in new_state["messages"]]
         
-        update = sync_to_async(GraphState.objects.filter(thread_id=thread_id, user=user).update)
-        await update(state=new_state) 
+        update = GraphState.objects.filter(thread_id=thread_id, user=user).update
+        update(state=new_state) 

@@ -138,7 +138,7 @@ class LangGraphService:
         # Obtener el estado guardado o inicializarlo
         stored_state = StateManager.get_or_create_graph_state(thread_id, user)
         
-        graph = self.create_chat_graph()
+        graph = self.create_chat_graph()  # Convertimos el grafo asíncrono a síncrono
         result = graph.invoke({
             "messages": stored_state["messages"] + [HumanMessage(content=user_message)],
             "thread_id": thread_id,
@@ -148,7 +148,6 @@ class LangGraphService:
         # Obtener y guardar la respuesta del asistente
         assistant_message = result["messages"][-1]
     
-
         token_input = assistant_message.response_metadata["token_usage"].get("prompt_tokens", 0)
         token_output = assistant_message.response_metadata["token_usage"].get("completion_tokens", 0)
         total_tokens = assistant_message.response_metadata["token_usage"].get("total_tokens", 0)
@@ -178,8 +177,6 @@ if __name__ == "__main__":
     User = get_user_model()
     
     service = LangGraphService()
-    
-    # Ejemplo de uso
     thread_id = "test_conversation"
     user_message = "Como me llamo?"
     
