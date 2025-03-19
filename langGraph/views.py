@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
 import uuid
-from .services.langgraph_service import LangGraphService
+import requests
 
 # Vista para renderizar la página del chat
 def chat_view(request):
@@ -19,6 +19,7 @@ def process_message(request):
         data = json.loads(request.body.decode('utf-8'))
         user_message = data.get('message')
         conversation_id = data.get('conversation_id')
+        thread_id = data.get('thread_id', 'thread_456')  # Valor por defecto si no se proporciona
         
         if not user_message:
             return JsonResponse({
@@ -36,8 +37,15 @@ def process_message(request):
             }, status=401)
         
         # Procesar el mensaje usando el servicio
-        service = LangGraphService()
-        result = service.process_user_message(user_message, conversation_id, request.user)
+        api_url = 'http://127.0.0.1:8888/process-message'
+        payload = {
+            'message': user_message,
+            'conversation_id': conversation_id
+        }
+        
+        response = requests.post(api_url, json=payload)
+        response.raise_for_status()  # Lanza una excepción si hay error HTTP
+        result = response.json()
         
         return JsonResponse({
             'response': result['response'],
