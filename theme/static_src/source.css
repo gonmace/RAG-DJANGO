@@ -38,3 +38,7 @@ button[type="submit"] {
                     hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-300 
                     cursor-pointer active:scale-95 flex items-center gap-4;
 }
+
+.tooltip:before {
+  white-space: pre-line;
+}
