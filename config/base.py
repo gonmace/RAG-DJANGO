@@ -22,8 +22,7 @@ INSTALLED_APPS = [
     'theme',
     'embeddings',
     'converttext',
-    'langGraph',
-
+    'langGraph'
 ]
 
 MIDDLEWARE = [

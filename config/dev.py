@@ -52,3 +52,6 @@ CACHES = {
         "LOCATION": "redis://127.0.0.1:6379/1",
     }
 }
+
+
+CSRF_TRUSTED_ORIGINS = ["https://a1fd-189-28-76-65.ngrok-free.app"]

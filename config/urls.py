@@ -11,6 +11,7 @@ urlpatterns = [
     path('embeddings/', include('embeddings.urls')),
     path('convert/', include('converttext.urls')),
     path('langGraph/', include('langGraph.urls')),
+    # path('rag_legal/', include('rag_legal.urls')),
 ]
 
 if settings.DEBUG:
