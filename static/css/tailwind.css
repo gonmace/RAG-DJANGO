@@ -1585,6 +1585,25 @@ p {
   }
 }
 
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-btn, 0.5rem);
+  border-width: 1px;
+  border-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  --tw-border-opacity: 0.2;
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  --tw-text-opacity: 1;
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
+  border-bottom-width: 2px;
+  min-height: 2.2em;
+  min-width: 2.2em;
+}
+
 .link {
   cursor: pointer;
   text-decoration-line: underline;
@@ -3564,6 +3583,18 @@ details.collapse summary::-webkit-details-marker {
   z-index: 999;
 }
 
+.m-2 {
+  margin: 0.5rem;
+}
+
+.m-4 {
+  margin: 1rem;
+}
+
+.m-7 {
+  margin: 1.75rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -3697,6 +3728,18 @@ details.collapse summary::-webkit-details-marker {
   height: 2rem;
 }
 
+.h-1 {
+  height: 0.25rem;
+}
+
+.h-6 {
+  height: 1.5rem;
+}
+
+.h-3 {
+  height: 0.75rem;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -3723,6 +3766,18 @@ details.collapse summary::-webkit-details-marker {
 
 .w-full {
   width: 100%;
+}
+
+.w-6 {
+  width: 1.5rem;
+}
+
+.w-9 {
+  width: 2.25rem;
+}
+
+.w-0 {
+  width: 0px;
 }
 
 .max-w-4xl {
@@ -4395,6 +4450,38 @@ details.collapse summary::-webkit-details-marker {
 
 .duration-300 {
   transition-duration: 300ms;
+}
+
+.\!\[aY\:\FFFD\15\FFFDm\^A\FFFDj\FFFD A\FFFD\FFFD\2c \FFFD\FFFD\FFFD\6\FFFD\FFFD\FFFD\FFFD\73C\FFFDlv9Jz\FFFDM7\FFFD\FFFD 8Q\?\FFFD\FFFD\FFFDR\FFFD\?\FFFD\"\FFFD\1F 4\FFFD\FFFD 5\133\FFFD\FFFD 1\FFFD\"\FFFD\FFFD\19\FFFD\FFFD\FFFD\FFFD\2c \FFFD\FFFD\FFFD\FFFD\FFFD\] {
+  a-y: ��m^A�j�A��,�������ܼ�lv9Jz�M7��8Q?���R�?�"�4��5ĳ��1�"������,����� !important;
+}
+
+.\[bXQW\:\FFFD\FFFD\>\FFFD\/\FFFD\4CA c\FFFD\13\FFFD\16\FFFD\FFFD\] {
+  b-x-q-w: ��>�/�ӊc����;
+}
+
+.\[eYP\:\FFFD\FFFD\FFFDN\FFFD f\FFFD\FFFD\FFFDG\FFFD\FFFD\1D\439\FFFD\.\FFFD\FFFD\712\4FC\FFFD\2c \FFFD\] {
+  e-y-p: ���N�f���G��й�.��ܒӼ�,�;
+}
+
+.\[j2\:\FFFD e\FFFD\FFFDZ\11\FFFD\FFFD\2c \71F\] {
+  j2: �e��Z��,ܟ;
+}
+
+.\[k\:\FFFD\] {
+  k: �;
+}
+
+.\[n\:\FFFD 6\F\FFFD\=\] {
+  n: �6�=;
+}
+
+.\[s\:vy\FFFDj\12\6\] {
+  s: vy�j;
+}
+
+.\[s\:\FFFD\^U\FFFDSf\FFFD\FFFD\FFFD\+\7F\FFFD\FFFDv\] {
+  s: �^U�Sf���+��v;
 }
 
 .rangos {

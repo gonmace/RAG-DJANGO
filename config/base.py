@@ -15,14 +15,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'widget_tweaks',
-
-    'main',
     'tailwind',
     'theme',
+    'widget_tweaks',
+    'rest_framework',
+
+    'main',
     'embeddings',
     'converttext',
-    'langGraph'
+    'langGraph',
+    'rag_legal',
 ]
 
 MIDDLEWARE = [
