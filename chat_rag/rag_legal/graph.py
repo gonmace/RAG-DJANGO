@@ -11,7 +11,6 @@ from chat_rag.rag_legal.configuration import Configuration
 from chat_rag.rag_legal.state import State
 from chat_rag.utils.token_counter import TokenCounterCallback
 
-# Importación de nodos personalizados para el workflow
 from chat_rag.rag_legal.nodes.relevance_check import RelevanceCheckNode
 from chat_rag.rag_legal.nodes.process_input import process_input
 from chat_rag.rag_legal.nodes.rewrite_query_by_context import rewrite_query_by_context
