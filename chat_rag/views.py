@@ -155,13 +155,13 @@ class RAGLegalView(APIView):
             status=status.HTTP_200_OK
         )
         
-        # def background_summary():
-        #     asyncio.run(self._generate_summary(config, state, chat_request['conversation_id'], memory_saver))
+        def background_summary():
+            asyncio.run(self._generate_summary(config, state, chat_request['conversation_id'], memory_saver))
         
-        # if state.values.get("create_summary", False):
-        #     console.print("Llamando a resumen", style="bold red")
+        if state.values.get("create_summary", False):
+            console.print("Llamando a resumen", style="bold red")
 
-        #     threading.Thread(target=background_summary).start()
+            threading.Thread(target=background_summary).start()
 
         return response
 
