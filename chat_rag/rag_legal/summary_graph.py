@@ -5,8 +5,7 @@ de la conversación de forma asíncrona.
 """
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, END
-from langchain_core.runnables import RunnableConfig
-from langchain_core.messages import SystemMessage, HumanMessage, RemoveMessage
+from langchain_core.messages import HumanMessage, RemoveMessage
 
 from chat_rag.rag_legal.configuration import Configuration
 from chat_rag.rag_legal.state import State

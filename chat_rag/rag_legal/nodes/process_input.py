@@ -1,14 +1,8 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.runnables import RunnableConfig
-from langchain_core.prompts import (
-    ChatPromptTemplate,
-    MessagesPlaceholder
-    )
-from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.messages import SystemMessage
 
 from chat_rag.utils.token_counter import TokenCounterCallback
-from chat_rag.utils.utils import get_message_text
 from chat_rag.rag_legal.configuration import Configuration
 from chat_rag.rag_legal.state import State
 

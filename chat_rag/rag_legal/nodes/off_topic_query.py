@@ -1,5 +1,4 @@
 from langchain_core.messages import AIMessage
-from langchain_core.runnables import RunnableLambda
 from langgraph.graph import END
 
 from chat_rag.rag_legal.state import State

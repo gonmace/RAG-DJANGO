@@ -1,15 +1,3 @@
-"""
-Módulo principal para la creación y configuración del workflow de procesamiento de documentos.
-Este módulo define la estructura del grafo de procesamiento que maneja el flujo de trabajo
-para la recuperación y procesamiento de documentos.
-
-El workflow implementa un sistema de RAG (Retrieval Augmented Generation) con las siguientes características:
-- Verificación de relevancia de consultas
-- Reescritura de consultas basada en contexto
-- Recuperación de documentos relevantes
-- Procesamiento de respuestas
-- Manejo de consultas fuera de tema
-"""
 import os
 from pathlib import Path
 from dotenv import load_dotenv

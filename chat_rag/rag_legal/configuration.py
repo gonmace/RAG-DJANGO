@@ -1,9 +1,7 @@
 """Define the configurable parameters for the agent."""
 
 from __future__ import annotations
-import os
 from pathlib import Path
-from dotenv import load_dotenv, find_dotenv
 from dataclasses import dataclass, field, fields
 from typing import Annotated, Any, Literal, Optional, Type, TypeVar
 
