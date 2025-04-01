@@ -15,3 +15,5 @@ ArchivosBase
 db.sqlite3
 
 node_modules/
+ejemplos/
+chroma_db/
