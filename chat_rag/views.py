@@ -15,7 +15,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 from chat_rag.rag_legal.graph import create_workflow
 from chat_rag.rag_legal.state import State
-from chat_rag.models import State as StateModel
+from chat_rag.utils.persistence import save_state, get_state
 
 from chat_rag.rag_legal.summary_graph import create_summary_workflow
 
@@ -41,37 +41,6 @@ class ChatResponseSerializer(serializers.Serializer):
     response = serializers.CharField()
     token_info = serializers.DictField()
 
-# memory_saver = MemorySaver()
-
-def save_state(conversation_id: str, state_data: dict) -> None:
-    """
-    Guarda el estado de la conversación en la base de datos.
-    
-    Args:
-        conversation_id: ID de la conversación
-        state_data: Datos del estado a guardar
-    """
-    StateModel.objects.update_or_create(
-        conversation_id=conversation_id,
-        defaults={'state': state_data}
-    )
-
-def get_state(conversation_id: str) -> dict:
-    """
-    Obtiene el estado de la conversación desde la base de datos.
-    
-    Args:
-        conversation_id: ID de la conversación
-        
-    Returns:
-        dict: Estado de la conversación o None si no existe
-    """
-    try:
-        state_obj = StateModel.objects.get(conversation_id=conversation_id)
-        return state_obj.state
-    except StateModel.DoesNotExist:
-        return None
-
 class RAGLegalView(APIView):
     def post(self, request):
         return async_to_sync(self._post_async)(request)
@@ -89,7 +58,7 @@ class RAGLegalView(APIView):
             configurable={
                 "thread_id": chat_request['conversation_id']
                 }
-        )
+            )
         
         # Crear el workflow con el memory_saver
         workflow, memory_saver = await create_workflow(config=config)
@@ -108,20 +77,14 @@ class RAGLegalView(APIView):
         
         if state_history == 0:
             console.print("No hay State en memoria", style="bold yellow")
-            state = await sync_to_async(get_state)(chat_request['conversation_id'])
-            if state:
+            summary, messages, token_info = await sync_to_async(get_state)(chat_request['conversation_id'])
+
+            if messages:
                 console.print("Hay historial de base de datos", style="bold red")
                 # Actualizar el estado con el nuevo mensaje
-                messages_data = state.get('messages', [])
-                messages = load(messages_data)
-                summary_data = state.get('summary', '')
-                summary = load(summary_data)
-                token_info = state.get('token_info', {
-                    "prompt_tokens": 0,
-                    "completion_tokens": 0,
-                    "total_tokens": 0,
-                    "cost": 0
-                })
+                messages = load(messages)
+                summary = load(summary)
+
                 initial_state = State(
                     messages=messages + [HumanMessage(content=chat_request['message'])],
                     summary=summary,
@@ -133,13 +96,21 @@ class RAGLegalView(APIView):
         
         # Guardar el estado en la base de datos
         state = workflow.get_state(config)
-
-        serializable_state = dumpd(state.values)
         
+        messages = state.values.get('messages', [])
+        summary = state.values.get('summary', {})
+        token_info = state.values.get('token_info', {})
+        
+        messages_data = dumpd(messages)
+        summary_data = dumpd(summary)
+        token_info_data = dumpd(token_info)
+
         # Ejecutar la función síncrona en un contexto asíncrono
         await sync_to_async(save_state)(
             chat_request['conversation_id'],
-            serializable_state
+            messages_data,
+            summary_data,
+            token_info_data
         )
         
         response = result["messages"][-1]
@@ -156,7 +127,12 @@ class RAGLegalView(APIView):
         )
         
         def background_summary():
-            asyncio.run(self._generate_summary(config, state, chat_request['conversation_id'], memory_saver))
+            asyncio.run(self._generate_summary(
+                config,
+                state,
+                chat_request['conversation_id'],
+                memory_saver
+                ))
         
         if state.values.get("create_summary", False):
             console.print("Llamando a resumen", style="bold red")
@@ -168,13 +144,24 @@ class RAGLegalView(APIView):
     async def _generate_summary(self, config: RunnableConfig, state: State, conversation_id: str, memory_saver: MemorySaver) -> None:
         try:
             summary_workflow = await create_summary_workflow(memory_saver=memory_saver)
+            
             await summary_workflow.ainvoke(state.values, config)
+            
             state = summary_workflow.get_state(config)
-            serializable_state = dumpd(state.values)
+            
+            messages = state.values.get('messages', [])
+            summary = state.values.get('summary', {})
+            token_info = state.values.get('token_info', {})
+            
+            messages_data = dumpd(messages)
+            summary_data = dumpd(summary)
+            token_info_data = dumpd(token_info)
             
             await sync_to_async(save_state)(
                 conversation_id,
-                serializable_state
+                messages_data,
+                summary_data,
+                token_info_data
             )
 
         except Exception as e:

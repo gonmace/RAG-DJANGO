@@ -90,7 +90,7 @@ document.getElementById('chat-form').addEventListener('submit', async (e) => {
     setLoading(true);
     
     try {
-        const response = await fetch('/langGraph/process-message/', {
+        const response = await fetch('/chat_rag/api/v1/legal/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
