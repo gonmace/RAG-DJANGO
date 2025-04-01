@@ -179,3 +179,4 @@ class RAGLegalView(APIView):
 
         except Exception as e:
             console.print(f"Error al generar el resumen: {str(e)}", style="bold red")
+            

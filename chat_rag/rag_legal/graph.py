@@ -172,7 +172,7 @@ async def create_workflow(config: RunnableConfig):
     # Compilar el workflow con el memory_saver para mantener el estado entre ejecuciones
     return workflow.compile(checkpointer=memory_saver), memory_saver
 
-# Crear el workflow por defecto
+#  TODO comentar las lineas de abajo para produccion, esto es para langgraph dev
 import asyncio
 workflow, memory_saver = asyncio.run(create_workflow({}))
 
