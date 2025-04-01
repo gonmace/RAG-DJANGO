@@ -73,7 +73,7 @@ async def create_workflow(config: RunnableConfig):
     # Utiliza un vectorstore para comparar la similitud de la consulta con el contexto
     relevance_node = RelevanceCheckNode(
         vectorstore=configuration.vectorstore,
-        threshold=0.4 # Umbral de similitud para considerar una consulta relevante
+        threshold=0.35 # Umbral de similitud para considerar una consulta relevante
         )
     
     # Nodo para reescribir las consultas
@@ -90,7 +90,7 @@ async def create_workflow(config: RunnableConfig):
         edges=[("id", "ID_Original")],  # Configuración de las relaciones entre documentos
         strategy=Eager(k=5, start_k=4, max_depth=1),  # Estrategia de búsqueda con parámetros optimizados
         documento_filter=["CODIGO CIVIL (SUBFRAGMENTOS)", "CODIGO PROCESAL CIVIL (SUBFRAGMENTOS)"],  # Tipos de documentos a buscar
-        umbral_contexto=0.55  # Umbral de similitud para el contexto
+        umbral_contexto=0.50  # Umbral de similitud para el contexto
     )
 
     # Función auxiliar para verificar si hay contexto disponible
@@ -107,7 +107,6 @@ async def create_workflow(config: RunnableConfig):
         if len(messages) > 4:
             console.print("Se generara resumen", style="bold red")
             state["create_summary"] = True
-            
         else:
             console.print("No se generara resumen", style="bold green")
             state["create_summary"] = False

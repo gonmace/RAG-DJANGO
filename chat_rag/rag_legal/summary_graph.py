@@ -15,8 +15,6 @@ from langgraph.checkpoint.memory import MemorySaver
 from rich.console import Console
 console = Console()
 
-memory_saver = MemorySaver()
-
 token_counter = TokenCounterCallback(
         model_name=Configuration.llm_chat_model
         )

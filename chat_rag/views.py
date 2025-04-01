@@ -157,6 +157,15 @@ class RAGLegalView(APIView):
             summary_data = dumpd(summary)
             token_info_data = dumpd(token_info)
             
+            console.print(20*"@")
+            console.print("messages_data", style="bold green")
+            console.print(messages_data, style="bold green")
+            console.print("summary_data", style="bold green")
+            console.print(summary_data, style="bold green")
+            console.print("token_info_data", style="bold green")
+            console.print(token_info_data, style="bold green")
+            console.print(20*"@")
+            
             await sync_to_async(save_state)(
                 conversation_id,
                 messages_data,

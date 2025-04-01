@@ -6,8 +6,8 @@ console = Console()
 
 def save_state(
     conversation_id: str,
-    messages_data: dict,
-    summary_data: dict,
+    messages_data: list,
+    summary_data: str,
     token_info_data: dict
     ) -> None:
     """
