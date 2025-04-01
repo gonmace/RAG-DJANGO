@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'embeddings',
     'converttext',
     'langGraph',
-    'rag_legal',
+    'chat_rag',
 ]
 
 MIDDLEWARE = [

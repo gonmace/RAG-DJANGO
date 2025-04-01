@@ -2,3 +2,4 @@
 
 django-browser-reload
 django-tailwind>=3.8.0
+langgraph-cli[inmem]

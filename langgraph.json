@@ -1,0 +1,8 @@
+{
+    "name": "langGraph",
+    "dependencies": ["."],
+    "description": "Chatbot para la empresa",
+    "graphs": {
+        "workflow": "chat_rag.rag_legal.graph:workflow"
+    }
+}

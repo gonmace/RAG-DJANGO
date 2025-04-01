@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -11,7 +10,7 @@ urlpatterns = [
     path('embeddings/', include('embeddings.urls')),
     path('convert/', include('converttext.urls')),
     path('langGraph/', include('langGraph.urls')),
-    # path('rag_legal/', include('rag_legal.urls')),
+    path('chat_rag/', include('chat_rag.urls')),
 ]
 
 if settings.DEBUG:

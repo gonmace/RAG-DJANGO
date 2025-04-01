@@ -37,7 +37,7 @@ def process_message(request):
             }, status=401)
         
         # Procesar el mensaje usando el servicio
-        api_url = 'http://127.0.0.1:8888/process-message'
+        api_url = 'http://localhost:8000/chat_rag/api/v1/legal/'
         payload = {
             'message': user_message,
             'conversation_id': conversation_id
@@ -49,7 +49,6 @@ def process_message(request):
         
         return JsonResponse({
             'response': result['response'],
-            'conversation_id': conversation_id,
             'prompt_tokens': result['token_info']['prompt_tokens'],
             'completion_tokens': result['token_info']['completion_tokens'],
             'total_tokens': result['token_info']['total_tokens'],
