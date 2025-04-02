@@ -40,8 +40,6 @@ INTERNAL_IPS = [
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
-CORS_ALLOW_ALL_ORIGINS = True
-
 CSRF_COOKIE_SECURE = False
 
 CSRF_USE_SESSIONS = False
@@ -54,4 +52,12 @@ CACHES = {
 }
 
 
-CSRF_TRUSTED_ORIGINS = ["https://a1fd-189-28-76-65.ngrok-free.app"]
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4321",  # tu frontend Astro
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4321",  # dominio de tu frontend Astro
+]

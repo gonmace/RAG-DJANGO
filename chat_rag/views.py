@@ -77,19 +77,23 @@ class RAGLegalView(APIView):
         
         if state_history == 0:
             console.print("No hay State en memoria", style="bold yellow")
-            summary, messages, token_info = await sync_to_async(get_state)(chat_request['conversation_id'])
+            try:
+                summary, messages, token_info = await sync_to_async(get_state)(chat_request['conversation_id'])
 
-            if messages:
-                console.print("Hay historial de base de datos", style="bold red")
-                # Actualizar el estado con el nuevo mensaje
-                messages = load(messages)
-                summary = load(summary)
+                if messages:
+                    console.print("Hay historial de base de datos", style="bold red")
+                    # Actualizar el estado con el nuevo mensaje
+                    messages = load(messages)
+                    summary = load(summary)
 
-                initial_state = State(
-                    messages=messages + [HumanMessage(content=chat_request['message'])],
-                    summary=summary,
-                    token_info=token_info
-                    )
+                    initial_state = State(
+                        messages=messages + [HumanMessage(content=chat_request['message'])],
+                        summary=summary,
+                        token_info=token_info
+                        )
+            except Exception as e:
+                console.print(f"Error al obtener el estado de la base de datos: {str(e)}", style="bold red")
+                # Si hay un error, continuamos con el estado inicial sin historial
 
         # Procesar el mensaje y obtener el estado
         result = await workflow.ainvoke(initial_state, config)
