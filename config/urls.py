@@ -11,6 +11,7 @@ urlpatterns = [
     path('convert/', include('converttext.urls')),
     path('langGraph/', include('langGraph.urls')),
     path('rag_legal/', include('rag_legal.urls')),
+    path('', include('chat.urls')),
     # path('api/auth/', include('authentication.urls')),
 ]
 

@@ -1,44 +1,118 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*
+* This is where you can configure the folders that Tailwind will scan.
+* 
+* For detailed documents, check the Tailwind docs at:
+*
+* https://tailwindcss.com/docs/detecting-classes-in-source-files#explicitly-registering-sources
+*
+* This default configuration will scan all folder in your root project directory.
+*
+* Here is an example configuration that will only scan your templates/ folder:
+* 
+* @import "tailwindcss" source(none);
+*
+* @source "../../../templates";
+*/
+
+@import "tailwindcss" source("../../../");
+
+/*
+* If you would like to customise you theme, you can do that here too.
+*
+* https://tailwindcss.com/docs/theme
+*
+*/
+
+@theme {}
+
+
+/*
+* You can install tailwind plugins like below.
+*
+* https://tailwindcss.com/docs/functions-and-directives#plugin-directive
+*
+*/
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/aspect-ratio";
+
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+  --color-primary: #0070B8;
+  --color-secondary: #B03F5B;
+  --color-accent: #DA8276;
+  --color-neutral: #2D304E;
+  --color-neutral-content: #F2F0F2;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  --color-primary: #0070B8;
+  --color-secondary: #B03F5B;
+  --color-accent: #DA8276;
+  --color-neutral: #F2F0F2;
+  --color-neutral-content: #2D304E;
+}
 
 @layer base {
   h1 {
-    @apply text-3xl font-bold; /* Ejemplo de estilos para h1 */
+    @apply text-3xl ;
+    /* Ejemplo de estilos para h1 */
   }
 
   h2 {
-    @apply text-2xl font-bold; /* Ejemplo de estilos para h2 */
+    @apply text-2xl ;
+    /* Ejemplo de estilos para h2 */
   }
 
   h3 {
-    @apply text-xl ; /* Ejemplo de estilos para h2 */
+    @apply text-xl;
+    /* Ejemplo de estilos para h2 */
   }
 
   p {
-    @apply text-base text-gray-700; /* Ejemplo de estilos para texto párrafo */
+    @apply text-base ;
+    /* Ejemplo de estilos para texto párrafo */
+  }
+  body {
+    font-family: 'Nunito', sans-serif;
+  }
+}
+
+@layer components {
+
+  button[type="submit"] {
+    @apply btn btn-primary text-base;
+  }
+
   
-}}
+}
 
+@layer utilities {
 
-.rangos {
+  .rangos {
     @apply range-xs max-w-64;
+  }
+  .tooltip:before {
+    white-space: pre-line;
+  }
+  .shadow-card {
+    @apply transition-all duration-300 cursor-pointer active:scale-95 flex items-center gap-4;
+    box-shadow: 0 8px 30px rgb(0, 0, 0, 0.12);
+  }
+  .shadow-card:hover {
+    box-shadow: 0 8px 30px rgb(0, 0, 0, 0.2);
+  }
+
 }
 
 .menu-active {
-    @apply bg-primary/70 ;
+  @apply bg-secondary;
 }
 
-button[type="submit"] {
-    @apply btn btn-primary text-white text-base;
-}
 
-.shadow-card {
-    @apply shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
-                    hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-300 
-                    cursor-pointer active:scale-95 flex items-center gap-4;
-}
-
-.tooltip:before {
-  white-space: pre-line;
-}

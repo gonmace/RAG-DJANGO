@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-3xl font-bold; /* Ejemplo de estilos para h1 */
+  }
+
+  h2 {
+    @apply text-2xl font-bold; /* Ejemplo de estilos para h2 */
+  }
+
+  h3 {
+    @apply text-xl ; /* Ejemplo de estilos para h2 */
+  }
+
+  p {
+    @apply text-base text-gray-700; /* Ejemplo de estilos para texto párrafo */
+  
+}}
+
+
+.rangos {
+    @apply range-xs max-w-64;
+}
+
+.menu-active {
+    @apply bg-primary/70 ;
+}
+
+button[type="submit"] {
+    @apply btn btn-primary text-white text-base;
+}
+
+.shadow-card {
+    @apply shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
+                    hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-300 
+                    cursor-pointer active:scale-95 flex items-center gap-4;
+}
+
+.tooltip:before {
+  white-space: pre-line;
+}

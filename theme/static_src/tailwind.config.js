@@ -1,83 +1,57 @@
+/**
+ * This is a minimal config.
+ *
+ * If you need the full config, get it from here:
+ * https://unpkg.com/browse/tailwindcss@latest/stubs/defaultConfig.stub.js
+ */
+
 module.exports = {
-  content: [
-      '../../templates/*.html',
-      '../../templates/**/*.html', 
-      '../../main/src/index-main.js',
-      '../../**/templates/*.html',  
-      '../../**/templates/**/*.html',
-      '../../embeddings/templates/**/*.html', 
-      '../../embeddings/forms.py', 
-      '!../../**/node_modules',
-  ],
-  plugins: [
-      require('daisyui'),
-      require('@tailwindcss/forms'),
-      require('@tailwindcss/typography'),
-      require('@tailwindcss/aspect-ratio'),
-  ],
-  daisyui: {
-      themes: [
-        {
-          
-            // http://colormind.io/bootstrap/
-            // https://coolors.co/1a281f-aaaaaa-cf5535-fec601-f6f8ff
-            mytheme: {
-              "primary": "#F19E2B",  // Main brand color
-              "secondary": "#90a8a2", // Light accent
-              "accent": "#CA5043", // Dark accent
-              "neutral": "#364146", // Dark shades
-              "base-100": "oklch(97% 0 0)", // Light shades (background)
-              "info": "oklch(74% 0.16 232.661)",
-              "success": "oklch(76% 0.177 163.223)",
-              "warning": "oklch(90% 0.182 98.111)",
-              "error": "oklch(70% 0.191 22.216)"
-            },
-          
-        },
-        "dark",
-      ],
-    },
+    content: [
+        /**
+         * HTML. Paths to Django template files that will contain Tailwind CSS classes.
+         */
+
+        /*  Templates within theme app (<tailwind_app_name>/templates), e.g. base.html. */
+        '../templates/**/*.html',
+
+        /*
+         * Main templates directory of the project (BASE_DIR/templates).
+         * Adjust the following line to match your project structure.
+         */
+        '../../templates/**/*.html',
+
+        /*
+         * Templates in other django apps (BASE_DIR/<any_app_name>/templates).
+         * Adjust the following line to match your project structure.
+         */
+        '../../**/templates/**/*.html',
+
+        /**
+         * JS: If you use Tailwind CSS in JavaScript, uncomment the following lines and make sure
+         * patterns match your project structure.
+         */
+        /* JS 1: Ignore any JavaScript in node_modules folder. */
+        // '!../../**/node_modules',
+        /* JS 2: Process all JavaScript files in the project. */
+        // '../../**/*.js',
+
+        /**
+         * Python: If you use Tailwind CSS classes in Python, uncomment the following line
+         * and make sure the pattern below matches your project structure.
+         */
+        // '../../**/*.py'
+    ],
     theme: {
-      extend: {
-        fontFamily: {
-          'sans': ['nunito', 'sans-serif'],
-        },
-      },
+        extend: {},
     },
+    plugins: [
+        /**
+         * '@tailwindcss/forms' is the forms plugin that provides a minimal styling
+         * for forms. If you don't like it or have own styling for forms,
+         * comment the line below to disable '@tailwindcss/forms'.
+         */
+        require('@tailwindcss/forms'),
+        require('@tailwindcss/typography'),
+        require('@tailwindcss/aspect-ratio'),
+    ],
 }
-
-
-// @plugin "daisyui/theme" {
-//   name: "bumblebee-gmc";
-//   default: false;
-//   prefersdark: false;
-//   color-scheme: "light";
-//   --color-base-100: oklch(100% 0 0);
-//   --color-base-200: oklch(94% 0 0);
-//   --color-base-300: oklch(87% 0 0);
-//   --color-base-content: oklch(26% 0.007 34.298);
-//   --color-primary: #F19E2B;
-//   --color-primary-content: oklch(98% 0.003 247.858);
-//   --color-secondary: #90a8a2;
-//   --color-secondary-content: oklch(98% 0.003 247.858);
-//   --color-accent: #CA5043;
-//   --color-accent-content: oklch(98% 0.003 247.858);
-//   --color-neutral: #364146;
-//   --color-neutral-content: oklch(98% 0.003 247.858);
-//   --color-info: oklch(74% 0.16 232.661);
-//   --color-info-content: oklch(27% 0.033 256.848);
-//   --color-success: oklch(76% 0.177 163.223);
-//   --color-success-content: oklch(27% 0.033 256.848);
-//   --color-warning: oklch(90% 0.182 98.111);
-//   --color-warning-content: oklch(27% 0.033 256.848);
-//   --color-error: oklch(70% 0.191 22.216);
-//   --color-error-content: oklch(27% 0.033 256.848);
-//   --radius-selector: 1rem;
-//   --radius-field: 0.5rem;
-//   --radius-box: 1rem;
-//   --size-selector: 0.25rem;
-//   --size-field: 0.25rem;
-//   --border: 1px;
-//   --depth: 1;
-//   --noise: 0;
-// }

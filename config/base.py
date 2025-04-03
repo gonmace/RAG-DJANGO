@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'langGraph',
     'rag_legal',
     'authentication',
+    'chat',
 ]
 
 MIDDLEWARE = [
