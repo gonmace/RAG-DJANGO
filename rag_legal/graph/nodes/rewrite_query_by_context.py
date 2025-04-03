@@ -7,10 +7,10 @@ from langchain_core.prompts import (
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.output_parsers import StrOutputParser
 
-from chat_rag.utils.token_counter import TokenCounterCallback
-from chat_rag.utils.utils import get_message_text
-from chat_rag.rag_legal.configuration import Configuration
-from chat_rag.rag_legal.state import State
+from rag_legal.utils.token_counter import TokenCounterCallback
+from rag_legal.utils.utils import get_message_text
+from rag_legal.graph.configuration import Configuration
+from rag_legal.graph.state import State
 
 from rich.console import Console
 console = Console()

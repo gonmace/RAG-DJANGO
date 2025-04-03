@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from chat_rag.models import State
+from rag_legal.models import State
 
 class StateAdmin(admin.ModelAdmin):
     list_display = ('conversation_id', 'created_at', 'updated_at')

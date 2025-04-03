@@ -2,16 +2,17 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
 import json
-import uuid
 import requests
 
 # Vista para renderizar la página del chat
+@login_required
 def chat_view(request):
     return render(request, 'langGraph/chat.html')
 
 # Vista para procesar mensajes
-@csrf_exempt
+@login_required
 @require_http_methods(["POST"])
 def process_message(request):
     try:
@@ -19,7 +20,6 @@ def process_message(request):
         data = json.loads(request.body.decode('utf-8'))
         user_message = data.get('message')
         conversation_id = data.get('conversation_id')
-        thread_id = data.get('thread_id', 'thread_456')  # Valor por defecto si no se proporciona
         
         if not user_message:
             return JsonResponse({
@@ -28,22 +28,22 @@ def process_message(request):
             
         if not conversation_id:
             conversation_id = "+59167728817"
-            # conversation_id = str(uuid.uuid4())
-        
-        # Verificar si el usuario está autenticado
-        if not request.user.is_authenticated:
-            return JsonResponse({
-                'error': 'El usuario debe estar autenticado'
-            }, status=401)
         
         # Procesar el mensaje usando el servicio
-        api_url = 'http://localhost:8000/chat_rag/api/v1/legal/'
+        api_url = 'http://localhost:8000/rag_legal/api/v1/legal/'
         payload = {
             'message': user_message,
             'conversation_id': conversation_id
         }
         
-        response = requests.post(api_url, json=payload)
+        # Agregar las cabeceras necesarias para la autenticación
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFToken': request.COOKIES.get('csrftoken'),
+        }
+        
+        response = requests.post(api_url, json=payload, headers=headers, cookies=request.COOKIES)
         response.raise_for_status()  # Lanza una excepción si hay error HTTP
         result = response.json()
         

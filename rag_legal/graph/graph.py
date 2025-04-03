@@ -7,16 +7,16 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.runnables import RunnableConfig
 from graph_retriever.strategies import Eager
 
-from chat_rag.rag_legal.configuration import Configuration
-from chat_rag.rag_legal.state import State
-from chat_rag.utils.token_counter import TokenCounterCallback
+from rag_legal.graph.configuration import Configuration
+from rag_legal.graph.state import State
+from rag_legal.utils.token_counter import TokenCounterCallback
 
-from chat_rag.rag_legal.nodes.relevance_check import RelevanceCheckNode
-from chat_rag.rag_legal.nodes.process_input import process_input
-from chat_rag.rag_legal.nodes.rewrite_query_by_context import rewrite_query_by_context
-from chat_rag.rag_legal.nodes.rewrite_query_for_retriever import QueryRewriter
-from chat_rag.rag_legal.nodes.retrieve_documents import RetrieveDocuments
-from chat_rag.rag_legal.nodes.off_topic_query import off_topic_response
+from rag_legal.graph.nodes.relevance_check import RelevanceCheckNode
+from rag_legal.graph.nodes.process_input import process_input
+from rag_legal.graph.nodes.rewrite_query_by_context import rewrite_query_by_context
+from rag_legal.graph.nodes.rewrite_query_for_retriever import QueryRewriter
+from rag_legal.graph.nodes.retrieve_documents import RetrieveDocuments
+from rag_legal.graph.nodes.off_topic_query import off_topic_response
 
 from rich.console import Console
 console = Console()
@@ -90,7 +90,7 @@ async def create_workflow(config: RunnableConfig):
         edges=[("id", "ID_Original")],  # Configuración de las relaciones entre documentos
         strategy=Eager(k=5, start_k=4, max_depth=1),  # Estrategia de búsqueda con parámetros optimizados
         documento_filter=["CODIGO CIVIL (SUBFRAGMENTOS)", "CODIGO PROCESAL CIVIL (SUBFRAGMENTOS)"],  # Tipos de documentos a buscar
-        umbral_contexto=0.50  # Umbral de similitud para el contexto
+        umbral_contexto=0.6  # Umbral de similitud para el contexto
     )
 
     # Función auxiliar para verificar si hay contexto disponible

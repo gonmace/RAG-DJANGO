@@ -6,11 +6,12 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('main.urls')),
+    path('main/', include('main.urls')),
     path('embeddings/', include('embeddings.urls')),
     path('convert/', include('converttext.urls')),
     path('langGraph/', include('langGraph.urls')),
-    path('chat_rag/', include('chat_rag.urls')),
+    path('rag_legal/', include('rag_legal.urls')),
+    # path('api/auth/', include('authentication.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,4 +1,4 @@
-from app.rag_memory.state import State
+from rag_legal.graph.state import State
 from langgraph.graph import END
 # Determine whether to end or summarize the conversation
 def should_continue(state: State):

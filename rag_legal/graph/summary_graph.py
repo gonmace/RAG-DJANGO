@@ -7,9 +7,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, RemoveMessage
 
-from chat_rag.rag_legal.configuration import Configuration
-from chat_rag.rag_legal.state import State
-from chat_rag.utils.token_counter import TokenCounterCallback
+from rag_legal.graph.configuration import Configuration
+from rag_legal.graph.state import State
+from rag_legal.utils.token_counter import TokenCounterCallback
 from langgraph.checkpoint.memory import MemorySaver
 
 from rich.console import Console

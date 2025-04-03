@@ -3,9 +3,9 @@ from langchain_core.runnables import RunnableConfig
 
 from langchain_core.messages import SystemMessage
 
-from chat_rag.utils.token_counter import TokenCounterCallback
-from chat_rag.rag_legal.configuration import Configuration
-from chat_rag.rag_legal.state import State
+from rag_legal.utils.token_counter import TokenCounterCallback
+from rag_legal.graph.configuration import Configuration
+from rag_legal.graph.state import State
 
 from rich.console import Console
 console = Console()

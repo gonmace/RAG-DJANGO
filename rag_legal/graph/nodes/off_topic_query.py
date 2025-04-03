@@ -1,7 +1,7 @@
 from langchain_core.messages import AIMessage
 from langgraph.graph import END
 
-from chat_rag.rag_legal.state import State
+from rag_legal.graph.state import State
 
 def off_topic_response(state: State):
     """

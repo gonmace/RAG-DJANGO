@@ -1,4 +1,4 @@
-from chat_rag.models import State as StateModel
+from rag_legal.models import State as StateModel
 
 from rich.console import Console
 

@@ -2,8 +2,8 @@ from langchain_graph_retriever import GraphRetriever
 from graph_retriever.strategies import Eager
 from rich.console import Console
 
-from chat_rag.rag_legal.state import State
-from chat_rag.utils.utils import format_docs
+from rag_legal.graph.state import State
+from rag_legal.utils.utils import format_docs
 
 from typing import List, Tuple
 from langchain_core.vectorstores import VectorStore
@@ -125,12 +125,16 @@ class RetrieveDocuments:
         
         console.print(f"Documentos recuperados: {len(filtered_docs)}", style="blue")
         
-        # # Filtrar documentos según criterios específicos
+        # Filtrar documentos según criterios específicos
         filtered_documents = [
             doc for doc in filtered_docs
             if doc.metadata.get("Documento") in self.documento_filter
             and doc.metadata.get("_similarity_score", 0) > self.umbral_contexto
         ]
+        
+        # Ordenar documentos por _similarity_score y seleccionar los 8 mejores
+        filtered_documents.sort(key=lambda x: x.metadata.get("_similarity_score", 0), reverse=True)
+        filtered_documents = filtered_documents[:7]
         
         console.print(f"Documentos finales ya filtrados: {len(filtered_documents)}", style="blue")
         

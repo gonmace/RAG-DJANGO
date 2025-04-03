@@ -3,6 +3,6 @@
     "dependencies": ["."],
     "description": "Chatbot para la empresa",
     "graphs": {
-        "workflow": "chat_rag.rag_legal.graph:workflow"
+        "workflow": "rag_legal.rag_legal.graph:workflow"
     }
 }

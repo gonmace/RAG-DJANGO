@@ -2,13 +2,13 @@ from langchain_core.prompts import PromptTemplate
 
 from langchain_core.language_models.base import BaseLanguageModel
 
-from chat_rag.rag_legal.configuration import Configuration
+from rag_legal.graph.configuration import Configuration
 from langchain_core.runnables import RunnableLambda
-from chat_rag.rag_legal.state import State
+from rag_legal.graph.state import State
 
 from rich.console import Console
 
-from chat_rag.utils.token_counter import TokenCounterCallback
+from rag_legal.utils.token_counter import TokenCounterCallback
 
 console = Console()
 

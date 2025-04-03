@@ -1,6 +1,6 @@
 from langchain_core.vectorstores import VectorStore
 
-from chat_rag.rag_legal.state import State
+from rag_legal.graph.state import State
 
 from rich.console import Console
 

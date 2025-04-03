@@ -13,11 +13,11 @@ from langchain_core.load import load, dumpd
 
 from langgraph.checkpoint.memory import MemorySaver
 
-from chat_rag.rag_legal.graph import create_workflow
-from chat_rag.rag_legal.state import State
-from chat_rag.utils.persistence import save_state, get_state
+from rag_legal.graph.graph import create_workflow
+from rag_legal.graph.state import State
+from rag_legal.utils.persistence import save_state, get_state
 
-from chat_rag.rag_legal.summary_graph import create_summary_workflow
+from rag_legal.graph.summary_graph import create_summary_workflow
 
 from rich.console import Console
 from rich.logging import RichHandler
@@ -160,15 +160,6 @@ class RAGLegalView(APIView):
             messages_data = dumpd(messages)
             summary_data = dumpd(summary)
             token_info_data = dumpd(token_info)
-            
-            console.print(20*"@")
-            console.print("messages_data", style="bold green")
-            console.print(messages_data, style="bold green")
-            console.print("summary_data", style="bold green")
-            console.print(summary_data, style="bold green")
-            console.print("token_info_data", style="bold green")
-            console.print(token_info_data, style="bold green")
-            console.print(20*"@")
             
             await sync_to_async(save_state)(
                 conversation_id,

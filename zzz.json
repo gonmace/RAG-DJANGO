@@ -1,0 +1,71 @@
+[
+    {
+        "id": [
+            "langchain",
+            "schema",
+            "messages",
+            "HumanMessage"
+        ],
+        "lc": 1,
+        "type": "constructor",
+        "kwargs": {
+            "id": "a4d863ae-e274-4ef6-8d03-5d10d7aed3eb",
+            "type": "human",
+            "content": "Quien puede recibir una herencia?"
+        }
+    },
+    {
+        "id": [
+            "langchain",
+            "schema",
+            "messages",
+            "AIMessage"
+        ],
+        "lc": 1,
+        "type": "constructor",
+        "kwargs": {
+            "id": "run-49979285-ad1d-4b05-b184-64cbc60393be-0",
+            "type": "ai",
+            "content": "Según el artículo 1083 del Código Civil, pueden recibir una herencia los descendientes, ascendientes, cónyuge o conviviente, parientes colaterales y el Estado, en el orden y según las reglas establecidas.",
+            "tool_calls": [],
+            "usage_metadata": {
+                "input_tokens": 852,
+                "total_tokens": 901,
+                "output_tokens": 49,
+                "input_token_details": {
+                    "audio": 0,
+                    "cache_read": 0
+                },
+                "output_token_details": {
+                    "audio": 0,
+                    "reasoning": 0
+                }
+            },
+            "additional_kwargs": {
+                "refusal": null
+            },
+            "response_metadata": {
+                "logprobs": null,
+                "model_name": "gpt-4o-mini-2024-07-18",
+                "token_usage": {
+                    "total_tokens": 901,
+                    "prompt_tokens": 852,
+                    "completion_tokens": 49,
+                    "prompt_tokens_details": {
+                        "audio_tokens": 0,
+                        "cached_tokens": 0
+                    },
+                    "completion_tokens_details": {
+                        "audio_tokens": 0,
+                        "reasoning_tokens": 0,
+                        "accepted_prediction_tokens": 0,
+                        "rejected_prediction_tokens": 0
+                    }
+                },
+                "finish_reason": "stop",
+                "system_fingerprint": "fp_9654a743ed"
+            },
+            "invalid_tool_calls": []
+        }
+    }
+]
