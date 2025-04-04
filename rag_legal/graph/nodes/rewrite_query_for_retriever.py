@@ -1,9 +1,7 @@
 from langchain_core.prompts import PromptTemplate
-
 from langchain_core.language_models.base import BaseLanguageModel
-
-from rag_legal.graph.configuration import Configuration
 from langchain_core.runnables import RunnableLambda
+
 from rag_legal.graph.state import State
 
 from rich.console import Console

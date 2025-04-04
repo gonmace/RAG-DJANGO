@@ -1,5 +1,3 @@
-"""Define the configurable parameters for the agent."""
-
 from __future__ import annotations
 from pathlib import Path
 from dataclasses import dataclass, field, fields

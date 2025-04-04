@@ -1,25 +1,23 @@
+from asgiref.sync import async_to_sync
+
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
-import logging
-from rich.console import Console
-from rich.logging import RichHandler
-
-from asgiref.sync import async_to_sync
 
 from rag_legal.services.chat_service import ChatService
 
-console = Console()
+import logging
+from rich.logging import RichHandler
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(message)s",
     datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True, console=console)]
+    handlers=[RichHandler(rich_tracebacks=True)]
 )
 logger = logging.getLogger("rich")
 

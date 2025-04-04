@@ -1,8 +1,3 @@
-"""
-Módulo para la creación y configuración del workflow de resumen de conversación.
-Este módulo define la estructura del grafo de procesamiento que maneja el resumen
-de la conversación de forma asíncrona.
-"""
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, RemoveMessage

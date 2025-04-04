@@ -13,7 +13,7 @@ Chat con el asistente de legal
 
 {% block content %}
 <div class="flex flex-col h-full">
-    {% include 'navbar_chat.html' with title='Asistente Legal' %}
+    {% include 'components/navbar_chat.html' with title='Asistente Legal' %}
     <main class="flex-1 bg-base-200 p-4">
         <div class="container mx-auto h-full">
             <div class="max-w-4xl mx-auto h-full">
@@ -91,6 +91,7 @@ Chat con el asistente de legal
 <script>
     // Pasar las conversaciones al JavaScript
     window.conversations = {{ conversations|safe }};
+    const usuario = "{% if request.user.first_name %}{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}{% else %}{{ request.user.username|first|upper }}{% endif %}";
 </script>
 <script src="{% static 'js/chat.js' %}"></script>    
 {% endblock %}

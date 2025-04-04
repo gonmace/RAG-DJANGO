@@ -4,19 +4,27 @@ import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from rag_legal.models import State as StateModel
 from rag_legal.utils.persistence import get_state
-from rich.console import Console
+from decouple import config
 from langchain_core.load import load
 from langchain_core.messages import HumanMessage, AIMessage
-from datetime import datetime
+
+from rich.console import Console
 console = Console()
+
+DOMAIN = config('DOMAIN', default='http://localhost:8000', cast=str)
+
+API_URL = f"{DOMAIN}/rag_legal/api/v1/legal/"
 
 @login_required
 def chat_legal(request):
-    # Obtener las últimas 6 conversaciones del usuario actual
-    summary, messages, token_info = get_state(request.user)
-
+    # Obtener las conversaciones en el state del usuario actual
+    try:
+        summary, messages, token_info = get_state(request.user)
+    except Exception as e:
+        summary, messages, token_info = None, [], {}
+        print(f"Error al obtener el estado: {str(e)}")
+    
     # Crear un diccionario para almacenar las conversaciones
     conversations = []
     
@@ -35,8 +43,6 @@ def chat_legal(request):
     conversations.reverse()
     
     return render(request, 'chat_legal.html', {'conversations': conversations})
-
-API_URL = "http://localhost:8000/rag_legal/api/v1/legal/"
 
 @csrf_exempt  # sólo para pruebas, idealmente se maneja con CSRFToken
 @login_required

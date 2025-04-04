@@ -71,8 +71,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     ${marked.parse(text)}
                 </div>
                 <div class="text-xs opacity-70 mt-1 text-${side === "end" ? "right" : "left"}">
-                    <span class="badge badge-ghost badge-sm">${side === "end" ? "Tú" : "Asistente"}</span>
-                    <span class="badge badge-ghost badge-sm ml-1">${timestamp || new Date().toLocaleTimeString()}</span>
+                    <!-- 
+                    La variable 'usuario' viene del template Django (chat_legal.html) donde se define como:
+                    const usuario = "{% if request.user.first_name %}{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}{% else %}{{ request.user.username|first|upper }}{% endif %}";
+                    Esta variable contiene las iniciales del nombre del usuario actual.
+                    -->
+                    <span class="badge badge-ghost badge-sm">${side === "end" ? usuario : "Asistente"}</span>
+                    <span class="badge badge-ghost badge-sm ml-1">${timestamp || new Date().toLocaleTimeString(undefined, { hour12: false })}</span>
                 </div>
             </div>
         `;
@@ -88,7 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para cargar las conversaciones guardadas
     function loadSavedConversations() {
-        // Obtener las conversaciones del contexto de Django
+        // 
+        // La variable 'window.conversations' viene del template Django (chat_legal.html) donde se define como:
+        // window.conversations = {{ conversations|safe }};
+        // Esta variable contiene un array con el historial de conversaciones que se pasa desde la vista de Django
+        // a través del contexto del template.
+        //
         const conversations = window.conversations || [];
         
         // Mostrar cada conversación
