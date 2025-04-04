@@ -12,7 +12,6 @@ media
 ArchivosBase
 .vscode/
 .env
-.env.sample
 db.sqlite3
 
 node_modules/
