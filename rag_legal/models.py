@@ -18,5 +18,11 @@ class ChatMessage(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f"{self.role} - {self.user.username} - {self.timestamp}"
+    
+    class Meta:
+        ordering = ['-timestamp']
+    
     
     

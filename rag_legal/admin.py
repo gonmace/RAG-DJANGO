@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from rag_legal.models import State
+from rag_legal.models import State, ChatMessage
 
 class StateAdmin(admin.ModelAdmin):
-    list_display = ('conversation_id', 'created_at', 'updated_at')
+    list_display = ('conversation_id', 'created_at', 'updated_at', 'messages')
     readonly_fields = ('created_at', 'updated_at', 'formatted_messages', 'formatted_summary', 'formatted_token_info')
     
     def formatted_messages(self, obj):
@@ -51,8 +51,8 @@ class StateAdmin(admin.ModelAdmin):
             'fields': ('conversation_id', 'created_at', 'updated_at')
         }),
         ('Conversación', {
-            # 'fields': ('messages', 'formatted_messages'),
-            'fields': ('formatted_messages',),
+            'fields': ('messages', 'formatted_messages'),
+            # 'fields': ('formatted_messages',),
         }),
         ('Resumen', {
             # 'fields': ('summary', 'formatted_summary'),
@@ -63,5 +63,17 @@ class StateAdmin(admin.ModelAdmin):
             'fields': ('formatted_token_info',),
         }),
     )
+
+@admin.register(ChatMessage)
+class ChatMessageAdmin(admin.ModelAdmin):
+    list_display = ('user', 'role', 'content_preview', 'timestamp')
+    list_filter = ('role', 'user', 'timestamp')
+    search_fields = ('content', 'user__username')
+    readonly_fields = ('timestamp',)
+    
+    def content_preview(self, obj):
+        """Muestra una vista previa del contenido del mensaje"""
+        return obj.content[:100] + '...' if len(obj.content) > 100 else obj.content
+    content_preview.short_description = 'Contenido'
 
 admin.site.register(State, StateAdmin)

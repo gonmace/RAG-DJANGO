@@ -1,5 +1,5 @@
 from rag_legal.models import State as StateModel
-
+from langchain_core.load import load
 from rich.console import Console
 
 console = Console()

@@ -176,6 +176,7 @@
     --drop-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.15);
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --blur-sm: 8px;
     --blur-md: 12px;
     --blur-xl: 24px;
@@ -5578,10 +5579,6 @@
     --tw-border-style: dashed;
     border-style: dashed;
   }
-  .border-none {
-    --tw-border-style: none;
-    border-style: none;
-  }
   .badge-ghost {
     border-color: var(--color-base-200);
     background-color: var(--color-base-200);
@@ -5679,6 +5676,10 @@
   }
   .border-yellow-500 {
     border-color: var(--color-yellow-500);
+  }
+  .chat-bubble-neutral {
+    background-color: var(--color-neutral);
+    color: var(--color-neutral-content);
   }
   .chat-bubble-primary {
     background-color: var(--color-primary);
@@ -6282,6 +6283,9 @@
     --tw-tracking: var(--tracking-widest);
     letter-spacing: var(--tracking-widest);
   }
+  .break-words {
+    overflow-wrap: break-word;
+  }
   .whitespace-nowrap {
     white-space: nowrap;
   }
@@ -6379,9 +6383,6 @@
   .text-primary {
     color: var(--color-primary);
   }
-  .text-primary-content {
-    color: var(--color-primary-content);
-  }
   .text-primary\/90 {
     color: color-mix(in srgb, var(--color-primary) 90%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -6472,10 +6473,6 @@
   }
   .shadow-\[0_2px_8px_rgba\(0\,0\,0\,0\.08\)\] {
     --tw-shadow: 0 2px 8px var(--tw-shadow-color, rgba(0,0,0,0.08));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-\[0_2px_8px_rgba\(59\,130\,246\,0\.3\)\] {
-    --tw-shadow: 0 2px 8px var(--tw-shadow-color, rgba(59,130,246,0.3));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-lg {
@@ -6695,6 +6692,11 @@
   }
   .\[area\:\%dx\%d\] {
     area: %dx%d;
+  }
+  .input-primary {
+    &, &:focus, &:focus-within {
+      --input-color: var(--color-primary);
+    }
   }
   .input-secondary {
     &, &:focus, &:focus-within {
@@ -7112,11 +7114,6 @@
       border-color: var(--color-indigo-500);
     }
   }
-  .focus\:bg-base-200 {
-    &:focus {
-      background-color: var(--color-base-200);
-    }
-  }
   .focus\:no-underline {
     &:focus {
       text-decoration-line: none;
@@ -7152,11 +7149,6 @@
   .focus\:ring-indigo-500 {
     &:focus {
       --tw-ring-color: var(--color-indigo-500);
-    }
-  }
-  .focus\:ring-primary {
-    &:focus {
-      --tw-ring-color: var(--color-primary);
     }
   }
   .focus\:ring-offset-2 {
