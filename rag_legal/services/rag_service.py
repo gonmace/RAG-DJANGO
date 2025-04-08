@@ -4,6 +4,7 @@ from langchain_core.messages import HumanMessage
 from langchain_core.load import load, dumpd
 
 from rag_legal.graph.state import State
+from rag_legal.models import TokenCost
 from rag_legal.utils.persistence import save_state, get_state
 from rag_legal.services.message_persistent import MessageService
 from rag_legal.rag_graph import workflow, workflow_summary
@@ -29,6 +30,22 @@ class RagService:
         """
         
         # Crear el workflow con el memory_saver
+        # Obtener los valores de credits y total_cost del usuario actual
+        try:
+            token_cost = await sync_to_async(TokenCost.objects.get)(user=user)
+            credits = token_cost.credits
+            total_cost = token_cost.total_cost
+            ratio = total_cost/credits*100
+            if ratio > 100:
+                return {
+                    "response": "No tienes suficientes créditos para continuar. Por favor, actualiza tu plan.",
+                    "token_cost": 0
+                }
+        except TokenCost.DoesNotExist:
+            credits = 0.5  # Valor por defecto
+            total_cost = 0.45
+        
+        
         state_history = len(list(workflow.get_state_history(config)))
         
         initial_state = State(
@@ -38,9 +55,10 @@ class RagService:
         if state_history == 0:
             console.print("No hay State en memoria", style="bold yellow")
             try:
-                summary, messages, token_cost = await sync_to_async(get_state)(user)
-
-                if messages:
+                state_result = await sync_to_async(get_state)(user)
+                
+                if state_result is not None:
+                    summary, messages, token_cost = state_result
                     console.print("Hay historial de base de datos", style="bold red")
                     messages = load(messages)
                     summary = load(summary)
@@ -122,7 +140,7 @@ class RagService:
                 token_cost_data
             )
             
-                    # Guardar el mensaje del usuario y la respuesta del asistente en la base de datos
+            # Guardar el mensaje del usuario y la respuesta del asistente en la base de datos
             # Solo si el usuario está autenticado
             if user and user.is_authenticated:
                 try:

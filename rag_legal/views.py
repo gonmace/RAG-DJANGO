@@ -8,7 +8,6 @@ from rest_framework import serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
-from rag_legal.models import State
 from rag_legal.services.rag_service import RagService
 from langchain_core.runnables import RunnableConfig
 

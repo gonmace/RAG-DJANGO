@@ -111,6 +111,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_L10N = True
+
+# Configuración de formato de números
+FORMAT_MODULE_PATH = 'config.formats'
 
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 

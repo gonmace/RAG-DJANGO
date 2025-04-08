@@ -8,6 +8,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cargar las conversaciones guardadas
     loadSavedConversations();
 
+    // Referencias a los elementos de la barra de progreso
+    const creditsProgress = document.getElementById("credits-progress");
+    const creditsValue = document.getElementById("credits-value");
+
+    let ratio = window.initialTotalCost/window.initialCredits*100;
+
+    updateProgressBar(ratio);
+
+    function updateProgressBar(ratio) {
+        if (ratio > 70) {
+            creditsProgress.classList.add("progress-warning");
+            creditsProgress.classList.remove("progress-success");
+        }
+        if (ratio > 90) {
+            creditsProgress.classList.remove("progress-success");
+            creditsProgress.classList.add("progress-error");        
+        }
+    }
+
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
     
@@ -48,6 +68,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                 appendMessage("Error: respuesta vacía del servidor.", "start");
                 }
+            
+            // Actualizar la barra de progreso cuando se recibe una respuesta del servidor
+            if (data.total_cost !== undefined) {
+                // Calcular el avance de la barra de progreso
+                let ratio = data.total_cost/data.credits*100;
+                creditsProgress.value = ratio;
+                creditsValue.textContent = ratio.toFixed(0) + "%";
+                updateProgressBar(ratio);
+            }
             
         } catch (err) {
             typingBubble.remove();

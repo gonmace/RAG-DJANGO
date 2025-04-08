@@ -9,6 +9,7 @@ from rag_legal.utils.persistence import get_state
 from decouple import config
 from langchain_core.load import load
 from langchain_core.messages import HumanMessage, AIMessage
+from rag_legal.models import TokenCost
 
 from rich.console import Console
 console = Console()
@@ -24,7 +25,11 @@ API_URL = f"{DOMAIN}/rag_legal/api/v1/legal/"
 def chat_legal(request):
     # Obtener las conversaciones en el state del usuario actual
     try:
-        _, messages = get_state(request.user)
+        state_result = get_state(request.user)
+        if state_result is not None:
+            _, messages, _ = state_result
+        else:
+            messages = []
     except Exception as e:
         messages = []
         print(f"Error al obtener el estado: {str(e)}")
@@ -46,7 +51,23 @@ def chat_legal(request):
     # Invertir la lista para mostrar las conversaciones más antiguas primero
     conversations.reverse()
     
-    return render(request, 'chat_legal.html', {'conversations': conversations})
+    # Obtener los valores de credits y total_cost del usuario actual
+    try:
+        token_cost = TokenCost.objects.get(user=request.user)
+        credits = token_cost.credits
+        total_cost = token_cost.total_cost
+        console.print(f"Credits: {credits}", style="bold green")
+        console.print(f"Total cost: {total_cost}", style="bold green")
+    except TokenCost.DoesNotExist:
+        credits = 0.5  # Valor por defecto
+        total_cost = 0
+    
+    return render(request, 'chat_legal.html', {
+        'conversations': conversations,
+        'credits': credits*1000000,
+        'total_cost': total_cost*1000000,
+        'ratio': total_cost/credits*100
+    })
 
 @csrf_exempt  # sólo para pruebas, idealmente se maneja con CSRFToken
 @login_required
@@ -83,11 +104,25 @@ def chat_ajax_view(request):
             if response.status_code == 200:
                 result = response.json()
                 assistant_message = result['response']
+                
+                # Obtener los valores actualizados de credits y total_cost
+                try:
+                    token_cost = TokenCost.objects.get(user=request.user)
+                    credits = token_cost.credits
+                    total_cost = token_cost.total_cost
+                except TokenCost.DoesNotExist:
+                    credits = 0.5  # Valor por defecto
+                    total_cost = 0
+                
+                return JsonResponse({
+                    "response": assistant_message,
+                    "credits": credits,
+                    "total_cost": total_cost
+                })
             else:
                 console.print(f"Error en la respuesta: {response.text}", style="bold red")
                 assistant_message = "Lo siento, hubo un error al procesar tu solicitud."
-
-            return JsonResponse({"response": assistant_message})
+                return JsonResponse({"response": assistant_message})
         except json.JSONDecodeError as e:
             console.print(f"Error JSON: {str(e)}", style="bold red")
             return JsonResponse({"error": "JSON inválido", "details": str(e)}, status=400)
