@@ -8,18 +8,11 @@ from rest_framework import serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
-from rag_legal.services.chat_service import ChatService
+from rag_legal.models import State
+from rag_legal.services.rag_service import RagService
+from langchain_core.runnables import RunnableConfig
 
-import logging
-from rich.logging import RichHandler
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(message)s",
-    datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True)]
-)
-logger = logging.getLogger("rich")
+from rich.console import Console
 
 class ChatRequestSerializer(serializers.Serializer):
     message = serializers.CharField()
@@ -27,12 +20,14 @@ class ChatRequestSerializer(serializers.Serializer):
 
 class ChatResponseSerializer(serializers.Serializer):
     response = serializers.CharField()
-    token_info = serializers.DictField()
+    token_cost = serializers.FloatField()
 
 class RAGLegalView(APIView):
     # Cambiamos temporalmente a AllowAny para depuración
     permission_classes = [AllowAny]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+    
+    console = Console()
     
     def post(self, request):
         return async_to_sync(self._post_async)(request)
@@ -45,10 +40,17 @@ class RAGLegalView(APIView):
         
         chat_request = serializer.validated_data
         
+        config = RunnableConfig(
+            recursion_limit=10,
+            configurable={
+                "thread_id": chat_request['conversation_id']
+            }
+        )
+
         # Procesamos el mensaje usando el servicio
-        response_data = await ChatService.process_message(
-            message=chat_request['message'],
-            conversation_id=chat_request['conversation_id'],
+        response_data = await RagService.process_message(
+            input=chat_request['message'],
+            config=config,
             user=request.user
         )
         

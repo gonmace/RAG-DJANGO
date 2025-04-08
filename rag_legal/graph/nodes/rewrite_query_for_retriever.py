@@ -1,12 +1,11 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_core.language_models.base import BaseLanguageModel
 from langchain_core.runnables import RunnableLambda
+from langchain_community.callbacks.openai_info import OpenAICallbackHandler
 
 from rag_legal.graph.state import State
 
 from rich.console import Console
-
-from rag_legal.utils.token_counter import TokenCounterCallback
 
 console = Console()
 
@@ -27,16 +26,12 @@ Return the final list of queries (1 per line, no numbering):
 class QueryRewriter:
     def __init__(
         self, model: BaseLanguageModel,
-        token_counter: TokenCounterCallback | None = None
         ):
         self.model = model
-        self.token_counter = token_counter
-        """
-        Inicializa el QueryRewriter con el prompt y el contador de tokens.
 
+        """
         Args:
             model (BaseLanguageModel): Modelo de lenguaje a utilizar.
-            token_counter (TokenCounterCallback | None): Callback opcional para contar tokens.
         """
 
 
@@ -62,24 +57,24 @@ class QueryRewriter:
         chain = split_and_prepare_prompt | self.model | RunnableLambda(
             lambda msg: msg.content.strip().split("\n")
             )
-
+        
+        callback_handler = OpenAICallbackHandler()
+        
         # Ejecutar la reformulación de la consulta
         subqueries  = await chain.ainvoke(
-            {"query": query}
+            {"query": query},
+            config={"callbacks":[callback_handler]}
         )
-        
-        console.print(f"Query reescrita: {subqueries}", style="bold magenta")
-        
-        # Obtener y actualizar la información de tokens solo si token_counter está presente
-        if self.token_counter is not None:
-            console.print("Token info inicial:", style="magenta")
-            console.print(state["token_info"], style="magenta")
-            State.update_token_info(state, self.token_counter.get_token_summary())
-            console.print("Token info final:", style="magenta")
-            console.print(state["token_info"], style="magenta")
-        
+
         state["query"] = subqueries
-                
+
+        console.print(f"Subqueries: {subqueries}", style="bold magenta")
+        print(f"Prompt Tokens: {callback_handler.prompt_tokens}")
+        print(f"Completion Tokens: {callback_handler.completion_tokens}")
+        print(f"Successful Requests: {callback_handler.successful_requests}")
+        print(f"Total Cost (USD): ${callback_handler.total_cost}")
+        state["token_cost"] = state["token_cost"] + callback_handler.total_cost
+        console.print(f"Total Cost Acumulated (USD): ${state['token_cost']}", style="bold magenta")
         console.print("-" * 20, style="bold magenta")
 
         return state

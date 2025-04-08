@@ -2,9 +2,11 @@ from decouple import config
 from pathlib import Path
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = config('SECRET_KEY', default='your secret key')
 
@@ -27,7 +29,7 @@ INSTALLED_APPS = [
     'embeddings',
     'converttext',
     'langGraph',
-    'rag_legal',
+    'rag_legal.apps.RagLegalConfig',
     'authentication',
     'chat',
 ]

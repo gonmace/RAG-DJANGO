@@ -2,14 +2,6 @@ from dataclasses import dataclass, field
 from typing import Dict, List
 from langgraph.graph import MessagesState
 
-def reset_token_info() -> Dict[str, float]:
-    return {
-        "prompt_tokens": 0.0,
-        "completion_tokens": 0.0,
-        "total_tokens": 0.0,
-        "cost": 0.0
-    }
-
 @dataclass(kw_only=True)
 class State(MessagesState):
     """The state of your graph / agent."""
@@ -28,26 +20,32 @@ class State(MessagesState):
         metadata={"description": "Consulta del usuario, puede ser re-escrita."}
         )
     
-    token_info: Dict[str, float] = field(
-        default_factory=reset_token_info,
-        metadata={"description": "Información sobre el uso de tokens y costos."})
-    
     context: str = field(
         default="",
         metadata={"description": "Contexto de la consulta."}
         )
+    
+    token_cost: float = field(
+        default=0,
+        metadata={"description": "Costo de los tokens."}
+        )
+    
+    is_relevant: bool = field(
+        default=False,
+        metadata={"description": "Indica si la consulta es relevante."}
+        )
 
-    @classmethod
-    def update_token_info(cls, state: dict, new_token_info: Dict[str, float]) -> dict:
-        """Actualiza el campo 'token_info' de un dict de estado."""
-        current_token_info = state.get("token_info", {})
-        for key, value in new_token_info.items():
-            if key in current_token_info:
-                current_token_info[key] += value
-            else:
-                current_token_info[key] = value
-        state["token_info"] = current_token_info
-        return state
+    # @classmethod
+    # def update_token_info(cls, state: dict, new_token_info: Dict[str, float]) -> dict:
+    #     """Actualiza el campo 'token_info' de un dict de estado."""
+    #     current_token_info = state.get("token_info", {})
+    #     for key, value in new_token_info.items():
+    #         if key in current_token_info:
+    #             current_token_info[key] += value
+    #         else:
+    #             current_token_info[key] = value
+    #     state["token_info"] = current_token_info
+    #     return state
 
 
 __all__ = ["State"]

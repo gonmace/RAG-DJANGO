@@ -1,18 +1,13 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.runnables import RunnableConfig
 from langchain_core.messages import SystemMessage
+from langchain_community.callbacks.openai_info import OpenAICallbackHandler
 
-from rag_legal.utils.token_counter import TokenCounterCallback
 from rag_legal.graph.configuration import Configuration
 from rag_legal.graph.state import State
 
 from rich.console import Console
 console = Console()
-
-
-token_counter = TokenCounterCallback(
-        model_name=Configuration.llm_chat_model
-        )
 
 async def process_input(state: State, *, config: RunnableConfig) -> State:
     """
@@ -50,24 +45,25 @@ async def process_input(state: State, *, config: RunnableConfig) -> State:
     # Asegurarse de que el historial de mensajes se mantenga y agregar el nuevo mensaje
     messages =  [system_message] + state.get("messages", [])
     
-    # console.print(messages, style="bold cyan")
-    
     # Crear el modelo
     llm_chat = ChatOpenAI(
         model_name=configuration.llm_chat_model,
         temperature=0.1,
-        callbacks=[token_counter]
     )
     
-    response = await llm_chat.ainvoke(messages)
+    callback_handler = OpenAICallbackHandler()
     
-    token = token_counter.get_token_summary()
-    
-    State.update_token_info(state, token)
-    
-    
-    console.print(token, style="bold cyan")
-    console.print(f"Token total {state['token_info']}", style="bold cyan")
+    response = await llm_chat.ainvoke(
+        messages,
+        config={"callbacks":[callback_handler]}
+        )
+
+    print(f"Prompt Tokens: {callback_handler.prompt_tokens}")
+    print(f"Completion Tokens: {callback_handler.completion_tokens}")
+    print(f"Successful Requests: {callback_handler.successful_requests}")
+    print(f"Total Cost (USD): ${callback_handler.total_cost}")
+    state["token_cost"] += callback_handler.total_cost
+    console.print(f"Total Cost Acumulated (USD): ${state['token_cost']}", style="bold cyan")
     console.print("-"*20, style="bold cyan")
     
     state["messages"] = response

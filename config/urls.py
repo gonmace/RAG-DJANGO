@@ -16,7 +16,7 @@ urlpatterns = [
     path('chat/', include('chat.urls')),
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path("logout/", LogoutView.as_view(), name="logout"),
-]
+    ]
 
 if settings.DEBUG:
     urlpatterns += [

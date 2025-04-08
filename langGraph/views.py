@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -5,7 +6,14 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 import json
 import requests
+from decouple import config
 
+if settings.DEBUG:
+    DOMAIN = 'http://localhost:8000'
+else:
+    DOMAIN = config('DOMAIN', default='http://localhost:8000', cast=str)
+
+API_URL = f"{DOMAIN}/rag_legal/api/v1/legal/"
 # Vista para renderizar la página del chat
 @login_required
 def chat_view(request):
@@ -30,7 +38,7 @@ def process_message(request):
             conversation_id = "+59167728817"
         
         # Procesar el mensaje usando el servicio
-        api_url = 'http://localhost:8000/rag_legal/api/v1/legal/'
+        api_url = API_URL
         payload = {
             'message': user_message,
             'conversation_id': conversation_id

@@ -4,7 +4,7 @@ from rag_legal.models import ChatMessage
 
 class MessageService:
     @staticmethod
-    async def save_message(user: User, role: str, content: str) -> None:
+    async def save_message(user: User, role: str, content: str, cost: float = None) -> None:
         """
         Guarda un mensaje en la base de datos.
         
@@ -23,14 +23,15 @@ class MessageService:
             await sync_to_async(ChatMessage.objects.create)(
                 user=user,
                 role=role,
-                content=content
+                content=content,
+                cost=cost
             )
             
         except Exception as e:
             print(f"Error al guardar el mensaje: {str(e)}")
     
     @staticmethod
-    async def save_conversation(user: User, user_message: str, assistant_response: str) -> None:
+    async def save_conversation(user: User, user_message: str, assistant_response: str, token_cost: float) -> None:
         """
         Guarda una conversación completa (mensaje del usuario y respuesta del asistente).
         
@@ -48,12 +49,13 @@ class MessageService:
         await MessageService.save_message(
             user=user,
             role='user',
-            content=user_message
+            content=user_message,
         )
         
         # Guardar la respuesta del asistente
         await MessageService.save_message(
             user=user,
             role='assistant',
-            content=assistant_response
+            content=assistant_response,
+            cost=token_cost
         ) 

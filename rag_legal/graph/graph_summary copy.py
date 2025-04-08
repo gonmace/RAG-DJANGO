@@ -1,25 +1,19 @@
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, RemoveMessage
+from langchain_community.callbacks.openai_info import OpenAICallbackHandler
 
 from rag_legal.graph.configuration import Configuration
 from rag_legal.graph.state import State
-from rag_legal.utils.token_counter import TokenCounterCallback
 from langgraph.checkpoint.memory import MemorySaver
 
 from rich.console import Console
 console = Console()
 
-token_counter = TokenCounterCallback(
-        model_name=Configuration.llm_chat_model
-        )
-
 model_chat = ChatOpenAI(
     model=Configuration.llm_chat_model,
-    temperature=0,
-    callbacks=[token_counter]
+    temperature=0
     )
-
 
 def summarize_conversation(state: State):
 
@@ -48,7 +42,17 @@ def summarize_conversation(state: State):
     
     messages = state["messages"] + [HumanMessage(content=summary_prompt)]
 
-    response = model_chat.invoke(messages)
+    callback_handler = OpenAICallbackHandler()
+
+    response = model_chat.invoke(
+        messages,
+        config={"callbacks":[callback_handler]}
+        )
+    
+    print(f"Prompt Tokens: {callback_handler.prompt_tokens}")
+    print(f"Completion Tokens: {callback_handler.completion_tokens}")
+    print(f"Successful Requests: {callback_handler.successful_requests}")
+    print(f"Total Cost (USD): ${callback_handler.total_cost}")
     
     delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-2]]
 

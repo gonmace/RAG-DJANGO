@@ -6,19 +6,14 @@ from langchain_core.prompts import (
     )
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.output_parsers import StrOutputParser
+from langchain_community.callbacks.openai_info import OpenAICallbackHandler
 
-from rag_legal.utils.token_counter import TokenCounterCallback
 from rag_legal.utils.utils import get_message_text
 from rag_legal.graph.configuration import Configuration
 from rag_legal.graph.state import State
 
 from rich.console import Console
 console = Console()
-
-
-token_counter = TokenCounterCallback(
-        model_name=Configuration.llm_chat_model
-        )
 
 async def rewrite_query_by_context(state: State, *, config: RunnableConfig) -> State:
     """
@@ -32,10 +27,7 @@ async def rewrite_query_by_context(state: State, *, config: RunnableConfig) -> S
         Estado actualizado con la consulta procesada
     """    
     console.print("---rewrite_query_by_context---", style="bold yellow")
-    
-    # Restablecer el estado de token_info al inicio de cada nodo
-    console.print("Token info inicial:", style="yellow")
-    console.print(state["token_info"], style="yellow")
+
     # Obtener los últimos 4 mensajes del historial para mantener el contexto relevante
     messages = state['messages'][-4:]
     
@@ -57,7 +49,6 @@ async def rewrite_query_by_context(state: State, *, config: RunnableConfig) -> S
         chat_model = ChatOpenAI(
             model_name=configuration.llm_chat_model,
             temperature=0,
-            callbacks=[token_counter]
         )
         
         human_message = HumanMessage(content=human_input)
@@ -89,21 +80,25 @@ async def rewrite_query_by_context(state: State, *, config: RunnableConfig) -> S
 
         # Construcción de la cadena de procesamiento que transformará la consulta
         query_transformation_chain = chat_prompt | chat_model | StrOutputParser()
-
+        
+        callback_handler = OpenAICallbackHandler()
+        
         # Procesamiento asíncrono de la consulta usando el historial de mensajes
-        consulta = await query_transformation_chain.ainvoke({"messages": messages})
+        consulta = await query_transformation_chain.ainvoke(
+            {"messages": messages},
+            config={"callbacks":[callback_handler]}
+            )
 
         # Actualización del estado con la consulta procesada y la información de tokens
         state["query"] = [consulta]
-        nuevos_tokens=token_counter.get_token_summary()
-        
-        State.update_token_info(state, nuevos_tokens)
-        
-        console.print("Tokens finales:", style="yellow")
-        console.print(state["token_info"], style="yellow")
         
         # Visualización de la consulta original y la reescrita para debugging
         console.print(f"Query original: {get_message_text(messages[-1])}", style="yellow")
         console.print(f"Query reescrita: {consulta}", style="bold yellow")
+        print(f"Prompt Tokens: {callback_handler.prompt_tokens}")
+        print(f"Completion Tokens: {callback_handler.completion_tokens}")
+        print(f"Successful Requests: {callback_handler.successful_requests}")
+        print(f"Total Cost (USD): ${callback_handler.total_cost}")
+        state["token_cost"] = state["token_cost"] + callback_handler.total_cost
         console.print("-" * 20, style="bold yellow")
         return state

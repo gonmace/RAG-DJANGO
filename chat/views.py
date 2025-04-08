@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 import json
 import requests
@@ -12,7 +13,10 @@ from langchain_core.messages import HumanMessage, AIMessage
 from rich.console import Console
 console = Console()
 
-DOMAIN = config('DOMAIN', default='http://localhost:8000', cast=str)
+if settings.DEBUG:
+    DOMAIN = 'http://localhost:8000'
+else:
+    DOMAIN = config('DOMAIN', default='http://localhost:8000', cast=str)
 
 API_URL = f"{DOMAIN}/rag_legal/api/v1/legal/"
 
@@ -20,9 +24,9 @@ API_URL = f"{DOMAIN}/rag_legal/api/v1/legal/"
 def chat_legal(request):
     # Obtener las conversaciones en el state del usuario actual
     try:
-        summary, messages, token_info = get_state(request.user)
+        _, messages = get_state(request.user)
     except Exception as e:
-        summary, messages, token_info = None, [], {}
+        messages = []
         print(f"Error al obtener el estado: {str(e)}")
     
     # Crear un diccionario para almacenar las conversaciones
@@ -67,7 +71,7 @@ def chat_ajax_view(request):
             # Incluir todas las cookies de sesión para la autenticación
             session_cookies = request.COOKIES.copy()
             
-            console.print(f"Enviando cookies: {session_cookies}", style="bold green")
+            # console.print(f"Enviando cookies: {session_cookies}", style="bold green")
             
             response = requests.post(
                 API_URL, 
@@ -75,8 +79,6 @@ def chat_ajax_view(request):
                 headers=headers, 
                 cookies=session_cookies
             )
-            
-            console.print(f"Respuesta: {response.status_code}", style="bold blue")
             
             if response.status_code == 200:
                 result = response.json()
